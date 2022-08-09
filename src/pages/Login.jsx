@@ -42,10 +42,7 @@ export default function Login(){
             setLoad(false);
             localStorage.setItem('authToken', res.data);
             setToken(localStorage.getItem('authToken'));
-            alert('logou'); /* remover esse alerta depois de implementar a rota /timeline */
-            /*
             navigate('/timeline');
-            */
         });
 
         promise.catch(Error => {
@@ -91,7 +88,7 @@ export default function Login(){
                         load ?
                         <ThreeDots />
                             :
-                        <h3>Sign Up</h3>    
+                        <h3>Sign In</h3>    
                     }
                 </button>
             </form>

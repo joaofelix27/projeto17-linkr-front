@@ -4,6 +4,7 @@ import UserContext from "../../contexts/UserContext.js"
 import { useState } from "react"
 import Login from "../../pages/Login.jsx";
 import Register from "../../pages/Register/Register.jsx";
+import Timeline from "../../pages/Timeline.js";
 import 'react-toastify/dist/ReactToastify.css';
 import './_app.css'
 
@@ -22,6 +23,7 @@ export default function App(){
                 <Routes>
                     <Route path='/' element={<Login />} />
                     <Route path='/signup' element={<Register />} />
+                    <Route path='/timeline' element={<Timeline />} />
                 </Routes>
             </UserContext.Provider>
         </BrowserRouter>
