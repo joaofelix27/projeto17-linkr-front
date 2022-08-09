@@ -10,10 +10,16 @@ import './_app.css'
 
 export default function App(){
     const [token,setToken] = useState(localStorage.getItem('authToken'));
+    const [image,setImage] = useState('');
+    const [name,setName] = useState('');
 
     const userContext = {
         token,
-        setToken
+        setToken,
+        image,
+        setImage,
+        name,
+        setName
     }
 
     return(

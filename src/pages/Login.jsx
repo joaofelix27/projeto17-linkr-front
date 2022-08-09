@@ -25,7 +25,7 @@ export default function Login(){
     const [load,setLoad] = useState(false);
 
     const navigate = useNavigate();
-    const { setToken } = useContext(UserContext);
+    const { setToken,setImage,setName } = useContext(UserContext);
 
     function signIn(event){
         event.preventDefault();
@@ -40,7 +40,9 @@ export default function Login(){
 
         promise.then((res)=>{
             setLoad(false);
-            localStorage.setItem('authToken', res.data);
+            localStorage.setItem('authToken', res.data.token);
+            setImage(res.data.image);
+            setName(res.data.name);
             setToken(localStorage.getItem('authToken'));
             navigate('/timeline');
         });
