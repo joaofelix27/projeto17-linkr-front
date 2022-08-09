@@ -1,10 +1,11 @@
 import { BrowserRouter,Routes,Route } from "react-router-dom"
-import GlobalStyle from "../theme/globalStyle.js"
-import UserContext from "../contexts/UserContext.js"
+import GlobalStyle from "../../theme/globalStyle.js";
+import UserContext from "../../contexts/UserContext.js"
 import { useState } from "react"
-import Login from "../pages/Login.js";
-import Register from "../pages/Register/Register.jsx";
+import Login from "../../pages/Login.jsx";
+import Register from "../../pages/Register/Register.jsx";
 import 'react-toastify/dist/ReactToastify.css';
+import './_app.css'
 
 export default function App(){
     const [token,setToken] = useState(localStorage.getItem('authToken'));

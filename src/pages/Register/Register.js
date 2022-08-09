@@ -4,11 +4,14 @@ export const Container = styled.div`
     width: 100%;
     min-height: 100vh;
     background-color: #333333;
+    display: flex;
+    flex-direction: column;
 
     .back{
         display: flex;
         align-items: center;
         justify-content: center;
+
         h1{
             font-family: 'Lato';
             font-style: normal;
@@ -63,6 +66,29 @@ export const Container = styled.div`
             font-weight: 700;
             font-size: 22px;
             line-height: 33px;
+        }
+    }
+
+    @media only screen and (min-width: 768px) {
+        flex-direction: row;
+
+        form{
+            width: 80%;
+            input{
+                width: 90%;
+            }
+
+            button{
+                width: 90%;
+            }
+        }
+
+        .right{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
         }
     }
 `

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast,ToastContainer } from "react-toastify";
-import { Container } from "./Register.js";
+import { Container } from "./Register/Register.js";
 import { ThreeDots } from "react-loader-spinner";
-import Header from "../../components/Header.js";
+import Header from "../components/Header.js";
+import UserContext from "../contexts/UserContext";
 
 const notify = (error)=>{
     toast(`❗ ${error}`, {
@@ -18,45 +19,44 @@ const notify = (error)=>{
         });
     }
 
-export default function Register(){
-    const [userName,setUserName] = useState('');
+export default function Login(){
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-    const [picture,setPicture] = useState('');
     const [load,setLoad] = useState(false);
 
     const navigate = useNavigate();
+    const { setToken } = useContext(UserContext);
 
-    function signUp(event){
+    function signIn(event){
         event.preventDefault();
         setLoad(true);
 
         const body = {
-            username: userName,
             email,
-            password,
-            picture
-        }
+            password
+        };
 
-        const promise = axios.post('https://projeto17-linkr-api2.herokuapp.com/signup',body);
+        const promise = axios.post('https://projeto17-linkr-api2.herokuapp.com/',body);
 
-        promise.then(()=>{
+        promise.then((res)=>{
             setLoad(false);
-            navigate('/');
-        })
+            localStorage.setItem('authToken', res.data);
+            setToken(localStorage.getItem('authToken'));
+            alert('logou'); /* remover esse alerta depois de implementar a rota /timeline */
+            /*
+            navigate('/timeline');
+            */
+        });
 
         promise.catch(Error => {
             setLoad(false);
-            if(Error.response.status === 422){
-                notify("Fill in the forms correctly!");
-            }
-            if(Error.response.status === 409){
-                notify("This email is already registered!");
+            if(Error.response.status === 401){
+                notify("User isn't registered or password is incorrect!");
             }
             if(Error.response.status === 500){
                 notify("Server error!");
-            }  
-        })
+            }
+        });
     }
 
     return(
@@ -75,7 +75,7 @@ export default function Register(){
             />
             <Header />
             <div className="right">
-            <form onSubmit={signUp}>
+            <form onSubmit={signIn}>
                 <input type="email"
                 placeholder="e-mail"
                 value={email}
@@ -83,20 +83,9 @@ export default function Register(){
                 onChange={e => setEmail(e.target.value)} />
                 <input type="password"
                 placeholder="password"
+                required
                 value={password}
-                required
                 onChange={e => setPassword(e.target.value)} />
-                <input type="text"
-                placeholder="username"
-                value={userName}
-                required
-                onChange={e => setUserName(e.target.value)} />
-                <input type="text"
-                placeholder="picture"
-                value={picture}
-                required
-                onChange={e => setPicture(e.target.value)} 
-                 />
                 <button type="submit" disabled={load}>
                     {
                         load ?
@@ -107,9 +96,9 @@ export default function Register(){
                 </button>
             </form>
             <div className="back">
-                <h1 onClick={()=>navigate('/')}>Switch back to login</h1>
-            </div>  
+                <h1 onClick={()=>navigate('/signup')}>First time? Create an account!</h1>
             </div>
+            </div>  
         </Container>
     )
 }

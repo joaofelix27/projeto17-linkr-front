@@ -25,16 +25,39 @@ const Container = styled.div`
             padding-right: 30px;
 
             h1{
+                font-family: 'Passion One';
+                font-style: normal;
                 font-weight: 700;
                 font-size: 76px;
                 line-height: 84px;
+                letter-spacing: 0.05em;
             }
 
             h2{
+                font-family: 'Oswald', sans-serif;
                 font-weight: 700;
                 font-size: 23px;
                 line-height: 34px;
                 text-align: center;
+            }
+        }
+
+        @media only screen and (min-width: 768px) {
+            width: 50%;
+            header{
+                min-height: 100vh;
+                justify-content: flex-start;
+                align-items: flex-start;
+
+                h1{
+                    margin-top: 40vh;
+                    margin-left: 20%;
+                }
+                h2{
+                    width: 60%;
+                    margin-left: 20%;
+                    text-align: start;
+                }
             }
         }
 `

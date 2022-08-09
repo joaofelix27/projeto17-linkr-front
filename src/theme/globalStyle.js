@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+
 * {
 	box-sizing: border-box;
 	::-webkit-scrollbar {
@@ -40,6 +41,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	font-family: 'Oswald';
 }
 ol, ul {
 	list-style: none;
