@@ -22,7 +22,7 @@ const notify = (error)=>{
 export default function Timeline(){
     const [openMenu,setOpenMenu] = useState(false);
 
-    const { setToken,token,image,name } = useContext(UserContext);
+    const { setToken,token,image,name,setImage,setName } = useContext(UserContext);
 
     const navigate = useNavigate();
 
@@ -65,10 +65,12 @@ export default function Timeline(){
                                 :
                             <IoChevronDown onClick={()=>setOpenMenu(!openMenu)} color="#ffffff" size={40} />
                         }
-                        <img src={image} alt="" srcset="" />
+                        <img src={image} onClick={()=>setOpenMenu(!openMenu)} alt="" srcset="" />
                         <div className="logout" onClick={()=> {
                             localStorage.setItem('authToken', '');
                             setToken(localStorage.getItem('authToken'));
+                            setImage('');
+                            setName('');
                             navigate('/')
                         }}>
                             <h2>Logout</h2>
