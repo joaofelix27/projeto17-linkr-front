@@ -1,6 +1,8 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-export default function TrendingHashtags() {
+export default function TrendingHashtags({ hashtags }) {
+  const navigate = useNavigate();
   const array = [
     "javascript",
     "react",
@@ -15,20 +17,23 @@ export default function TrendingHashtags() {
   ];
 
   function Hashtags() {
-      return (
-          <>
-          {
-              array.map ( (value,index) => {
-                  return (
-                  <Hashtags1 key={index}>
-                      # {value}
-                  </Hashtags1>)
-              })
-          }
-          </>
-      )
+    if (hashtags) {
+      const trendings = hashtags.map((value, index) => {
+        return (
+          <Hashtags1
+            key={index}
+            onClick={() => {
+              navigate(`/hashtag/${value?.name}`);
+            }}
+          >
+            # {value?.name}{" "}
+          </Hashtags1>
+        );
+      });
+      return trendings;
+    }
   }
-  const hashtagTrending = Hashtags()
+  const hashtagTrending = Hashtags();
   return (
     <Container>
       <h2>Trending</h2>
@@ -39,8 +44,8 @@ export default function TrendingHashtags() {
 }
 const Container = styled.div`
   padding-top: 10px;
-  position:sticky;
-  top:100px;
+  position: sticky;
+  top: 100px;
   height: 406px;
   width: 301px;
   border-radius: 16px;
@@ -58,7 +63,7 @@ const Container = styled.div`
 
 const Border = styled.div`
   margin-top: 12px;
-  margin-bottom:22px;
+  margin-bottom: 22px;
   border: 1px solid #484848;
 `;
 const Hashtags1 = styled.h3`
@@ -67,7 +72,7 @@ const Hashtags1 = styled.h3`
   font-weight: 700;
   line-height: 23px;
   letter-spacing: 0.05em;
-  margin-bottom:7px;
-  margin-left:16px;
-  color: #FFFFFF;
+  margin-bottom: 7px;
+  margin-left: 16px;
+  color: #ffffff;
 `;

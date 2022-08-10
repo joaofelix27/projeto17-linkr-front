@@ -1,15 +1,19 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useParams } from 'react-router-dom';
 import axios from "axios";
 import TimelineHeader from "../components/TimelineHeader";
-import SendPostCard from "../components/SendPostCard";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
 
 
-export default function Timeline() {
+
+export default function Hashtags() {
   const [posts, setPosts] = useState("");
   const [trending, setTrending] = useState("");
+  const { hashtag } = useParams();
+  
+
 
   useEffect(() => {
     if (posts === "") {
@@ -22,7 +26,7 @@ export default function Timeline() {
 
   async function getPosts() {
     try {
-      const result = await axios.get("http://localhost:4000/timeline");
+      const result = await axios.get("http://localhost:4000/hashtags/Brr");
       setPosts(result.data);
     } catch (e) {
       alert(
@@ -72,8 +76,7 @@ export default function Timeline() {
       <Content>
         <ContentBody>
           <LeftContent>
-          <h2>timeline</h2>
-            <SendPostCard getPosts={getPosts} />
+          <h2># {hashtag}</h2>
             {renderPosts()}
           </LeftContent>
           <RightContent>
