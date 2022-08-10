@@ -113,6 +113,10 @@ const Container = styled.div`
             align-items: center;
             margin-bottom: 10px;
 
+            img,svg{
+                cursor: pointer;
+            }
+
             img{
                 width: 54px;
                 height: 54px;
@@ -131,7 +135,8 @@ const Container = styled.div`
                 bottom: -40px;
                 right: 0;
                 background: #171717;
-                border-radius: 0px 0px 20px 20px;      
+                border-radius: 0px 0px 20px 20px;
+                cursor: pointer ;
 
                 h2{
                     font-family: 'Lato';

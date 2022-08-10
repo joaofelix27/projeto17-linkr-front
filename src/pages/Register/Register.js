@@ -66,6 +66,7 @@ export const Container = styled.div`
             font-weight: 700;
             font-size: 22px;
             line-height: 33px;
+            cursor: pointer;
         }
     }
 
