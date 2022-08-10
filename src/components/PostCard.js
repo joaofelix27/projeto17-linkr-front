@@ -1,140 +1,50 @@
 import styled from "styled-components";
-import { useEffect, useState, useContext } from "react";
-import axios from "axios";
 
-import UserContext from "../contexts/UserContext";
-
-export default function PostCard() {
-    const { image, token } = useContext(UserContext);
-    const [link, setLink] = useState("");
-    const [body, setBody] = useState("");
-    const [loading, setLoading] = useState(false);
-
-    async function publish(e) {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            const post = {
-                link,
-                body
-            };
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            };
-            await axios.post("http://localhost:4000/post/create", post, config);
-            setLoading(false);
-            setLink("");
-            setBody("");
-            
-        } catch (e) {
-            alert("Houve um erro ao publicar seu link");
-            console.log(e);
-            setLoading(false);
-        }
-    };
-
-    function contentButton(){
-        if(loading){
-            return "Publishing..."
-        }
-        return "Publish"
-    }
-
-
-
-    return(
-        <Container>
+export default function PostCard({ key, name, profileImage, url, text, titleUrl, imageUrl, descriptionUrl }) {
+    return (
+        <Container key={key}>
             <ProfilePhoto>
-                <img src={image} alt="" />
+                <img src={profileImage} alt="" />
             </ProfilePhoto>
-            <form onSubmit={publish}>
-                <h3>What are you going to share today?</h3>
-                
-                <input 
-                    type="url" 
-                    placeholder="http://" 
-                    required 
-                    onChange={(e)=>setLink(e.target.value)} 
-                    value={link}
-                    disabled={loading}
-                />
+            <Post>
+                <h3>{name}</h3>
+                <h4>{text}</h4>
 
-                <input 
-                    class="text" 
-                    type="text" 
-                    placeholder="Awesome article about #javascript" 
-                    onChange={(e)=>setBody(e.target.value)} 
-                    value={body}
-                    disabled={loading}
-                />
-
-                <ButtonBox>
-                    <Button disabled={loading}>{contentButton()}</Button>
-                </ButtonBox>
-            </form>
+                <LinkBox href={url} target="_blank">
+                    <div>
+                        <h4>{titleUrl}</h4>
+                        <h5>{descriptionUrl}</h5>
+                        <h6>{url}</h6>
+                    </div>
+                    <img src={imageUrl} alt="" />
+                </LinkBox>
+            </Post>
         </Container>
-    )
+    );
 };
 
 const Container = styled.div`
     width: 720px;
-    background-color: white;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     padding: 17px;
     padding-right: 22px;
+    margin-bottom: 30px;
     display: flex;
-    font-family: Lato;
+    font-family: 'Lato';
+    width: 720px;
+    background-color: #171717;
+    border-radius: 16px;
     h3{
-        font-weight: 300;
-        font-size: 24px;
-        line-height: 24px;
-        margin-bottom: 10px;
-        color: #707070;
-    }
-    form{
-        padding-top: 10px;
-        width: 100%;
-        display: flex;
-        flex-direction: column
-    }
-    input{
-        border: none;
-        border-radius: 5px;
-        background-color:#EFEFEF;
-        width: 100%;
-        margin-bottom: 5px;
-        height: 30px;
-        padding: 5px;
-        ::placeholder{
-            font-family: 'Lato';
-            color: #949494;
-            font-weight: 300;
-            font-size: 15px;
-
-        }
-    }
-    .text{
-        display: flex;
-        padding-bottom: 70px;
-        height: 100px;
-    }
-    
-`
-const Button = styled.button`
-  
         color: white;
-        font-weight: 700;
-        border: none;
-        background-color:#1877F2;
-        width: 115px;
-        height: 32px;
-        border-radius: 5px;
-        opacity: ${props=> props.disabled? '70%': '100%'};
-
-    
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+    h4{
+        color: #B7B7B7;
+        font-size: 18px;
+        line-height: 20px;
+    }
 `
 const ProfilePhoto = styled.div`
     height: 100%;
@@ -143,13 +53,50 @@ const ProfilePhoto = styled.div`
         width: 58px;
         height: 58px;
         border-radius: 50%;
-        margin-left: 10px;
         object-fit: cover;
     }
 `
 
-const ButtonBox = styled.div`
+const Post = styled.div`
     width: 100%;
     display: flex;
-    justify-content: end;
+    flex-direction: column;
+    padding-top: 10px;
+`
+
+const LinkBox = styled.a`
+    width: 100%;
+    margin-top: 20px;
+    text-decoration: none;
+    border: 1px solid #4D4D4D;
+    border-radius: 12px;
+    display: flex;
+    div{
+        padding: 24px 19px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
+    h4{
+        color: #CECECE;
+        font-size: 18px;
+        line-height: 19px;
+    }
+    h5{
+        color: #9B9595;
+        font-size: 14px;
+        line-height: 16px;
+    }
+    h6{
+        color: #CECECE;
+        font-size: 11px;
+        line-height: 13px;
+    }
+    img{
+        width: 33%;
+        height: calc(width);
+        object-fit: fill;
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
 `
