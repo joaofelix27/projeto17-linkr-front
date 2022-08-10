@@ -1,85 +1,89 @@
 import styled from "styled-components";
-import { IoChevronUp,IoChevronDown } from "react-icons/io5";
-import OutsideClickHandler from 'react-outside-click-handler';
-import axios from "axios";
 import { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast,ToastContainer } from "react-toastify";
-import UserContext from "../contexts/UserContext";
+import axios from "axios";
 
-const notify = (error)=>{
-    toast(`❗ ${error}`, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        });
+import UserContext from "../contexts/UserContext";
+import TimelineHeader from "../components/TimelineHeader";
+import SendPostCard from "../components/SendPostCard";
+import PostCard from "../components/PostCard";
+
+export default function Timeline() {
+    const { token, setImage, setName } = useContext(UserContext);
+    const [posts, setPosts] = useState("");
+
+    useEffect(() => {
+        if (posts === "") {
+            getPosts();
+        }
+    }, []);
+
+    async function getPosts() {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        try {
+            const result = await axios.get(
+                "http://localhost:4000/timeline",
+                config
+            );
+            setPosts(result.data.postsMetadata);
+            setImage(result.data.userInfo[0].picture);
+            setName(result.data.userInfo[0].username);
+        } catch (e) {
+            alert(
+                "An error occured while trying to fetch the posts, please refresh the page"
+            );
+
+            console.log(e);
+        }
     }
 
-export default function Timeline(){
-    const [openMenu,setOpenMenu] = useState(false);
-
-    const { setToken,token,image,name,setImage,setName } = useContext(UserContext);
-
-    const navigate = useNavigate();
-
-    useEffect(()=>{
-        if(!token){
-            notify('Unauthorized!');
-            setTimeout(()=>{
-                navigate('/');
-            },1000)
+    function renderPosts() {
+        if (posts) {
+            const timeline = posts.map(
+                ({
+                    id,
+                    username,
+                    picture,
+                    link,
+                    body,
+                    title,
+                    image,
+                    description,
+                    like,
+                }) => (
+                    <PostCard
+                        key={id}
+                        name={username}
+                        profileImage={picture}
+                        url={link}
+                        text={body}
+                        titleUrl={title}
+                        imageUrl={image}
+                        descriptionUrl={description}
+                        likes={like}
+                    />
+                )
+            );
+            return timeline;
         }
+        if (posts === []) return <span>There are no posts yet</span>;
+        return <span>Loading...</span>;
+    }
 
+    return (
+        <Container>
+            <TimelineHeader />
 
-    },[])
-
-    return(
-        <Container openMenu={openMenu}>
-            <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss={false}
-                draggable={false}
-                pauseOnHover={true}
-                limit={1}
-            />
-            <header>
-                <h1>Linkr</h1>
-                <OutsideClickHandler
-                    onOutsideClick={() => {
-                        setOpenMenu(false);
-                    }}
-                    >
-                    <div className="profile" >
-                        {
-                            openMenu ?
-                            <IoChevronUp onClick={()=>setOpenMenu(!openMenu)} color="#ffffff" size={40} />
-                                :
-                            <IoChevronDown onClick={()=>setOpenMenu(!openMenu)} color="#ffffff" size={40} />
-                        }
-                        <img src={image} onClick={()=>setOpenMenu(!openMenu)} alt="" srcset="" />
-                        <div className="logout" onClick={()=> {
-                            localStorage.setItem('authToken', '');
-                            setToken(localStorage.getItem('authToken'));
-                            setImage('');
-                            setName('');
-                            navigate('/')
-                        }}>
-                            <h2>Logout</h2>
-                        </div>
-                    </div>       
-                </OutsideClickHandler>
-            </header>
+            <Content>
+                <h2>timeline</h2>
+                <SendPostCard getPosts={getPosts} />
+                {renderPosts()}
+            </Content>
         </Container>
-    )
+    );
 }
 
 const Container = styled.div`
@@ -87,7 +91,7 @@ const Container = styled.div`
     min-height: 100vh;
     background-color: #333333;
 
-    header{
+    header {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -97,9 +101,9 @@ const Container = styled.div`
         padding: 0 20px;
         position: relative;
 
-        h1{
+        h1 {
             color: #ffffff;
-            font-family: 'Passion One';
+            font-family: "Passion One";
             font-style: normal;
             font-weight: 700;
             font-size: 49px;
@@ -107,25 +111,26 @@ const Container = styled.div`
             letter-spacing: 0.05em;
         }
 
-        .profile{
+        .profile {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 10px;
 
-            img,svg{
+            img,
+            svg {
                 cursor: pointer;
             }
 
-            img{
+            img {
                 width: 54px;
                 height: 54px;
                 border-radius: 50%;
                 margin-left: 10px;
             }
 
-            .logout{
-                display: ${props => props.openMenu ? "flex" : "none"};
+            .logout {
+                display: ${(props) => (props.openMenu ? "flex" : "none")};
                 justify-content: center;
                 align-items: center;
                 width: 150px;
@@ -136,10 +141,10 @@ const Container = styled.div`
                 right: 0;
                 background: #171717;
                 border-radius: 0px 0px 20px 20px;
-                cursor: pointer ;
+                cursor: pointer;
 
-                h2{
-                    font-family: 'Lato';
+                h2 {
+                    font-family: "Lato";
                     font-style: normal;
                     font-weight: 700;
                     font-size: 17px;
@@ -149,4 +154,23 @@ const Container = styled.div`
             }
         }
     }
-`
+
+    h2 {
+        width: 720px;
+        margin: 50px 0px;
+        font-weight: 700;
+        font-size: 43px;
+        color: white;
+    }
+    span {
+        font-weight: 700;
+        font-size: 43px;
+        color: white;
+    }
+`;
+const Content = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
