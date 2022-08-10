@@ -36,13 +36,13 @@ export default function Login(){
             password
         };
 
-        const promise = axios.post('https://projeto17-linkr-api2.herokuapp.com/',body);
+        const promise = axios.post('http://localhost:4000/',body);
 
         promise.then((res)=>{
             setLoad(false);
             localStorage.setItem('authToken', res.data.token);
             setImage(res.data.image);
-            setName(res.data.name);
+            setName(res.data.name); 
             setToken(localStorage.getItem('authToken'));
             navigate('/timeline');
         });
