@@ -5,6 +5,8 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast,ToastContainer } from "react-toastify";
 import UserContext from "../contexts/UserContext";
+import {DebounceInput} from 'react-debounce-input';
+import SearchBox from "./SearchBox.js";
 
 const notify = (error)=>{
     toast(`❗ ${error}`, {
@@ -20,6 +22,7 @@ const notify = (error)=>{
 
 export default function TimelineHeader(){
     const [openMenu,setOpenMenu] = useState(false);
+    const [users,setUsers] = useState([]);
 
     const { setToken,token,setImage,image,setName } = useContext(UserContext);
 
@@ -32,9 +35,18 @@ export default function TimelineHeader(){
                 navigate('/');
             },1000)
         }
+    },[users])
 
-
-    },[])
+    function renderUsers(){
+        console.log(1)
+            const search = users.map(({picture,id,username,index}) =>
+                <UserBox onClick={()=>navigate(`/timeline/user/${id}`)} key={index}>
+                     <img src={picture} alt="" srcset="" />
+                    <h4>{username}</h4>
+                </UserBox>
+            );
+            return search;
+    }
 
     return(
         <Container openMenu={openMenu}>
@@ -52,6 +64,14 @@ export default function TimelineHeader(){
             />
             <header>
                 <h1>Linkr</h1>
+                <DebounceInput 
+                    element={SearchBox}
+                    debounceTimeout={300}
+                    setUsers={setUsers}
+                />
+                <UsersBox displayUsers={users}>
+                {renderUsers()}
+                </UsersBox>
                 <OutsideClickHandler
                     onOutsideClick={() => {
                         setOpenMenu(false);
@@ -81,7 +101,29 @@ export default function TimelineHeader(){
     )
 }
 
+const UserBox = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 140px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+
+    h4{
+        width: 100%;
+    }
+
+    img{
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+        object-fit: cover;
+    }
+`
+
 const Container = styled.div`
+    position: relative;
     header{
         display: flex;
         justify-content: space-between;
@@ -141,4 +183,19 @@ const Container = styled.div`
             }
         }
     }
+`
+
+const UsersBox = styled.div`
+    display: ${props => props.displayUsers.length > 0 ? 'flex' : 'none !important'};
+    flex-direction: column;
+    width: 66%;
+    height: 100px;
+    position: absolute;
+    bottom: -82px;
+    padding: 14px;
+    overflow-y: scroll;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    background-color: #E7E7E7;
 `

@@ -34,9 +34,9 @@ const Container = styled.div`
     margin-bottom: 30px;
     display: flex;
     font-family: 'Lato';
-    width: 720px;
     background-color: #171717;
     border-radius: 16px;
+
     h3{
         color: white;
         font-size: 24px;
@@ -46,6 +46,11 @@ const Container = styled.div`
         color: #B7B7B7;
         font-size: 18px;
         line-height: 20px;
+    }
+
+    @media only screen and (max-width: 720px) {
+        width: 100%;
+        height: 100%;
     }
 `
 const ProfilePhoto = styled.div`
@@ -64,6 +69,15 @@ const Post = styled.div`
     display: flex;
     flex-direction: column;
     padding-top: 10px;
+
+    @media only screen and (max-width: 720px) {
+        height: 100%;
+        flex-wrap: wrap;
+    }
+
+    @media only screen and (max-width: 400px) {
+        margin-right: 0;
+    }
 `
 
 const LinkBox = styled.a`
@@ -73,6 +87,7 @@ const LinkBox = styled.a`
     border: 1px solid #4D4D4D;
     border-radius: 12px;
     display: flex;
+    
     div{
         padding: 24px 19px;
         display: flex;
@@ -100,5 +115,11 @@ const LinkBox = styled.a`
         object-fit: fill;
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
+    }
+
+    @media only screen and (max-width: 720px) {
+        flex-wrap: wrap;
+        padding-right: 0;
+        margin-right: 0;
     }
 `

@@ -61,7 +61,7 @@ export default function Timeline() {
     );
 };
 
-const Container = styled.div`
+export const Container = styled.div`
     width: 100%;
     min-height: 100vh;
     background-color: #333333;
@@ -79,8 +79,16 @@ const Container = styled.div`
         color: white;
     }
 
+    @media only screen and (max-width: 720px) {
+        h2{
+            width: 100%;
+            padding-left: 22px;
+            margin-right: 0;
+        }
+    }
+
 `
-const Content = styled.div`
+export const Content = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;

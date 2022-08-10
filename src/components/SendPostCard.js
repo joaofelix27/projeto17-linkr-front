@@ -123,6 +123,10 @@ const Container = styled.div`
         padding-bottom: 70px;
         height: 100px;
     }
+
+    @media only screen and (max-width: 720px) {
+        width: 100%;
+    }
     
 `
 const Button = styled.button`

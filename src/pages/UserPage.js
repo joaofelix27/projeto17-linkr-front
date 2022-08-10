@@ -1,9 +1,9 @@
 import TimelineHeader from "../components/TimelineHeader.js";
-import styled from "styled-components";
 import { useEffect,useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import PostCard from "../components/PostCard.js";
+import { Container,Content } from "./Timeline.js";
 
 export default function UserPage(){
     const [posts, setPosts] = useState("");
@@ -11,7 +11,6 @@ export default function UserPage(){
     const { id } = useParams();
 
     useEffect(()=>{
-        console.log(id)
         const promise = axios.get(`https://projeto17-linkr-api2.herokuapp.com/timeline/user/${id}`);
 
         promise.then(res=>{
@@ -59,29 +58,3 @@ export default function UserPage(){
     </Container>
     )
 }
-
-const Container = styled.div`
-    width: 100%;
-    min-height: 100vh;
-    background-color: #333333;
-    
-    h2{
-        width: 720px;
-        margin: 50px 0px;
-        font-weight: 700;
-        font-size: 43px;
-        color: white;
-    }
-    span{
-        font-weight: 700;
-        font-size: 43px;
-        color: white;
-    }
-
-`
-const Content = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`
