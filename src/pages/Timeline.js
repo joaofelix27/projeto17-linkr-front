@@ -7,8 +7,6 @@ import PostCard from "../components/PostCard";
 
 export default function Timeline() {
 
-    
-    
     return(
     <Container>
         <TimelineHeader/>

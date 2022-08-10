@@ -1,16 +1,47 @@
 import styled from "styled-components";
 import { useEffect, useState, useContext } from "react";
+import axios from "axios";
 
 import UserContext from "../contexts/UserContext";
 
 export default function PostCard() {
-    const {image} = useContext(UserContext);
-    const [url, setUrl] = useState("");
-    const [text, setText] = useState("");
+    const { image, token } = useContext(UserContext);
+    const [link, setLink] = useState("");
+    const [body, setBody] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    function publish(e) {
+    async function publish(e) {
         e.preventDefault();
+        setLoading(true);
+        try {
+            const post = {
+                link,
+                body
+            };
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            };
+            await axios.post("http://localhost:4000/post/create", post, config);
+            setLoading(false);
+            setLink("");
+            setBody("");
+            
+        } catch (e) {
+            alert("Houve um erro ao publicar seu link");
+            console.log(e);
+            setLoading(false);
+        }
+    };
+
+    function contentButton(){
+        if(loading){
+            return "Publishing..."
+        }
+        return "Publish"
     }
+
 
 
     return(
@@ -25,20 +56,22 @@ export default function PostCard() {
                     type="url" 
                     placeholder="http://" 
                     required 
-                    onChange={(e)=>setUrl(e.target.value)} 
-                    value={url}
+                    onChange={(e)=>setLink(e.target.value)} 
+                    value={link}
+                    disabled={loading}
                 />
 
                 <input 
                     class="text" 
                     type="text" 
                     placeholder="Awesome article about #javascript" 
-                    onChange={(e)=>setText(e.target.value)} 
-                    value={text}
+                    onChange={(e)=>setBody(e.target.value)} 
+                    value={body}
+                    disabled={loading}
                 />
 
                 <ButtonBox>
-                    <button>Publish</button>
+                    <Button disabled={loading}>{contentButton()}</Button>
                 </ButtonBox>
             </form>
         </Container>
@@ -88,7 +121,10 @@ const Container = styled.div`
         padding-bottom: 70px;
         height: 100px;
     }
-    button{
+    
+`
+const Button = styled.button`
+  
         color: white;
         font-weight: 700;
         border: none;
@@ -96,10 +132,10 @@ const Container = styled.div`
         width: 115px;
         height: 32px;
         border-radius: 5px;
+        opacity: ${props=> props.disabled? '70%': '100%'};
 
-    }
+    
 `
-
 const ProfilePhoto = styled.div`
     height: 100%;
     margin-right: 20px;
