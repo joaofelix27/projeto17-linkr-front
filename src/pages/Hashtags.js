@@ -1,32 +1,28 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import TimelineHeader from "../components/TimelineHeader";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
 
-
-
 export default function Hashtags() {
   const [posts, setPosts] = useState("");
   const [trending, setTrending] = useState("");
   const { hashtag } = useParams();
-  
-
 
   useEffect(() => {
-    if (posts === "") {
-      getPosts();
-    }
+    getPosts();
     if (trending === "") {
-        getTrending();
-      }
-  }, []);
+      getTrending();
+    }
+  }, [hashtag]);
 
   async function getPosts() {
     try {
-      const result = await axios.get("http://localhost:4000/hashtags/Brr");
+      const result = await axios.get(
+        `http://localhost:4000/hashtags/${hashtag}`
+      );
       setPosts(result.data);
     } catch (e) {
       alert(
@@ -76,7 +72,7 @@ export default function Hashtags() {
       <Content>
         <ContentBody>
           <LeftContent>
-          <h2># {hashtag}</h2>
+            <h2># {hashtag}</h2>
             {renderPosts()}
           </LeftContent>
           <RightContent>
@@ -107,7 +103,7 @@ const Content = styled.div`
 const ContentBody = styled.div`
   width: 100%;
   display: flex;
-  justify-content:center;
+  justify-content: center;
 `;
 const LeftContent = styled.div`
   width: 40%;
@@ -115,9 +111,9 @@ const LeftContent = styled.div`
   flex-direction: column;
   align-items: center;
   h2 {
-    display:flex;
-    justify-content:left;
-    width:100%;
+    display: flex;
+    justify-content: left;
+    width: 100%;
     font-weight: 700;
     font-size: 43px;
     color: white;
@@ -126,7 +122,7 @@ const LeftContent = styled.div`
   }
 `;
 const RightContent = styled.div`
-margin-top:93px;
+  margin-top: 93px;
   width: 20%;
   display: flex;
   margin-left: 25px;
