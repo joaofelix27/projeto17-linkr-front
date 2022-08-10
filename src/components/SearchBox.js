@@ -13,7 +13,7 @@ export default function SearchBox({setUsers}){
             name:searchName
         }
     
-        const promise = axios.post('http://localhost:4000/timeline/user',body);
+        const promise = axios.post('https://projeto17-linkr-api2.herokuapp.com/timeline/user',body);
 
         promise.then((res)=>{
             console.log(res.data);
