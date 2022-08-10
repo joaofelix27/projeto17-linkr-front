@@ -10,7 +10,7 @@ export default function SendPostCard({ getPosts }) {
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function findHashtags(searchText) {
+function findHashtags(searchText) {
     var regexp = /(\s|^)\#\w\w+\b/gm;
     let result = searchText.match(regexp);
     if (result) {
@@ -45,7 +45,6 @@ export default function SendPostCard({ getPosts }) {
     //     }
     //     await axios.post("http://localhost:4000/hashtags/create", hashtagsBody, config);
     //   }
-
       await getPosts();
       setLoading(false);
       setLink("");
@@ -135,13 +134,20 @@ const Container = styled.div`
       font-weight: 300;
       font-size: 15px;
     }
-  }
-  .text {
+   
+   .text {
     display: flex;
     padding-bottom: 70px;
     height: 100px;
   }
-`;
+
+
+    @media only screen and (max-width: 720px) {
+        width: 100%;
+    }
+    
+`
+
 const Button = styled.button`
   color: white;
   font-weight: 700;

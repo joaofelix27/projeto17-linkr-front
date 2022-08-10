@@ -11,6 +11,7 @@ export default function PostCard({
   titleUrl,
   imageUrl,
   descriptionUrl,
+  userId
 }) {
   const navigate = useNavigate();
   const tagStyle = {
@@ -28,7 +29,7 @@ export default function PostCard({
         <img src={profileImage} alt="" />
       </ProfilePhoto>
       <Post>
-        <h3>{name}</h3>
+        <h3 onClick={()=>navigate(`/timeline/user/${userId}`)}>{name}</h3>
         <ReactTagify
           tagStyle={tagStyle}
           tagClicked={(tag) => {
@@ -74,7 +75,13 @@ const Container = styled.div`
     font-weight: 400;
     line-height: 20px;
   }
+  
+ @media only screen and (max-width: 720px) {
+        width: 100%;
+        height: 100%;
+   }
 `;
+
 const ProfilePhoto = styled.div`
   height: 100%;
   margin-right: 20px;
@@ -87,11 +94,22 @@ const ProfilePhoto = styled.div`
 `;
 
 const Post = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  padding-top: 10px;
-`;
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+
+    @media only screen and (max-width: 720px) {
+        height: 100%;
+        flex-wrap: wrap;
+    }
+
+    @media only screen and (max-width: 400px) {
+        margin-right: 0;
+    }
+`
+
 
 const LinkBox = styled.a`
   width: 100%;
@@ -128,4 +146,11 @@ const LinkBox = styled.a`
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
   }
+  
+  @media only screen and (max-width: 720px) {
+        flex-wrap: wrap;
+        padding-right: 0;
+        margin-right: 0;
+    }
 `;
+
