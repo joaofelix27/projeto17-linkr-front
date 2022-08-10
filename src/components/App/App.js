@@ -7,6 +7,7 @@ import Register from "../../pages/Register/Register.jsx";
 import Timeline from "../../pages/Timeline.js";
 import 'react-toastify/dist/ReactToastify.css';
 import './_app.css'
+import Hashtags from "../../pages/Hashtags.js";
 
 export default function App(){
     const [token,setToken] = useState(localStorage.getItem('authToken'));
@@ -30,6 +31,7 @@ export default function App(){
                     <Route path='/' element={<Login />} />
                     <Route path='/signup' element={<Register />} />
                     <Route path='/timeline' element={<Timeline />} />
+                     <Route path='/hashtag/:hashtag' element={<Hashtags />} />
                 </Routes>
             </UserContext.Provider>
         </BrowserRouter>
