@@ -23,7 +23,7 @@ export default function SendPostCard({getPosts}) {
                     Authorization: `Bearer ${token}`
                 }
             };
-            await axios.post("http://localhost:4000/timeline/create", post, config);
+            await axios.post("https://projeto17-linkr-api2.herokuapp.com/timeline/create", post, config);
             await getPosts();
             setLoading(false);
             setLink("");

@@ -5,6 +5,7 @@ import { useState } from "react"
 import Login from "../../pages/Login.jsx";
 import Register from "../../pages/Register/Register.jsx";
 import Timeline from "../../pages/Timeline.js";
+import UserPage from "../../pages/UserPage.js";
 import 'react-toastify/dist/ReactToastify.css';
 import './_app.css'
 
@@ -30,6 +31,7 @@ export default function App(){
                     <Route path='/' element={<Login />} />
                     <Route path='/signup' element={<Register />} />
                     <Route path='/timeline' element={<Timeline />} />
+                    <Route path='/timeline/user/:id' element={<UserPage />} />
                 </Routes>
             </UserContext.Provider>
         </BrowserRouter>

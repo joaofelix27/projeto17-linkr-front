@@ -1,13 +1,15 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-export default function PostCard({ key, name, profileImage, url, text, titleUrl, imageUrl, descriptionUrl }) {
+export default function PostCard({ key, name, profileImage, url, text, titleUrl, imageUrl, descriptionUrl,userId }) {
+    const navigate = useNavigate();
     return (
         <Container key={key}>
             <ProfilePhoto>
                 <img src={profileImage} alt="" />
             </ProfilePhoto>
             <Post>
-                <h3>{name}</h3>
+                <h3 onClick={()=>navigate(`/timeline/user/${userId}`)}>{name}</h3>
                 <h4>{text}</h4>
 
                 <LinkBox href={url} target="_blank">

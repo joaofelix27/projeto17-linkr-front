@@ -21,7 +21,7 @@ const notify = (error)=>{
 export default function TimelineHeader(){
     const [openMenu,setOpenMenu] = useState(false);
 
-    const { setToken,token,image,setImage,setName } = useContext(UserContext);
+    const { setToken,token,setImage,image,setName } = useContext(UserContext);
 
     const navigate = useNavigate();
 
@@ -127,7 +127,8 @@ const Container = styled.div`
                 bottom: -40px;
                 right: 0;
                 background: #171717;
-                border-radius: 0px 0px 20px 20px;      
+                border-radius: 0px 0px 20px 20px;
+                padding-left:50px;
 
                 h2{
                     font-family: 'Lato';

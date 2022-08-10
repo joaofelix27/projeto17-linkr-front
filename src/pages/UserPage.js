@@ -1,34 +1,31 @@
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import axios from "axios";
-
 import TimelineHeader from "../components/TimelineHeader.js";
-import SendPostCard from "../components/SendPostCard";
-import PostCard from "../components/PostCard";
+import styled from "styled-components";
+import { useEffect,useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import PostCard from "../components/PostCard.js";
 
-export default function Timeline() {
-    
+export default function UserPage(){
     const [posts, setPosts] = useState("");
 
+    const { id } = useParams();
+
     useEffect(()=>{
-        if(posts === ""){
-            getPosts();
-        }
-    },[]);
-    
-    async function getPosts() {
-        try {
-            const result = await axios.get("https://projeto17-linkr-api2.herokuapp.com/timeline");
-            setPosts(result.data);
-        } catch (e) {
-            alert("An error occured while trying to fetch the posts, please refresh the page");
-            console.log(e);
-        };
-    };
+        console.log(id)
+        const promise = axios.get(`https://projeto17-linkr-api2.herokuapp.com/timeline/user/${id}`);
+
+        promise.then(res=>{
+            setPosts(res.data);
+        })
+
+        promise.catch(Error=>{
+            alert(Error.response.status);
+        })
+    },[])
 
     function renderPosts() {
         if(posts){
-            const timeline = posts.map(({id, username, picture, link, body, title, image, description ,userId})=> 
+            const timeline = posts.map(({id, username, picture, link, body, title, image, description})=> 
                 <PostCard
                     key={id}
                     name={username} 
@@ -38,7 +35,6 @@ export default function Timeline() {
                     titleUrl={title}
                     imageUrl={image}
                     descriptionUrl={description}
-                    userId={userId}
                 />
             );
             return timeline;
@@ -48,18 +44,21 @@ export default function Timeline() {
     }
 
     return(
-    <Container>
+        <Container>
         <TimelineHeader />
         
         <Content>
-            <h2>timeline</h2>
-            <SendPostCard getPosts={getPosts}/>
+            <h2>
+                {
+                 posts ? posts[0].username + "'s posts" : "loading..."
+                }
+            </h2>
             {renderPosts()}
         </Content>
         
     </Container>
-    );
-};
+    )
+}
 
 const Container = styled.div`
     width: 100%;
