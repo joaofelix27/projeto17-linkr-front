@@ -54,11 +54,9 @@ export default function Timeline() {
       <TimelineHeader />
 
       <Content>
-        <ContentHeader>
-          <h2>timeline</h2>
-        </ContentHeader>
         <ContentBody>
           <LeftContent>
+          <h2>timeline</h2>
             <SendPostCard getPosts={getPosts} />
             {renderPosts()}
           </LeftContent>
@@ -75,7 +73,6 @@ const Container = styled.div`
   width: 100%;
   min-height: 100vh;
   background-color: #333333;
-
   span {
     font-weight: 700;
     font-size: 43px;
@@ -83,18 +80,25 @@ const Container = styled.div`
   }
 `;
 const Content = styled.div`
-  padding-left:241px;
-  padding-right:262px;
   margin-top: 50px;
   width: 100%;
   display: flex;
-  align-items: center;
   flex-direction: column;
 `;
-const ContentHeader = styled.div`
+const ContentBody = styled.div`
+  width: 100%;
   display: flex;
-  width:100%;
+  justify-content:center;
+`;
+const LeftContent = styled.div`
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   h2 {
+    display:flex;
+    justify-content:left;
+    width:100%;
     font-weight: 700;
     font-size: 43px;
     color: white;
@@ -102,18 +106,9 @@ const ContentHeader = styled.div`
     text-align: left;
   }
 `;
-const ContentBody = styled.div`
-  width: 100%;
-  display: flex;
-`;
-const LeftContent = styled.div`
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
 const RightContent = styled.div`
-  width: 40%;
+margin-top:93px;
+  width: 20%;
   display: flex;
-  margin-left:25px;
+  margin-left: 25px;
 `;
