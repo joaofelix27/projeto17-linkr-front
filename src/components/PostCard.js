@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import axios from "axios";
 import Lottie from "react-lottie";
 import styled from "styled-components";
 
+import UserContext from "../contexts/UserContext";
 import animationData from "../assets/like-icon.json";
 
 export default function PostCard({
@@ -13,8 +15,14 @@ export default function PostCard({
     titleUrl,
     imageUrl,
     descriptionUrl,
-    likes
+    likes,
+    postId,
 }) {
+    const { token } = useContext(UserContext);
+
+    const [like, setLike] = useState(likes);
+    const [isLiked, setIsLiked] = useState(false);
+
     const [animationState, setAnimationState] = useState({
         isStopped: false,
         isPaused: false,
@@ -31,25 +39,84 @@ export default function PostCard({
 
     const normalAnimation = 1;
     const reverseAnimation = -1;
-    const legendAlt = `${name} profile pic`
+    const legendAlt = `${name} profile pic`;
+
+    useEffect(() => {
+        getLikes();
+    }, []);
+
+    async function getLikes() {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        try {
+            const { data: result } = await axios.get(
+                `http://localhost:4000/like/${postId}`,
+                config
+            );
+
+            if (result.isLiked === true) {
+                setAnimationState({ ...animationState, direction: 1 });
+            }
+        } catch (e) {
+            alert(
+                "An error occured while trying to fetch the posts, please refresh the page"
+            );
+
+            console.log(e);
+        }
+    }
+
+    function addLike() {
+        setAnimationState({
+            ...animationState,
+            isStopped: false,
+            direction: normalAnimation,
+        });
+        setLike(like + 1);
+    }
+
+    function removeLike() {
+        setAnimationState({
+            ...animationState,
+            isStopped: true,
+            direction: reverseAnimation,
+        });
+
+        setLike(like - 1);
+    }
+
+    function postLike() {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        if (animationState.direction === 1) {
+            const promisse = axios
+                .delete(`http://localhost:4000/like/${postId}`, config)
+
+                .then(() => removeLike())
+
+                .catch((e) => console.log(e));
+        } else {
+            const promisse = axios
+                .post(`http://localhost:4000/like/${postId}`, {}, config)
+
+                .then(() => addLike())
+
+                .catch((e) => console.log(e));
+        }
+    }
 
     return (
         <Container key={key}>
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
-                <div
-                    className="animation"
-                    onClick={() =>
-                        setAnimationState({
-                            ...animationState,
-                            isStopped: false,
-                            direction:
-                                animationState.direction === normalAnimation
-                                    ? reverseAnimation
-                                    : normalAnimation,
-                        })
-                    }
-                >
+                <div className="animation" onClick={postLike}>
                     <Lottie
                         className="like"
                         options={defaultOptions}
@@ -60,7 +127,7 @@ export default function PostCard({
                         isPaused={animationState.isPaused}
                     />
                 </div>
-                <h6>{ likes > 1 ? `${likes} likes` : `${likes} like`}</h6>
+                <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
             </ProfilePhoto>
             <Post>
                 <h3>{name}</h3>
@@ -112,7 +179,7 @@ const ProfilePhoto = styled.div`
         object-fit: cover;
     }
 
-    h6{
+    h6 {
         color: #b6b6b6;
         text-align: center;
     }

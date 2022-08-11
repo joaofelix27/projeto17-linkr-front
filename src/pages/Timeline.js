@@ -29,8 +29,8 @@ export default function Timeline() {
                 config
             );
             setPosts(result.data.postsMetadata);
-            setImage(result.data.userInfo[0].picture);
-            setName(result.data.userInfo[0].username);
+            setImage(result.data.userInfo?.picture);
+            setName(result.data.userInfo?.username);
         } catch (e) {
             alert(
                 "An error occured while trying to fetch the posts, please refresh the page"
@@ -64,6 +64,7 @@ export default function Timeline() {
                         imageUrl={image}
                         descriptionUrl={description}
                         likes={like}
+                        postId = {id}
                     />
                 )
             );
