@@ -7,35 +7,35 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
 
-    .back{
+    .back {
         display: flex;
         align-items: center;
         justify-content: center;
 
-        h1{
-            font-family: 'Lato';
+        h1 {
+            font-family: "Lato";
             font-style: normal;
             font-weight: 400;
             font-size: 17px;
             line-height: 20px;
             text-decoration-line: underline;
-            color: #FFFFFF;
+            color: #ffffff;
             margin-top: 18px;
 
-            &:hover{
+            &:hover {
                 cursor: pointer;
             }
         }
     }
 
-    form{
+    form {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         margin-top: 40px;
 
-        input{
+        input {
             background-color: #ffffff;
             padding-left: 12px;
             width: 86%;
@@ -45,19 +45,19 @@ export const Container = styled.div`
             border: none;
             font-size: 22px;
 
-            &::placeholder{
+            &::placeholder {
                 font-weight: 700;
                 font-size: 22px;
                 line-height: 33px;
-                color:#9F9F9F;
+                color: #9f9f9f;
             }
         }
 
-        button{
+        button {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #1877F2;
+            background-color: #1877f2;
             width: 86%;
             height: 8vh;
             border-radius: 6px;
@@ -73,18 +73,18 @@ export const Container = styled.div`
     @media only screen and (min-width: 768px) {
         flex-direction: row;
 
-        form{
+        form {
             width: 80%;
-            input{
+            input {
                 width: 90%;
             }
 
-            button{
+            button {
                 width: 90%;
             }
         }
 
-        .right{
+        .right {
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -92,4 +92,4 @@ export const Container = styled.div`
             width: 50%;
         }
     }
-`
+`;

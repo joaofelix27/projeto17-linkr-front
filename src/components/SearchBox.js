@@ -3,39 +3,43 @@ import { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 
-export default function SearchBox({setUsers}){
-    const [searchName,setSearchName] = useState('');
+export default function SearchBox({ setUsers }) {
+    const [searchName, setSearchName] = useState("");
 
-    function searchUser(event){
+    function searchUser(event) {
         event.preventDefault();
 
         const body = {
-            name:searchName
-        }
-    
-        const promise = axios.post('https://projeto17-linkr-api2.herokuapp.com/timeline/user',body);
+            name: searchName,
+        };
 
-        promise.then((res)=>{
+        const promise = axios.post(
+            "https://projeto17-linkr-api2.herokuapp.com/timeline/user",
+            body
+        );
+
+        promise.then((res) => {
             console.log(res.data);
             setUsers(res.data);
         });
 
-        promise.catch(Error=>{
-            alert(Error.response.status)
-        })
+        promise.catch((Error) => {
+            alert(Error.response.status);
+        });
     }
 
-    return(
+    return (
         <Container>
             <form>
-                <input type="text"
+                <input
+                    type="text"
                     placeholder="Search for people"
                     value={searchName}
-                    onChange={(e)=>{
+                    onChange={(e) => {
                         setSearchName(e.target.value);
-                        if(searchName.length > 2){
+                        if (searchName.length > 2) {
                             searchUser(e);
-                        }else{
+                        } else {
                             setUsers([]);
                         }
                     }}
@@ -43,7 +47,7 @@ export default function SearchBox({setUsers}){
                 <IoSearch type="submit" color="#333333" size={30} />
             </form>
         </Container>
-    )
+    );
 }
 
 const Container = styled.div`
@@ -56,22 +60,22 @@ const Container = styled.div`
     border-radius: 6px;
     position: relative;
 
-    form{
+    form {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 100%;
         height: 100%;
         padding: 0 12px;
-        input{
+        input {
             width: 100%;
             height: 100%;
             border: none;
             border-radius: 6px;
             font-size: 20px;
-            &:focus{
+            &:focus {
                 outline: none;
             }
         }
     }
-`
+`;

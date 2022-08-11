@@ -147,7 +147,7 @@ export default function PostCard({
 }
 
 const Container = styled.div`
-    width: 720px;
+    width: 100%;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     padding: 17px;
@@ -155,7 +155,6 @@ const Container = styled.div`
     margin-bottom: 30px;
     display: flex;
     font-family: "Lato";
-    width: 720px;
     background-color: #171717;
     border-radius: 16px;
     h3 {
