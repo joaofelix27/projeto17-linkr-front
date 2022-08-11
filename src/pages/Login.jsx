@@ -42,7 +42,7 @@ export default function Login(){
             setLoad(false);
             localStorage.setItem('authToken', res.data.token);
             setImage(res.data.image);
-            setName(res.data.name);
+            setName(res.data.name); 
             setToken(localStorage.getItem('authToken'));
             navigate('/timeline');
         });

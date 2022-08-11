@@ -38,7 +38,7 @@ export default function Register(){
             picture
         }
 
-        const promise = axios.post('https://projeto17-linkr-api2.herokuapp.com/signup',body);
+        const promise = axios.post('http://localhost:4000/signup',body);
 
         promise.then(()=>{
             setLoad(false);
