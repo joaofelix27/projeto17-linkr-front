@@ -31,7 +31,7 @@ export default function SearchBox() {
         };
 
         const promise = axios.post(
-            "https://projeto17-linkr-api2.herokuapp.com/timeline/user",
+            `${process.env.REACT_APP_BASE_URL}/timeline/user`,
             body
         );
 
