@@ -6,7 +6,8 @@ import TimelineHeader from "../components/TimelineHeader";
 import SendPostCard from "../components/SendPostCard";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
-
+import { DebounceInput } from "react-debounce-input";
+import SearchBoxMobile from "../components/SearchBoxMobile";
 
 export default function Timeline() {
     const { token, setImage, setName } = useContext(UserContext);
@@ -95,10 +96,13 @@ export default function Timeline() {
     return (
         <Container>
             <TimelineHeader />
-
             <Content>
                 <ContentBody>
                     <LeftContent>
+                        <DebounceInput
+                            element={SearchBoxMobile}
+                            debounceTimeout={300}
+                        />
                         <h2>timeline</h2>
                         <SendPostCard getPosts={getPosts} />
 
@@ -129,6 +133,10 @@ export const Content = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+
+    @media screen and (max-width:1060px) {
+        margin-top: 42px;
+    }
 `;
 export const ContentBody = styled.div`
     width: 100%;
@@ -147,8 +155,14 @@ export const ContentBody = styled.div`
         font-weight: 700;
         font-size: 43px;
         color: white;
+        margin-top: 50px;
         margin-bottom: 50px;
+        margin-left: 40px;
         text-align: left;
+    }
+
+    @media only screen and (max-width: 1060px) {
+        width: 100%;
     }
 `;
 export const RightContent = styled.div`
@@ -157,11 +171,15 @@ export const RightContent = styled.div`
     display: flex;
     margin-left: 25px;
 
-    @media only screen and (max-width: 720px) {
+    @media only screen and (max-width: 1060px) {
         h2 {
             width: 100%;
             padding-left: 22px;
             margin-right: 0;
         }
+    }
+
+    @media only screen and (max-width: 1060px) {
+        display: none;
     }
 `;

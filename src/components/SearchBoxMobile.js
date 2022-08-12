@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 
-export default function SearchBox() {
+export default function SearchBoxMobile() {
     const [searchName, setSearchName] = useState("");
     const [users, setUsers] = useState([]);
 
@@ -55,7 +55,7 @@ export default function SearchBox() {
                         setSearchName(e.target.value);
                         if (searchName.length >= 3) {
                             searchUser(e);
-                        }else{
+                        } else {
                             setUsers([]);
                         }
                     }}
@@ -81,6 +81,12 @@ const UsersBox = styled.div`
     right: 0;
     margin: 0 auto;
     background-color: #e7e7e7;
+
+    @media screen and (max-width:1060px) {
+        padding-top: 8px;
+        height: 64px;
+        bottom: -64px;
+    }
 `;
 
 const UserBox = styled.div`
@@ -105,10 +111,10 @@ const UserBox = styled.div`
 `;
 
 const Container = styled.div`
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
-    width: 30%;
+    width: 90%;
     height: 46px;
     background-color: #ffffff;
     border-radius: 6px 6px 0px 0px;
@@ -134,6 +140,6 @@ const Container = styled.div`
     }
 
     @media screen and (max-width:1060px) {
-        display: none;
+        display: flex;
     }
 `;
