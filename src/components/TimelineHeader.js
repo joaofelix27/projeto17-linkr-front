@@ -52,7 +52,7 @@ export default function TimelineHeader() {
                 limit={1}
             />
             <header>
-                <h1>Linkr</h1>
+                <h1 onClick={()=> navigate("/timeline")}>Linkr</h1>
                 <DebounceInput
                     element={SearchBox}
                     debounceTimeout={300}
@@ -122,6 +122,7 @@ const Container = styled.div`
             font-size: 49px;
             line-height: 54px;
             letter-spacing: 0.05em;
+            cursor: pointer;
         }
 
         .profile {
