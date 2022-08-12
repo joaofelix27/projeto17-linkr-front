@@ -128,12 +128,12 @@ export const Content = styled.div`
     display: flex;
     flex-direction: column;
 `;
-const ContentBody = styled.div`
+export const ContentBody = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
 `;
-const LeftContent = styled.div`
+ export const LeftContent = styled.div`
     width: 40%;
     display: flex;
     flex-direction: column;
@@ -149,7 +149,7 @@ const LeftContent = styled.div`
         text-align: left;
     }
 `;
-const RightContent = styled.div`
+export const RightContent = styled.div`
     margin-top: 93px;
     width: 20%;
     display: flex;

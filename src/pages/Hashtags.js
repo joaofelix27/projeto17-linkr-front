@@ -5,6 +5,7 @@ import axios from "axios";
 import TimelineHeader from "../components/TimelineHeader";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
+import { Container, Content, LeftContent, RightContent, ContentBody } from "./Timeline.js";
 
 
 export default function Hashtags() {
@@ -46,7 +47,6 @@ export default function Hashtags() {
     }
 
     function renderPosts() {
-        console.log(posts)
         if (posts) {
             const timeline = posts.map(
                 ({
@@ -101,46 +101,4 @@ export default function Hashtags() {
     );
 }
 
-const Container = styled.div`
-    width: 100%;
-    min-height: 100vh;
-    background-color: #333333;
-    span {
-        font-weight: 700;
-        font-size: 43px;
-        color: white;
-    }
-`;
-const Content = styled.div`
-    margin-top: 50px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-`;
-const ContentBody = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-`;
-const LeftContent = styled.div`
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    h2 {
-        display: flex;
-        justify-content: left;
-        width: 100%;
-        font-weight: 700;
-        font-size: 43px;
-        color: white;
-        margin-bottom: 50px;
-        text-align: left;
-    }
-`;
-const RightContent = styled.div`
-    margin-top: 93px;
-    width: 20%;
-    display: flex;
-    margin-left: 25px;
-`;
+
