@@ -75,4 +75,5 @@ const Hashtags1 = styled.h3`
     margin-bottom: 7px;
     margin-left: 16px;
     color: #ffffff;
+    cursor: pointer;
 `;

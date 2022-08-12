@@ -48,6 +48,7 @@ export default function PostCard({
         letterSpacing: "0em",
         textAlign: "left",
         color: "#FAFAFA",
+        cursor: "pointer",
       };
     const [animationLikeState, setAnimationLikeState] = useState({
         isStopped: false,
@@ -352,14 +353,18 @@ const Post = styled.div`
 
 const LinkBox = styled.a`
     width: 100%;
+    min-height: 190px;
     margin-top: 20px;
     text-decoration: none;
     border: 1px solid #4d4d4d;
     border-radius: 12px;
     display: flex;
-    
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    word-wrap: break-word;
     div {
         padding: 24px 19px;
+        width: 70%;
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
@@ -380,7 +385,7 @@ const LinkBox = styled.a`
         line-height: 13px;
     }
     img {
-        width: 33%;
+        width: 30%;
         height: calc(width);
         object-fit: fill;
         border-top-right-radius: 12px;
