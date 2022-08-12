@@ -13,7 +13,7 @@ export default function Hashtags() {
     const { hashtag } = useParams();
     
 
-     useEffect(() => {
+    useEffect(() => {
     getPosts();
     if (trending === "") {
       getTrending();
@@ -46,7 +46,6 @@ export default function Hashtags() {
     }
 
     function renderPosts() {
-        console.log(posts)
         if (posts) {
             const timeline = posts.map(
                 ({
@@ -70,7 +69,7 @@ export default function Hashtags() {
                     titleUrl={title}
                     imageUrl={image}
                     descriptionUrl={description}
-                    userId={userId}
+                    creatorId={userId}
                     likes={like}
                     postId={id}
                     />
