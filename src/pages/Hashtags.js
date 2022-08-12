@@ -11,6 +11,7 @@ export default function Hashtags() {
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
     const { hashtag } = useParams();
+    
 
      useEffect(() => {
     getPosts();
@@ -45,6 +46,7 @@ export default function Hashtags() {
     }
 
     function renderPosts() {
+        console.log(posts)
         if (posts) {
             const timeline = posts.map(
                 ({
@@ -56,16 +58,21 @@ export default function Hashtags() {
                     title,
                     image,
                     description,
+                    userId,
+                    like
                 }) => (
                     <PostCard
-                        key={id}
-                        name={username}
-                        profileImage={picture}
-                        url={link}
-                        text={body}
-                        titleUrl={title}
-                        imageUrl={image}
-                        descriptionUrl={description}
+                    key={id}
+                    name={username}
+                    profileImage={picture}
+                    url={link}
+                    text={body}
+                    titleUrl={title}
+                    imageUrl={image}
+                    descriptionUrl={description}
+                    userId={userId}
+                    likes={like}
+                    postId={id}
                     />
                 )
             );

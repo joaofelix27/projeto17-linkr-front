@@ -110,14 +110,14 @@ export default function PostCard({
 
         if (animationState.direction === 1) {
             const promisse = axios
-                .delete(`${process.env.URL}/like/${postId}`, config)
+                .delete(`${process.env.REACT_APP_BASE_URL}/like/${postId}`, config)
 
                 .then(() => removeLike())
 
                 .catch((e) => console.log(e));
         } else {
             const promisse = axios
-                .post(`${process.env.URL}/like/${postId}`, {}, config)
+                .post(`${process.env.REACT_APP_BASE_URL}/like/${postId}`, {}, config)
 
                 .then(() => addLike())
 
