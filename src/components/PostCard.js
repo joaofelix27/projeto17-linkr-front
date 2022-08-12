@@ -5,13 +5,12 @@ import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
-import { FaTrash, FaPencilAlt, FaWindowRestore } from "react-icons/fa";
+import { FaTrash, FaPencilAlt} from "react-icons/fa";
 
 import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
 import animationDataDelete from "../assets/delete-icon.json";
-import Timeline from "../pages/Timeline";
-import { Navigate } from "react-router-dom";
+import { ReactTagify } from "react-tagify";
 
 export default function PostCard({
     key,
@@ -28,6 +27,8 @@ export default function PostCard({
     setPosts
 }) {
     const { token, userId, setUserId, setImage, setName } = useContext(UserContext);
+
+
     const [like, setLike] = useState(likes);
     const [show, setShow] = useState(false);
     const [isDisabled, setIsDisabled] = useState("");
@@ -39,6 +40,15 @@ export default function PostCard({
         },
     };
 
+    const tagStyle = {
+        fontFamily: "Lato",
+        fontSize: "18px",
+        fontWeight: "700",
+        lineHeight: "20px",
+        letterSpacing: "0em",
+        textAlign: "left",
+        color: "#FAFAFA",
+      };
     const [animationLikeState, setAnimationLikeState] = useState({
         isStopped: false,
         isPaused: false,
@@ -96,7 +106,7 @@ export default function PostCard({
         };
         try {
             const { data: result } = await axios.get(
-                `http://localhost:4000/like/${postId}`,
+                `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
                 config
             );
             setUserId(result?.userId);
@@ -134,14 +144,14 @@ export default function PostCard({
     function postLike() {
         if (animationLikeState.direction === 1) {
             const promisse = axios
-                .delete(`http://localhost:4000/like/${postId}`, config)
+                .delete(`${process.env.REACT_APP_BASE_URL}/like/${postId}`, config)
 
                 .then(() => removeLike())
 
                 .catch((e) => console.log(e));
         } else {
             const promisse = axios
-                .post(`http://localhost:4000/like/${postId}`, {}, config)
+                .post(`${process.env.REACT_APP_BASE_URL}/like/${postId}`, {}, config)
 
                 .then(() => addLike())
 
@@ -169,7 +179,7 @@ export default function PostCard({
         setIsDisabled("disabled");
 
         const promisse = axios
-            .delete(`http://localhost:4000/timeline/${postId}`, config)
+            .delete(`${process.env.REACT_APP_BASE_URL}/timeline/${postId}`, config)
             .then(() => removedPostSuccess())
             .catch((e) => error(e));
     }
@@ -182,7 +192,7 @@ export default function PostCard({
         };
         try {
             const result = await axios.get(
-                "http://localhost:4000/timeline",
+                `${process.env.REACT_APP_BASE_URL}/timeline`,
                 config
             );
             setPosts(result.data.postsMetadata);
@@ -212,15 +222,22 @@ export default function PostCard({
                 <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
             </ProfilePhoto>
             <Post>
-                <h3>{name}</h3>
+                <h3 onClick={()=>navigate(`/timeline/user/${creatorId}`)}>{name}</h3>
+                 <ReactTagify
+          tagStyle={tagStyle}
+          tagClicked={(tag) => {
+            const tagWithoutHash= tag.replace("#","")
+            navigate(`/hashtag/${tagWithoutHash}`)
+          }}
+        >
+          <p>{text}</p>
+        </ReactTagify>
                 {creatorId === userId ? (
                     <div className="buttons">
                         <FaPencilAlt color="#fff" />
                         <FaTrash color="#fff" onClick={() => setShow(true)} />
                     </div>
                 ) : null}
-
-                <h4>{text}</h4>
 
                 <LinkBox href={url} target="_blank">
                     <div>
@@ -286,7 +303,7 @@ const Container = styled.div`
         font-size: 24px;
         margin-bottom: 8px;
     }
-    h4 {
+    p {
         color: #b7b7b7;
         font-size: 18px;
         line-height: 20px;

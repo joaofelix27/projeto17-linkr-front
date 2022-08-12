@@ -6,10 +6,12 @@ import TimelineHeader from "../components/TimelineHeader";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
 
+
 export default function Hashtags() {
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
     const { hashtag } = useParams();
+    
 
     useEffect(() => {
     getPosts();
@@ -21,7 +23,7 @@ export default function Hashtags() {
     async function getPosts() {
         try {
             const result = await axios.get(
-                `http://localhost:4000/hashtags/${hashtag}`
+                `${process.env.REACT_APP_BASE_URL}/hashtags/${hashtag}`
             );
             setPosts(result.data);
         } catch (e) {
@@ -33,7 +35,7 @@ export default function Hashtags() {
     }
     async function getTrending() {
         try {
-            const result = await axios.get("http://localhost:4000/trending");
+            const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/trending`);
             setTrending(result.data);
         } catch (e) {
             alert(
@@ -44,41 +46,40 @@ export default function Hashtags() {
     }
 
     function renderPosts() {
-      if (posts) {
-        console.log(posts)
-          const timeline = posts.map(
-              ({
-                  id,
-                  username,
-                  picture,
-                  link,
-                  body,
-                  title,
-                  image,
-                  description,
-                  userId,
-                  like,
-              }) => (
-                  <PostCard
-                      key={id}
-                      name={username}
-                      profileImage={picture}
-                      url={link}
-                      text={body}
-                      titleUrl={title}
-                      imageUrl={image}
-                      descriptionUrl={description}
-                      userId={userId}
-                      likes={like}
-                      postId={id}
-                  />
-              )
-          );
-          return timeline;
-      }
-      if (posts === []) return <span>There are no posts yet</span>;
-      return <span>Loading...</span>;
-  }
+        if (posts) {
+            const timeline = posts.map(
+                ({
+                    id,
+                    username,
+                    picture,
+                    link,
+                    body,
+                    title,
+                    image,
+                    description,
+                    userId,
+                    like
+                }) => (
+                    <PostCard
+                    key={id}
+                    name={username}
+                    profileImage={picture}
+                    url={link}
+                    text={body}
+                    titleUrl={title}
+                    imageUrl={image}
+                    descriptionUrl={description}
+                    creatorId={userId}
+                    likes={like}
+                    postId={id}
+                    />
+                )
+            );
+            return timeline;
+        }
+        if (posts === []) return <span>There are no posts yet</span>;
+        return <span>Loading...</span>;
+    }
 
     return (
         <Container>

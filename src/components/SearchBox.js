@@ -1,10 +1,27 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 
-export default function SearchBox({ setUsers }) {
+export default function SearchBox() {
     const [searchName, setSearchName] = useState("");
+    const [users, setUsers] = useState([]);
+
+    const navigate = useNavigate();
+
+    function renderUsers() {
+        const search = users.map(({ picture, id, username, index }) => (
+            <UserBox
+                onClick={() => navigate(`/timeline/user/${id}`)}
+                key={index}
+            >
+                <img src={picture} alt="" srcset="" />
+                <h4>{username}</h4>
+            </UserBox>
+        ));
+        return search;
+    }
 
     function searchUser(event) {
         event.preventDefault();
@@ -14,12 +31,11 @@ export default function SearchBox({ setUsers }) {
         };
 
         const promise = axios.post(
-            "https://projeto17-linkr-api2.herokuapp.com/timeline/user",
+            `${process.env.REACT_APP_BASE_URL}/timeline/user`,
             body
         );
 
         promise.then((res) => {
-            console.log(res.data);
             setUsers(res.data);
         });
 
@@ -37,7 +53,7 @@ export default function SearchBox({ setUsers }) {
                     value={searchName}
                     onChange={(e) => {
                         setSearchName(e.target.value);
-                        if (searchName.length > 2) {
+                        if (searchName.length >= 3) {
                             searchUser(e);
                         } else {
                             setUsers([]);
@@ -46,18 +62,56 @@ export default function SearchBox({ setUsers }) {
                 />
                 <IoSearch type="submit" color="#333333" size={30} />
             </form>
+            <UsersBox displayUsers={users}>{renderUsers()}</UsersBox>
         </Container>
     );
 }
+
+const UsersBox = styled.div`
+    display: ${(props) =>
+        props.displayUsers.length > 0 ? "flex" : "none !important"};
+    flex-direction: column;
+    width: 100%;
+    height: 130px;
+    position: absolute;
+    bottom: -130px;
+    padding: 14px;
+    overflow-y: scroll;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    background-color: #e7e7e7;
+`;
+
+const UserBox = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 140px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+
+    h4 {
+        width: 100%;
+    }
+
+    img {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+        object-fit: cover;
+    }
+`;
 
 const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 70%;
+    width: 30%;
     height: 46px;
     background-color: #ffffff;
-    border-radius: 6px;
+    border-radius: 6px 6px 0px 0px;
     position: relative;
 
     form {

@@ -6,6 +6,7 @@ import { Container } from "./Register.js";
 import { ThreeDots } from "react-loader-spinner";
 import Header from "../../components/Header.js";
 
+
 const notify = (error) => {
     toast(`❗ ${error}`, {
         position: "top-center",
@@ -38,7 +39,7 @@ export default function Register() {
             picture,
         };
 
-        const promise = axios.post("http://localhost:4000/signup", body);
+        const promise = axios.post(`${process.env.REACT_APP_BASE_URL}/signup`, body);
 
         promise.then(() => {
             setLoad(false);

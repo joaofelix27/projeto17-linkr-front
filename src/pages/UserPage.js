@@ -5,6 +5,7 @@ import axios from "axios";
 import PostCard from "../components/PostCard.js";
 import { Container, Content } from "./Timeline.js";
 
+
 export default function UserPage() {
     const [posts, setPosts] = useState("");
 
@@ -12,7 +13,7 @@ export default function UserPage() {
 
     useEffect(() => {
         const promise = axios.get(
-            `https://projeto17-linkr-api2.herokuapp.com/timeline/user/${id}`
+            `${process.env.REACT_APP_BASE_URL}/timeline/user/${id}`
         );
 
         promise.then((res) => {
