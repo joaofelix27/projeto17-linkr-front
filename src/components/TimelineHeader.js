@@ -103,6 +103,7 @@ export default function TimelineHeader() {
 
 const Container = styled.div`
     position: relative;
+    
     header {
         display: flex;
         justify-content: space-between;

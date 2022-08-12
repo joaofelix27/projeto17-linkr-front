@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -6,6 +5,8 @@ import TimelineHeader from "../components/TimelineHeader";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
 import { Container, Content, LeftContent, RightContent, ContentBody } from "./Timeline.js";
+import { DebounceInput } from "react-debounce-input";
+import SearchBoxMobile from "../components/SearchBoxMobile";
 
 
 export default function Hashtags() {
@@ -89,6 +90,10 @@ export default function Hashtags() {
             <Content>
                 <ContentBody>
                     <LeftContent>
+                        <DebounceInput
+                            element={SearchBoxMobile}
+                            debounceTimeout={300}
+                        />
                         <h2># {hashtag}</h2>
                         {renderPosts()}
                     </LeftContent>
