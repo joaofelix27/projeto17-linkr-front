@@ -133,6 +133,7 @@ const Container = styled.div`
       font-weight: 300;
       font-size: 15px;
     }
+  }
    
    .text {
     display: flex;
@@ -140,11 +141,10 @@ const Container = styled.div`
     height: 100px;
   }
 
-  }
     @media only screen and (max-width: 720px) {
         width: 100%;
     }
-    
+
 `;
 
 const Button = styled.button`
@@ -157,6 +157,7 @@ const Button = styled.button`
     border-radius: 5px;
     opacity: ${(props) => (props.disabled ? "70%" : "100%")};
 `;
+
 const ProfilePhoto = styled.div`
     height: 100%;
     margin-right: 20px;
