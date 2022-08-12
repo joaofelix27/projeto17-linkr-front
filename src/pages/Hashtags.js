@@ -6,22 +6,23 @@ import TimelineHeader from "../components/TimelineHeader";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
 
+
 export default function Hashtags() {
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
     const { hashtag } = useParams();
 
-    /* useEffect(() => {
+     useEffect(() => {
     getPosts();
     if (trending === "") {
       getTrending();
     }
   }, [hashtag]);
- */
+ 
     async function getPosts() {
         try {
             const result = await axios.get(
-                `http://localhost:4000/hashtags/${hashtag}`
+                `${process.env.REACT_APP_BASE_URL}/hashtags/${hashtag}`
             );
             setPosts(result.data);
         } catch (e) {
@@ -33,7 +34,7 @@ export default function Hashtags() {
     }
     async function getTrending() {
         try {
-            const result = await axios.get("http://localhost:4000/trending");
+            const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/trending`);
             setTrending(result.data);
         } catch (e) {
             alert(

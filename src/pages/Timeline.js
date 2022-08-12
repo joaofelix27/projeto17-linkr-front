@@ -1,13 +1,12 @@
 import styled from "styled-components";
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-
 import UserContext from "../contexts/UserContext";
-
 import TimelineHeader from "../components/TimelineHeader";
 import SendPostCard from "../components/SendPostCard";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
+
 
 export default function Timeline() {
     const { token, setImage, setName } = useContext(UserContext);
@@ -18,9 +17,9 @@ export default function Timeline() {
         if (posts === "") {
             getPosts();
         }
-        /*         if (trending === "") {
+              if (trending === "") {
             getTrending();
-        } */
+        } 
     }, []);
 
     async function getPosts() {
@@ -31,7 +30,7 @@ export default function Timeline() {
         };
         try {
             const result = await axios.get(
-                "http://localhost:4000/timeline",
+                `${process.env.REACT_APP_BASE_URL}/timeline`,
                 config
             );
             setPosts(result.data.postsMetadata);
@@ -44,9 +43,9 @@ export default function Timeline() {
             console.log(e);
         }
     }
-    /*     async function getTrending() {
+         async function getTrending() {
         try {
-            const result = await axios.get("http://localhost:4000/trending");
+            const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/trending`);
             setTrending(result.data);
         } catch (e) {
             alert(
@@ -54,7 +53,7 @@ export default function Timeline() {
             );
             console.log(e);
         }
-    } */
+    } 
 
     function renderPosts() {
         if (posts) {
@@ -91,7 +90,6 @@ export default function Timeline() {
         if (posts === []) return <span>There are no posts yet</span>;
         return <span>Loading...</span>;
     }
-    console.log(posts);
     return (
         <Container>
             <TimelineHeader />

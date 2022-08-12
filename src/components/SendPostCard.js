@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useState, useContext } from "react";
 import axios from "axios";
 
+
 import UserContext from "../contexts/UserContext";
 
 export default function SendPostCard({ getPosts }) {
@@ -39,16 +40,10 @@ export default function SendPostCard({ getPosts }) {
                 },
             };
             await axios.post(
-                "http://localhost:4000/timeline/create",
+                `${process.env.REACT_APP_BASE_URL}/timeline/create`,
                 post,
                 config
             );
-            //   if (hashtags) {
-            //     const hashtagsBody= {
-            //         hashtags: hashtags
-            //     }
-            //     await axios.post("http://localhost:4000/hashtags/create", hashtagsBody, config);
-            //   }
             await getPosts();
             setLoading(false);
             setLink("");
@@ -145,7 +140,7 @@ const Container = styled.div`
     height: 100px;
   }
 
-
+  }
     @media only screen and (max-width: 720px) {
         width: 100%;
     }

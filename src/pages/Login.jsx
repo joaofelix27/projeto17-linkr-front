@@ -36,7 +36,7 @@ export default function Login() {
             password,
         };
 
-        const promise = axios.post("http://localhost:4000/", body);
+        const promise = axios.post(`${process.env.REACT_APP_BASE_URL}/`, body);
 
         promise.then((res) => {
             setLoad(false);

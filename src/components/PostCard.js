@@ -2,9 +2,11 @@ import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import Lottie from "react-lottie";
 import styled from "styled-components";
-
 import UserContext from "../contexts/UserContext";
 import animationData from "../assets/like-icon.json";
+import { ReactTagify } from "react-tagify";
+import { useNavigate } from "react-router-dom";
+
 
 export default function PostCard({
     key,
@@ -17,8 +19,19 @@ export default function PostCard({
     descriptionUrl,
     likes,
     postId,
+    userId
 }) {
     const { token } = useContext(UserContext);
+    const navigate = useNavigate();
+    const tagStyle = {
+        fontFamily: "Lato",
+        fontSize: "18px",
+        fontWeight: "700",
+        lineHeight: "20px",
+        letterSpacing: "0em",
+        textAlign: "left",
+        color: "#FAFAFA",
+      };
 
     const [like, setLike] = useState(likes);
     const [isLiked, setIsLiked] = useState(false);
@@ -53,7 +66,7 @@ export default function PostCard({
         };
         try {
             const { data: result } = await axios.get(
-                `http://localhost:4000/like/${postId}`,
+                `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
                 config
             );
 
@@ -97,14 +110,14 @@ export default function PostCard({
 
         if (animationState.direction === 1) {
             const promisse = axios
-                .delete(`http://localhost:4000/like/${postId}`, config)
+                .delete(`${process.env.URL}/like/${postId}`, config)
 
                 .then(() => removeLike())
 
                 .catch((e) => console.log(e));
         } else {
             const promisse = axios
-                .post(`http://localhost:4000/like/${postId}`, {}, config)
+                .post(`${process.env.URL}/like/${postId}`, {}, config)
 
                 .then(() => addLike())
 
@@ -130,18 +143,26 @@ export default function PostCard({
                 <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
             </ProfilePhoto>
             <Post>
-                <h3>{name}</h3>
-                <h4>{text}</h4>
+        <h3 onClick={()=>navigate(`/timeline/user/${userId}`)}>{name}</h3>
+        <ReactTagify
+          tagStyle={tagStyle}
+          tagClicked={(tag) => {
+            const tagWithoutHash= tag.replace("#","")
+            navigate(`/hashtag/${tagWithoutHash}`)
+          }}
+        >
+          <p>{text}</p>
+        </ReactTagify>
 
-                <LinkBox href={url} target="_blank">
-                    <div>
-                        <h4>{titleUrl}</h4>
-                        <h5>{descriptionUrl}</h5>
-                        <h6>{url}</h6>
-                    </div>
-                    <img src={imageUrl} alt={titleUrl} />
-                </LinkBox>
-            </Post>
+        <LinkBox href={url} target="_blank">
+          <div>
+            <h4>{titleUrl}</h4>
+            <h5>{descriptionUrl}</h5>
+            <h6>{url}</h6>
+          </div>
+          <img src={imageUrl} alt="" />
+        </LinkBox>
+      </Post>
         </Container>
     );
 }
@@ -162,7 +183,7 @@ const Container = styled.div`
         font-size: 24px;
         margin-bottom: 8px;
     }
-    h4 {
+    p {
         color: #b7b7b7;
         font-size: 18px;
         line-height: 20px;
