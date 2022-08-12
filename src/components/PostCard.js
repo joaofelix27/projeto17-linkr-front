@@ -2,9 +2,16 @@ import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import Lottie from "react-lottie";
 import styled from "styled-components";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import { useNavigate } from "react-router-dom";
+import { FaTrash, FaPencilAlt, FaWindowRestore } from "react-icons/fa";
 
 import UserContext from "../contexts/UserContext";
-import animationData from "../assets/like-icon.json";
+import animationDataLike from "../assets/like-icon.json";
+import animationDataDelete from "../assets/delete-icon.json";
+import Timeline from "../pages/Timeline";
+import { Navigate } from "react-router-dom";
 
 export default function PostCard({
     key,
@@ -17,25 +24,61 @@ export default function PostCard({
     descriptionUrl,
     likes,
     postId,
+    creatorId,
+    setPosts
 }) {
-    const { token } = useContext(UserContext);
-
+    const { token, userId, setUserId, setImage, setName } = useContext(UserContext);
     const [like, setLike] = useState(likes);
-    const [isLiked, setIsLiked] = useState(false);
+    const [show, setShow] = useState(false);
+    const [isDisabled, setIsDisabled] = useState("");
+    const navigate = useNavigate();
+    const handleClose = () => setShow(false);
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
 
-    const [animationState, setAnimationState] = useState({
+    const [animationLikeState, setAnimationLikeState] = useState({
         isStopped: false,
         isPaused: false,
         direction: -1,
     });
-    const defaultOptions = {
+    const likeDefaultOptions = {
         loop: false,
         autoplay: false,
-        animationData: animationData,
+        animationData: animationDataLike,
         rendererSettings: {
             preserveAspectRatio: "xMidYMid slice",
         },
     };
+
+    const [animationDeleteState, setAnimationDeleteState] = useState({
+        isStopped: false,
+        isPaused: true,
+        direction: 1,
+        eventListeners: [
+            {
+              eventName: 'complete',
+              callback: reloadPage,
+            },
+          ]
+    });
+
+    const deleteDefaultOptions = {
+        loop: false,
+        autoplay: false,
+        animationData: animationDataDelete,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice",
+        },
+        eventListeners: [
+            {
+              eventName: 'complete',
+              callback: () => console.log('the animation completed:'),
+            },
+          ]
+    }
 
     const normalAnimation = 1;
     const reverseAnimation = -1;
@@ -56,9 +99,9 @@ export default function PostCard({
                 `http://localhost:4000/like/${postId}`,
                 config
             );
-
+            setUserId(result?.userId);
             if (result.isLiked === true) {
-                setAnimationState({ ...animationState, direction: 1 });
+                setAnimationLikeState({ ...animationLikeState, direction: 1 });
             }
         } catch (e) {
             alert(
@@ -70,8 +113,8 @@ export default function PostCard({
     }
 
     function addLike() {
-        setAnimationState({
-            ...animationState,
+        setAnimationLikeState({
+            ...animationLikeState,
             isStopped: false,
             direction: normalAnimation,
         });
@@ -79,8 +122,8 @@ export default function PostCard({
     }
 
     function removeLike() {
-        setAnimationState({
-            ...animationState,
+        setAnimationLikeState({
+            ...animationLikeState,
             isStopped: true,
             direction: reverseAnimation,
         });
@@ -89,13 +132,7 @@ export default function PostCard({
     }
 
     function postLike() {
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-
-        if (animationState.direction === 1) {
+        if (animationLikeState.direction === 1) {
             const promisse = axios
                 .delete(`http://localhost:4000/like/${postId}`, config)
 
@@ -112,25 +149,77 @@ export default function PostCard({
         }
     }
 
+    function reloadPage () {
+        setIsDisabled("");
+        setShow(false)
+        getPosts()
+    }
+
+    function removedPostSuccess(s) {
+        setAnimationDeleteState({ ...animationDeleteState, isPaused: false });
+    }
+
+    function error(e) {        
+        setAnimationDeleteState({ ...animationDeleteState, isPaused: true });
+        setIsDisabled("");
+        alert(e);
+    }
+
+    function removePost() {
+        setIsDisabled("disabled");
+
+        const promisse = axios
+            .delete(`http://localhost:4000/timeline/${postId}`, config)
+            .then(() => removedPostSuccess())
+            .catch((e) => error(e));
+    }
+
+    async function getPosts() {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        try {
+            const result = await axios.get(
+                "http://localhost:4000/timeline",
+                config
+            );
+            setPosts(result.data.postsMetadata);
+            setImage(result.data.userInfo?.picture);
+            setName(result.data.userInfo?.username);
+        } catch (e) {
+            alert(
+                "An error occured while trying to fetch the posts, please refresh the page"
+            );
+            console.log(e);
+        }
+    }
+
     return (
         <Container key={key}>
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
                 <div className="animation" onClick={postLike}>
                     <Lottie
-                        className="like"
-                        options={defaultOptions}
+                        options={likeDefaultOptions}
                         height={65}
                         width={60}
-                        direction={animationState.direction}
-                        isStopped={animationState.isStopped}
-                        isPaused={animationState.isPaused}
+                        direction={animationLikeState.direction}
+                        isStopped={animationLikeState.isStopped}
                     />
                 </div>
                 <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
             </ProfilePhoto>
             <Post>
                 <h3>{name}</h3>
+                {creatorId === userId ? (
+                    <div className="buttons">
+                        <FaPencilAlt color="#fff" />
+                        <FaTrash color="#fff" onClick={() => setShow(true)} />
+                    </div>
+                ) : null}
+
                 <h4>{text}</h4>
 
                 <LinkBox href={url} target="_blank">
@@ -142,6 +231,41 @@ export default function PostCard({
                     <img src={imageUrl} alt={titleUrl} />
                 </LinkBox>
             </Post>
+            <ModalBox>
+                <Modal show={show} onHide={handleClose} centered>
+                    <Modal.Header>
+                        <Modal.Body>
+                            <Lottie
+                                options={deleteDefaultOptions}
+                                height={50}
+                                width={55}
+                                direction={animationDeleteState.direction}
+                                isStopped={animationDeleteState.isStopped}
+                                isPaused={animationDeleteState.isPaused}
+                                speed={0.5}
+                                eventListeners={animationDeleteState.eventListeners}                          
+                            />
+                            Are you sure you want to delete this post?
+                        </Modal.Body>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button
+                            disabled={isDisabled}
+                            variant="secondary"
+                            onClick={() => setShow(false)}
+                        >
+                            No, go back
+                        </Button>
+                        <Button
+                            disabled={isDisabled}
+                            variant="primary"
+                            onClick={removePost}
+                        >
+                            Yes, delete it
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </ModalBox>
         </Container>
     );
 }
@@ -193,6 +317,20 @@ const Post = styled.div`
     display: flex;
     flex-direction: column;
     padding-top: 10px;
+    position: relative;
+
+    .buttons {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        svg {
+            cursor: pointer;
+            width: 30px;
+            margin-left: 5px;
+            height: 18px;
+        }
+    }
 `;
 
 const LinkBox = styled.a`
@@ -231,3 +369,21 @@ const LinkBox = styled.a`
         border-bottom-right-radius: 12px;
     }
 `;
+
+const ModalBox = styled.div`
+    background-color: black;
+`;
+
+const customStyles = {
+    content: {
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        transform: "translate(-50%, -50%)",
+        backgroundColor: "#333333",
+        boxSizing: "border-box",
+        padding: "130px",
+    },
+};

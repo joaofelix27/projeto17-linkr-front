@@ -18,9 +18,9 @@ export default function Timeline() {
         if (posts === "") {
             getPosts();
         }
-        /*         if (trending === "") {
+        if (trending === "") {
             getTrending();
-        } */
+        }
     }, []);
 
     async function getPosts() {
@@ -44,7 +44,7 @@ export default function Timeline() {
             console.log(e);
         }
     }
-    /*     async function getTrending() {
+    async function getTrending() {
         try {
             const result = await axios.get("http://localhost:4000/trending");
             setTrending(result.data);
@@ -54,7 +54,7 @@ export default function Timeline() {
             );
             console.log(e);
         }
-    } */
+    }
 
     function renderPosts() {
         if (posts) {
@@ -80,9 +80,10 @@ export default function Timeline() {
                         titleUrl={title}
                         imageUrl={image}
                         descriptionUrl={description}
-                        userId={userId}
                         likes={like}
                         postId={id}
+                        creatorId={userId}
+                        setPosts={setPosts}
                     />
                 )
             );
@@ -91,7 +92,6 @@ export default function Timeline() {
         if (posts === []) return <span>There are no posts yet</span>;
         return <span>Loading...</span>;
     }
-    console.log(posts);
     return (
         <Container>
             <TimelineHeader />
@@ -109,6 +109,7 @@ export default function Timeline() {
                     </RightContent>
                 </ContentBody>
             </Content>
+
         </Container>
     );
 }

@@ -58,6 +58,36 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+*{
+	body{
+		font-family: 'Lato', sans-serif;
+	}
+
+	.modal-content{
+        background-color: #171717;
+		box-sizing: border-box;
+		padding: 30px;
+		border: none;
+
+		.modal-body{
+			width: 130px;
+			color: #FFFFFF;
+			font-weight: 700;
+			font-size: 22px;
+			text-align: center;
+			padding: 0;
+			display: flex;
+			gap: 10px;
+		}
+    }
+
+	.modal-footer{
+		display: flex;
+		justify-content: space-around;
+		border: none;
+	}
+}
 `;
 
 export default GlobalStyle;

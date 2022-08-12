@@ -138,6 +138,7 @@ const Container = styled.div`
       font-weight: 300;
       font-size: 15px;
     }
+  }
    
    .text {
     display: flex;

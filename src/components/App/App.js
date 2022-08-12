@@ -14,6 +14,7 @@ export default function App() {
     const [token, setToken] = useState(localStorage.getItem("authToken"));
     const [image, setImage] = useState("");
     const [name, setName] = useState("");
+    const [ userId, setUserId ] = useState('')
 
     const userContext = {
         token,
@@ -22,6 +23,8 @@ export default function App() {
         setImage,
         name,
         setName,
+        userId,
+        setUserId
     };
 
     return (

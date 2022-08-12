@@ -39,7 +39,6 @@ export default function TimelineHeader() {
     }, [users]);
 
     function renderUsers() {
-        console.log(1);
         const search = users.map(({ picture, id, username, index }) => (
             <UserBox
                 onClick={() => navigate(`/timeline/user/${id}`)}

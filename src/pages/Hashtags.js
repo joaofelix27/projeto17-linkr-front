@@ -11,13 +11,13 @@ export default function Hashtags() {
     const [trending, setTrending] = useState("");
     const { hashtag } = useParams();
 
-    /* useEffect(() => {
+    useEffect(() => {
     getPosts();
     if (trending === "") {
       getTrending();
     }
   }, [hashtag]);
- */
+ 
     async function getPosts() {
         try {
             const result = await axios.get(
@@ -44,35 +44,41 @@ export default function Hashtags() {
     }
 
     function renderPosts() {
-        if (posts) {
-            const timeline = posts.map(
-                ({
-                    id,
-                    username,
-                    picture,
-                    link,
-                    body,
-                    title,
-                    image,
-                    description,
-                }) => (
-                    <PostCard
-                        key={id}
-                        name={username}
-                        profileImage={picture}
-                        url={link}
-                        text={body}
-                        titleUrl={title}
-                        imageUrl={image}
-                        descriptionUrl={description}
-                    />
-                )
-            );
-            return timeline;
-        }
-        if (posts === []) return <span>There are no posts yet</span>;
-        return <span>Loading...</span>;
-    }
+      if (posts) {
+        console.log(posts)
+          const timeline = posts.map(
+              ({
+                  id,
+                  username,
+                  picture,
+                  link,
+                  body,
+                  title,
+                  image,
+                  description,
+                  userId,
+                  like,
+              }) => (
+                  <PostCard
+                      key={id}
+                      name={username}
+                      profileImage={picture}
+                      url={link}
+                      text={body}
+                      titleUrl={title}
+                      imageUrl={image}
+                      descriptionUrl={description}
+                      userId={userId}
+                      likes={like}
+                      postId={id}
+                  />
+              )
+          );
+          return timeline;
+      }
+      if (posts === []) return <span>There are no posts yet</span>;
+      return <span>Loading...</span>;
+  }
 
     return (
         <Container>
