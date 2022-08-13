@@ -436,7 +436,6 @@ const LinkBox = styled.a`
     border-radius: 12px;
     display: flex;
     word-break: break-word;
-
     div {
         padding: 24px 19px;
         display: flex;
@@ -465,6 +464,10 @@ const LinkBox = styled.a`
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
         object-fit: contain;
+    }
+
+    @media screen and (max-width: 1300px){
+        flex-wrap: wrap;
     }
 `;
 
