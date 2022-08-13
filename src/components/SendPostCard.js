@@ -141,8 +141,15 @@ const Container = styled.div`
     height: 100px;
   }
 
-    @media only screen and (max-width: 720px) {
-        width: 100%;
+  @media screen and (max-width: 1000px){
+        padding:13px;
+        border-radius: 0px;
+        h3{
+            font-size: 20px;
+        }
+        p{
+            font-size: 16px;
+        }
     }
 
 `;
@@ -167,6 +174,9 @@ const ProfilePhoto = styled.div`
         border-radius: 50%;
         margin-right: 3px;
         object-fit: cover;
+    }
+    @media screen and (max-width: 600px){
+        display: none;
     }
 `;
 

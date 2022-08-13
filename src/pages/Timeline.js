@@ -57,7 +57,7 @@ export default function Timeline() {
     }
 
     function renderPosts() {
-        console.log(posts)
+
         if (posts) {
             const timeline = posts.map(
                 ({
@@ -144,7 +144,7 @@ export const ContentBody = styled.div`
     justify-content: center;
 `;
  export const LeftContent = styled.div`
-    width: 40%;
+    width: 640px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -155,14 +155,17 @@ export const ContentBody = styled.div`
         font-weight: 700;
         font-size: 43px;
         color: white;
-        margin-top: 50px;
-        margin-bottom: 50px;
-        margin-left: 40px;
-        text-align: left;
+        margin: 50px 0px;
+        font-family: 'Oswald', sans-serif;
     }
 
     @media only screen and (max-width: 1060px) {
         width: 100%;
+        h2{
+            margin: 30px 0px;
+            font-size: 34px;
+            width: 85%;
+        }
     }
 `;
 export const RightContent = styled.div`

@@ -17,18 +17,19 @@ export default function UserPage() {
 
     useEffect(() => {
         getTrending();
+        if(id){
+            const promise = axios.get(
+                `${process.env.REACT_APP_BASE_URL}/timeline/user/${id}`
+            );
 
-        const promise = axios.get(
-            `${process.env.REACT_APP_BASE_URL}/timeline/user/${id}`
-        );
+            promise.then((res) => {
+                setPosts(res.data);
+            });
 
-        promise.then((res) => {
-            setPosts(res.data);
-        });
-
-        promise.catch((Error) => {
-            alert(Error.response.status);
-        });
+            promise.catch((Error) => {
+                alert(Error.response.status);
+            });
+        }
     }, []);
 
     function renderPosts() {
@@ -89,7 +90,7 @@ export default function UserPage() {
                             element={SearchBoxMobile}
                             debounceTimeout={300}
                         />
-                        <h2>{posts ? posts[0].username + "'s posts" : "loading..."}</h2>
+                        <h2>{posts ? posts[0].username + "'s posts" : ""}</h2>
                         {renderPosts()}
                     </LeftContent>
                     <RightContent>

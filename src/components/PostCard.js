@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
-import { FaTrash, FaPencilAlt} from "react-icons/fa";
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
 
 import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
@@ -49,7 +49,7 @@ export default function PostCard({
         textAlign: "left",
         color: "#FAFAFA",
         cursor: "pointer",
-      };
+    };
     const [animationLikeState, setAnimationLikeState] = useState({
         isStopped: false,
         isPaused: false,
@@ -70,10 +70,10 @@ export default function PostCard({
         direction: 1,
         eventListeners: [
             {
-              eventName: 'complete',
-              callback: reloadPage,
+                eventName: 'complete',
+                callback: reloadPage,
             },
-          ]
+        ]
     });
 
     const deleteDefaultOptions = {
@@ -85,10 +85,10 @@ export default function PostCard({
         },
         eventListeners: [
             {
-              eventName: 'complete',
-              callback: () => console.log('the animation completed:'),
+                eventName: 'complete',
+                callback: () => console.log('the animation completed:'),
             },
-          ]
+        ]
     }
 
     const normalAnimation = 1;
@@ -160,7 +160,7 @@ export default function PostCard({
         }
     }
 
-    function reloadPage () {
+    function reloadPage() {
         setIsDisabled("");
         setShow(false)
         getPosts()
@@ -170,7 +170,7 @@ export default function PostCard({
         setAnimationDeleteState({ ...animationDeleteState, isPaused: false });
     }
 
-    function error(e) {        
+    function error(e) {
         setAnimationDeleteState({ ...animationDeleteState, isPaused: true });
         setIsDisabled("");
         alert(e);
@@ -210,7 +210,7 @@ export default function PostCard({
     return (
         <Container key={key}>
             <ProfilePhoto>
-                <img src={profileImage} alt={legendAlt} />
+                <img src={profileImage} alt={legendAlt} onClick={() => navigate(`/timeline/user/${creatorId}`)}/>
                 <div className="animation" onClick={postLike}>
                     <Lottie
                         options={likeDefaultOptions}
@@ -223,16 +223,16 @@ export default function PostCard({
                 <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
             </ProfilePhoto>
             <Post>
-                <h3 onClick={()=>navigate(`/timeline/user/${creatorId}`)}>{name}</h3>
-                 <ReactTagify
-          tagStyle={tagStyle}
-          tagClicked={(tag) => {
-            const tagWithoutHash= tag.replace("#","")
-            navigate(`/hashtag/${tagWithoutHash}`)
-          }}
-        >
-          <p>{text}</p>
-        </ReactTagify>
+                <h3 onClick={() => navigate(`/timeline/user/${creatorId}`)}>{name}</h3>
+                <ReactTagify
+                    tagStyle={tagStyle}
+                    tagClicked={(tag) => {
+                        const tagWithoutHash = tag.replace("#", "")
+                        navigate(`/hashtag/${tagWithoutHash}`)
+                    }}
+                >
+                    <p>{text}</p>
+                </ReactTagify>
                 {creatorId === userId ? (
                     <div className="buttons">
                         <FaPencilAlt color="#fff" />
@@ -261,7 +261,7 @@ export default function PostCard({
                                 isStopped={animationDeleteState.isStopped}
                                 isPaused={animationDeleteState.isPaused}
                                 speed={0.5}
-                                eventListeners={animationDeleteState.eventListeners}                          
+                                eventListeners={animationDeleteState.eventListeners}
                             />
                             Are you sure you want to delete this post?
                         </Modal.Body>
@@ -309,7 +309,18 @@ const Container = styled.div`
         font-size: 18px;
         line-height: 20px;
     }
-`;
+    @media screen and (max-width: 1000px){
+        padding:13px;
+        border-radius: 0px;
+        h3{
+            font-size: 20px;
+        }
+        p{
+            font-size: 16px;
+        }
+    }
+ 
+`
 const ProfilePhoto = styled.div`
     height: 100%;
     margin-right: 20px;
@@ -327,6 +338,9 @@ const ProfilePhoto = styled.div`
     div * {
         border-radius: 50px;
         cursor: pointer;
+    }
+    @media screen and (max-width: 600px){
+        margin-right: 10px;
     }
 `;
 
@@ -349,6 +363,14 @@ const Post = styled.div`
             height: 18px;
         }
     }
+    @media screen and (max-width: 600px){
+        .buttons {
+            svg{
+                width: 22px;
+                margin-left: 7px;
+            }
+        }
+    }
 `;
 
 const LinkBox = styled.a`
@@ -364,7 +386,7 @@ const LinkBox = styled.a`
     word-wrap: break-word;
     div {
         padding: 24px 19px;
-        width: 70%;
+        max-width: 67%;
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
@@ -385,15 +407,27 @@ const LinkBox = styled.a`
         line-height: 13px;
     }
     img {
-        width: 30%;
-        height: calc(width);
+        width: 33%;
         object-fit: fill;
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
     }
 
-    @media screen and (max-width: 1300px){
-        flex-wrap: wrap;
+    @media screen and (max-width: 500px){
+        min-height: 70px;
+        
+        h4{
+            font-size: 13px;
+            line-height: 14px;
+        }
+        h5{
+            font-size: 10px;
+            line-height: 11px;
+        }
+        h6{
+            font-size: 9px;
+            line-height: 10px;
+        }
     }
 `;
 
