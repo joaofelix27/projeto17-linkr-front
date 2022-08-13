@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import Lottie from "react-lottie";
 import styled from "styled-components";
@@ -28,12 +28,19 @@ export default function PostCard({
 }) {
     const { token, userId, setUserId, setImage, setName } =
         useContext(UserContext);
-
+    const [bodyValue, setBodyValue] = useState(text);
+    const [originalBody, setOriginalBody] = useState(text);
+    const [textEdit, setTextEdit] = useState(false);
     const [like, setLike] = useState(likes);
     const [show, setShow] = useState(false);
+    const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
     const navigate = useNavigate();
+    const inputRef = useRef();
     const handleClose = () => setShow(false);
+    const toggleEditing = () => {
+        setTextEdit(!textEdit);
+    };
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -96,8 +103,12 @@ export default function PostCard({
     const legendAlt = `${name} profile pic`;
 
     useEffect(() => {
+        if (textEdit === true) {
+            inputRef.current.focus();
+        }
+
         getLikes();
-    }, []);
+    }, [textEdit]);
 
     async function getLikes() {
         const config = {
@@ -121,6 +132,41 @@ export default function PostCard({
 
             console.log(e);
         }
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Escape") {
+            setTextEdit(!textEdit);
+        }
+    }
+
+    function updateBody(e) {
+        e.preventDefault();
+
+
+        if (originalBody === bodyValue) {
+           return setTextEdit(!textEdit);
+        }
+
+        setIsInputDisabled("disabled");
+
+        const promisse = axios
+            .put(
+                `${process.env.REACT_APP_BASE_URL}/timeline/${postId}`,
+                {
+                    bodyValue,
+                },
+                config
+            )
+            .then(() => {
+                setOriginalBody(bodyValue);
+                setTextEdit(!textEdit)
+                setIsInputDisabled('');
+            })
+            .catch((e) => {
+                setIsInputDisabled('');
+                alert(e);
+            });
     }
 
     function addLike() {
@@ -216,7 +262,6 @@ export default function PostCard({
             console.log(e);
         }
     }
-
     return (
         <Container key={key}>
             <ProfilePhoto>
@@ -236,19 +281,37 @@ export default function PostCard({
                 <h3 onClick={() => navigate(`/timeline/user/${creatorId}`)}>
                     {name}
                 </h3>
-                <ReactTagify
-                    tagStyle={tagStyle}
-                    tagClicked={(tag) => {
-                        const tagWithoutHash = tag.replace("#", "");
-                        navigate(`/hashtag/${tagWithoutHash}`);
-                    }}
-                >
-                    <p>{text}</p>
-                </ReactTagify>
+                {textEdit === false ? (
+                    <ReactTagify
+                        tagStyle={tagStyle}
+                        tagClicked={(tag) => {
+                            const tagWithoutHash = tag.replace("#", "");
+                            navigate(`/hashtag/${tagWithoutHash}`);
+                        }}
+                    >
+                        <p>{originalBody}</p>
+                    </ReactTagify>
+                ) : (
+                    <form onSubmit={(e) => updateBody(e)}>
+                        <Textarea
+                            type="text"
+                            ref={inputRef}
+                            placeholder="Awesome article about #javascript"
+                            onChange={(e) => setBodyValue(e.target.value)}
+                            value={bodyValue}
+                            disabled={isInputDisabled}
+                            onKeyUpCapture={(e) => handleKeyPress(e)}
+                            required
+                        />
+                    </form>
+                )}
                 {creatorId === userId ? (
                     <div className="buttons">
-                        <FaPencilAlt color="#fff" />
-                        <FaTrash color="#fff" onClick={() => setShow(true)} />
+                        <FaPencilAlt
+                            color="#fff"
+                            onClick={() => setTextEdit(!textEdit)}
+                        />
+                        <FaTrash color="#fff" onClick={toggleEditing} />
                     </div>
                 ) : null}
 
@@ -407,6 +470,23 @@ const LinkBox = styled.a`
 
 const ModalBox = styled.div`
     background-color: black;
+`;
+
+const Textarea = styled.input`
+    border: none;
+    border-radius: 5px;
+    background-color: #efefef;
+    width: 100%;
+    margin-bottom: 5px;
+    height: fit-content;
+    padding: 5px;
+    font-size: 20px;
+    ::placeholder {
+        font-family: "Lato";
+        color: #949494;
+        font-weight: 300;
+        font-size: 15px;
+    }
 `;
 
 const customStyles = {
