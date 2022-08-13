@@ -78,10 +78,17 @@ export default function SendPostCard({ getPosts }) {
                     disabled={loading}
                 />
 
-                <Textarea name="text" rows="14" cols="10" wrap="soft" placeholder="Awesome article about #javascript" required
+                <Textarea
+                    name="text"
+                    rows="14"
+                    cols="10"
+                    wrap="soft"
+                    placeholder="Awesome article about #javascript"
+                    required
                     onChange={(e) => setBody(e.target.value)}
                     value={body}
-                    disabled={loading}>
+                    disabled={loading}
+                >
                     {" "}
                 </Textarea>
 
