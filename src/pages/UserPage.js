@@ -16,6 +16,17 @@ export default function UserPage() {
     const { token,control,load,setLoad } = useContext(UserContext);
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
 
     const notify = (error) => {
         toast(`❗ ${error}`, {
@@ -32,6 +43,7 @@ export default function UserPage() {
     const { id } = useParams();
 
     useEffect(() => {
+        console.log("estou aq")
         getTrending();
 
         const config = {

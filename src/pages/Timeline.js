@@ -177,12 +177,10 @@ export const ContentBody = styled.div`
 
     @media only screen and (max-width: 1060px) {
         width: 100%;
-
         h2{
             margin-top: 70px;
             padding-left: 28px;
         }
-
         div{
             border-radius: 0;
         }

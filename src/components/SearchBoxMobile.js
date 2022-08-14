@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import UserContext from "../contexts/UserContext";
 
+
 export default function SearchBoxMobile() {
     const [searchName, setSearchName] = useState("");
     const [users, setUsers] = useState([]);
@@ -41,7 +42,7 @@ export default function SearchBoxMobile() {
 
     function searchUser(event) {
         event.preventDefault();
-
+        setUsers([])
         const body = {
             name: searchName,
         };

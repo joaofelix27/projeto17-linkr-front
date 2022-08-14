@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 import { toast } from "react-toastify";
+
 import UserContext from "../contexts/UserContext";
+
 
 export default function SearchBox() {
     const [searchName, setSearchName] = useState("");
     const [users, setUsers] = useState([]);
     const { control,setControl,setLoad } = useContext(UserContext);
-
     const notify = (error) => {
         toast(`❗ ${error}`, {
           position: "top-center",

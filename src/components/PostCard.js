@@ -29,6 +29,7 @@ export default function PostCard({
     getPosts,
     getTrending,
 }) {
+
     const { token, userId, setUserId,setLoad } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
     const [originalBody, setOriginalBody] = useState(text);

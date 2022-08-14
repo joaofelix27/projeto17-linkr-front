@@ -19,6 +19,7 @@ export default function App() {
     const [control,setControl] = useState(false);
     const [load,setLoad] = useState(false);
 
+
     const userContext = {
         token,
         setToken,
@@ -28,10 +29,12 @@ export default function App() {
         setName,
         userId,
         setUserId,
+        userlayout
         control,
         setControl,
         load,
         setLoad
+
     };
 
     return (
