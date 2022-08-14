@@ -113,6 +113,10 @@ const Container = styled.div`
     padding: 0 20px;
     position: relative;
 
+    svg{
+      cursor: pointer;
+    }
+
     h1 {
       color: #ffffff;
       font-family: "Passion One";
@@ -158,6 +162,7 @@ const Container = styled.div`
           font-size: 17px;
           line-height: 20px;
           letter-spacing: 0.05em;
+          cursor: pointer;
         }
       }
     }

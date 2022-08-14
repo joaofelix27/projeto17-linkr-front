@@ -1,25 +1,46 @@
 import TimelineHeader from "../components/TimelineHeader.js";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 import PostCard from "../components/PostCard.js";
 import { Container, Content } from "./Timeline.js";
 import { ContentBody, LeftContent, RightContent } from "./Timeline.js";
 import TrendingHashtags from "../components/TrendingHashtags.js";
 import SearchBoxMobile from "../components/SearchBoxMobile.js";
 import { DebounceInput } from "react-debounce-input";
+import UserContext from "../contexts/UserContext.js";
 
 export default function UserPage() {
+    const { token } = useContext(UserContext);
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
 
     const { id } = useParams();
 
     useEffect(() => {
+        console.log("estou aq")
         getTrending();
 
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
         const promise = axios.get(
-            `${process.env.REACT_APP_BASE_URL}/timeline/user/${id}`
+            `${process.env.REACT_APP_BASE_URL}/timeline/user/${id}`, config
         );
 
         promise.then((res) => {
@@ -27,7 +48,7 @@ export default function UserPage() {
         });
 
         promise.catch((Error) => {
-            alert(Error.response.status);
+            notify(Error.response.status);
         });
     }, []);
 
@@ -72,7 +93,7 @@ export default function UserPage() {
             const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/trending`);
             setTrending(result.data);
         } catch (e) {
-            alert(
+            notify(
                 "An error occured while trying to fetch the trending hashtags, please refresh the page"
             );
             console.log(e);

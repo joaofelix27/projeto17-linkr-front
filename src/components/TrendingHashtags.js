@@ -48,6 +48,9 @@ const Container = styled.div`
         color: #ffffff;
         margin-left: 16px;
     }
+    h3{
+        cursor: pointer;
+    }
 `;
 
 const Border = styled.div`

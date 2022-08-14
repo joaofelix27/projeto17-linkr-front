@@ -3,10 +3,23 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
+import { toast } from "react-toastify";
+
 
 export default function SearchBox() {
     const [searchName, setSearchName] = useState("");
     const [users, setUsers] = useState([]);
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
 
     const navigate = useNavigate();
 
@@ -40,7 +53,7 @@ export default function SearchBox() {
         });
 
         promise.catch((Error) => {
-            alert(Error.response.status);
+            notify(Error.response.status);
         });
     }
 
@@ -90,6 +103,7 @@ const UserBox = styled.div`
     width: 140px;
     margin-bottom: 10px;
     margin-left: 20px;
+    cursor: pointer;
 
     h4 {
         width: 100%;
