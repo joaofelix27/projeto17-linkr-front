@@ -1,19 +1,35 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
+import { toast } from "react-toastify";
+import UserContext from "../contexts/UserContext";
 
 export default function SearchBoxMobile() {
     const [searchName, setSearchName] = useState("");
     const [users, setUsers] = useState([]);
+    const { control,setControl,setLoad } = useContext(UserContext);
+
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
 
     const navigate = useNavigate();
 
     function renderUsers() {
+        
         const search = users.map(({ picture, id, username, index }) => (
             <UserBox
-                onClick={() => navigate(`/timeline/user/${id}`)}
+                onClick={() => navigate(`/timeline/user/${id}`,setLoad(true),setControl(!control), { replace: true, state: {} })}
                 key={index}
             >
                 <img src={picture} alt="" srcset="" />
@@ -40,7 +56,7 @@ export default function SearchBoxMobile() {
         });
 
         promise.catch((Error) => {
-            alert(Error.response.status);
+            notify(Error.response.status);
         });
     }
 

@@ -1,35 +1,59 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 import TimelineHeader from "../components/TimelineHeader";
 import PostCard from "../components/PostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
-import { Container, Content, LeftContent, RightContent, ContentBody } from "./Timeline.js";
+import {
+    Container,
+    Content,
+    LeftContent,
+    RightContent,
+    ContentBody,
+} from "./Timeline.js";
 import { DebounceInput } from "react-debounce-input";
 import SearchBoxMobile from "../components/SearchBoxMobile";
-
+import UserContext from "../contexts/UserContext";
 
 export default function Hashtags() {
+    const { token } = useContext(UserContext);
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
     const { hashtag } = useParams();
-    
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
 
     useEffect(() => {
-    getPosts();
-    if (trending === "") {
-      getTrending();
-    }
-  }, [hashtag]);
- 
+        getPosts();
+        if (trending === "") {
+            getTrending();
+        }
+    }, [hashtag]);
+
     async function getPosts() {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
         try {
             const result = await axios.get(
-                `${process.env.REACT_APP_BASE_URL}/hashtags/${hashtag}`
+                `${process.env.REACT_APP_BASE_URL}/hashtags/${hashtag}`, config
             );
-            setPosts(result.data);
+            console.log(result.data)
+            setPosts(result.data.postsMetadata);
         } catch (e) {
-            alert(
+            notify(
                 "An error occured while trying to fetch the posts, please refresh the page"
             );
             console.log(e);
@@ -37,10 +61,12 @@ export default function Hashtags() {
     }
     async function getTrending() {
         try {
-            const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/trending`);
+            const result = await axios.get(
+                `${process.env.REACT_APP_BASE_URL}/trending`,
+            );
             setTrending(result.data);
         } catch (e) {
-            alert(
+            notify(
                 "An error occured while trying to fetch the trending hashtags, please refresh the page"
             );
             console.log(e);
@@ -60,20 +86,20 @@ export default function Hashtags() {
                     image,
                     description,
                     userId,
-                    like
+                    like,
                 }) => (
                     <PostCard
-                    key={id}
-                    name={username}
-                    profileImage={picture}
-                    url={link}
-                    text={body}
-                    titleUrl={title}
-                    imageUrl={image}
-                    descriptionUrl={description}
-                    creatorId={userId}
-                    likes={like}
-                    postId={id}
+                        key={id}
+                        name={username}
+                        profileImage={picture}
+                        url={link}
+                        text={body}
+                        titleUrl={title}
+                        imageUrl={image}
+                        descriptionUrl={description}
+                        creatorId={userId}
+                        likes={like}
+                        postId={id}
                     />
                 )
             );
@@ -105,5 +131,3 @@ export default function Hashtags() {
         </Container>
     );
 }
-
-

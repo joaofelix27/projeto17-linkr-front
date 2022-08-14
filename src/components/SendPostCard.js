@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState, useContext } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 import UserContext from "../contexts/UserContext";
 
@@ -9,6 +10,17 @@ export default function SendPostCard({ getPosts,getTrending }) {
     const [link, setLink] = useState("");
     const [body, setBody] = useState("");
     const [loading, setLoading] = useState(false);
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
 
     function findHashtags(searchText) {
         var regexp = /(\s|^)\#\w\w+\b/gm;
@@ -58,7 +70,7 @@ export default function SendPostCard({ getPosts,getTrending }) {
             setLink("");
             setBody("");
         } catch (e) {
-            alert("Houve um erro ao publicar seu link");
+            notify("Houve um erro ao publicar seu link");
             console.log(e);
             setLoading(false);
         }

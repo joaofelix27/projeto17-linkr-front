@@ -8,7 +8,7 @@ import Header from "../components/Header.js";
 import UserContext from "../contexts/UserContext";
 
 const notify = (error) => {
-    toast(`❗ ${error}`, {
+    toast.error(`❗ ${error}`, {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: false,
