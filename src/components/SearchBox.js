@@ -1,14 +1,17 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import UserContext from "../contexts/UserContext";
+
 
 export default function SearchBox() {
     const [searchName, setSearchName] = useState("");
     const [users, setUsers] = useState([]);
+    const { control,setControl,setLoad } = useContext(UserContext);
     const notify = (error) => {
         toast(`❗ ${error}`, {
           position: "top-center",
@@ -26,7 +29,7 @@ export default function SearchBox() {
     function renderUsers() {
         const search = users.map(({ picture, id, username, index }) => (
             <UserBox
-                onClick={() => navigate(`/timeline/user/${id}`)}
+                onClick={() => navigate(`/timeline/user/${id}`,setLoad(true),setControl(!control), { replace: true, state: {} })}
                 key={index}
             >
                 <img src={picture} alt="" srcset="" />
@@ -50,6 +53,7 @@ export default function SearchBox() {
 
         promise.then((res) => {
             setUsers(res.data);
+            setControl(!control);
         });
 
         promise.catch((Error) => {

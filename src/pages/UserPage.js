@@ -10,11 +10,24 @@ import TrendingHashtags from "../components/TrendingHashtags.js";
 import SearchBoxMobile from "../components/SearchBoxMobile.js";
 import { DebounceInput } from "react-debounce-input";
 import UserContext from "../contexts/UserContext.js";
+import { Circles } from "react-loader-spinner";
 
 export default function UserPage() {
-    const { token } = useContext(UserContext);
+    const { token,control,load,setLoad } = useContext(UserContext);
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
+
     const notify = (error) => {
         toast(`❗ ${error}`, {
           position: "top-center",
@@ -44,13 +57,14 @@ export default function UserPage() {
         );
 
         promise.then((res) => {
+            setLoad(false);
             setPosts(res.data);
         });
 
         promise.catch((Error) => {
             notify(Error.response.status);
         });
-    }, []);
+    }, [control]);
 
     function renderPosts() {
         if (posts) {
@@ -111,7 +125,9 @@ export default function UserPage() {
                             debounceTimeout={300}
                         />
                         <h2>{posts ? posts[0].username + "'s posts" : "loading..."}</h2>
-                        {renderPosts()}
+                        {
+                            load ? <Circles color="crimson" /> : renderPosts()
+                        }
                     </LeftContent>
                     <RightContent>
                         <TrendingHashtags hashtags={trending} />
