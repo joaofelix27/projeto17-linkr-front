@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import UserContext from "../contexts/UserContext";
 import TimelineHeader from "../components/TimelineHeader";
 import SendPostCard from "../components/SendPostCard";
@@ -13,6 +14,18 @@ export default function Timeline() {
     const { token, setImage, setName } = useContext(UserContext);
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
+      
 
     useEffect(() => {
         if (posts === "") {
@@ -38,7 +51,7 @@ export default function Timeline() {
             setImage(result.data.userInfo?.picture);
             setName(result.data.userInfo?.username);
         } catch (e) {
-            alert(
+            notify(
                 "An error occured while trying to fetch the posts, please refresh the page"
             );
             console.log(e);
@@ -49,7 +62,7 @@ export default function Timeline() {
             const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/trending`);
             setTrending(result.data);
         } catch (e) {
-            alert(
+            notify(
                 "An error occured while trying to fetch the trending hashtags, please refresh the page"
             );
             console.log(e);

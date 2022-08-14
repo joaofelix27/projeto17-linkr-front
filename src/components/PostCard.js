@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import Lottie from "react-lottie";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -24,10 +25,11 @@ export default function PostCard({
     likes,
     postId,
     creatorId,
-    setPosts,getPosts,getTrending
+    setPosts,
+    getPosts,
+    getTrending,
 }) {
-    const { token, userId, setUserId, setImage, setName } =
-        useContext(UserContext);
+    const { token, userId, setUserId } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
@@ -46,6 +48,17 @@ export default function PostCard({
             Authorization: `Bearer ${token}`,
         },
     };
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      };
 
     const tagStyle = {
         fontFamily: "Lato",
@@ -126,9 +139,13 @@ export default function PostCard({
                 setAnimationLikeState({ ...animationLikeState, direction: 1 });
             }
         } catch (e) {
-            alert(
+            notify(
                 "An error occured while trying to fetch the posts, please refresh the page"
             );
+
+            setTimeout(() => {
+                navigate("/");
+              }, 1000);
 
             console.log(e);
         }
@@ -140,12 +157,33 @@ export default function PostCard({
         }
     }
 
+    function findHashtags(searchText) {
+        var regexp = /(\s|^)\#\w\w+\b/gm;
+        let result = searchText.match(regexp);
+        if (result) {
+            result = result.map(function (s) {
+                return s.trim();
+            });
+            return result;
+        } else {
+            return [];
+        }
+    }
+
+    function removeDuplicates(arr) {
+        const uniqueHashtag = arr.reduce(function (newArray, currentValue) {
+            if (!newArray.includes(currentValue)) newArray.push(currentValue);
+            return newArray;
+        }, []);
+        return uniqueHashtag;
+    }
+
     function updateBody(e) {
         e.preventDefault();
-
+        const hashtags = removeDuplicates(findHashtags(bodyValue));
 
         if (originalBody === bodyValue) {
-           return setTextEdit(!textEdit);
+            return setTextEdit(!textEdit);
         }
 
         setIsInputDisabled("disabled");
@@ -155,17 +193,19 @@ export default function PostCard({
                 `${process.env.REACT_APP_BASE_URL}/timeline/${postId}`,
                 {
                     bodyValue,
+                    hashtags,
                 },
                 config
             )
             .then(() => {
                 setOriginalBody(bodyValue);
-                setTextEdit(!textEdit)
-                setIsInputDisabled('');
+                setTextEdit(!textEdit);
+                setIsInputDisabled("");
+                getTrending();
             })
             .catch((e) => {
-                setIsInputDisabled('');
-                alert(e);
+                setIsInputDisabled("");
+                notify(e);
             });
     }
 
@@ -198,7 +238,7 @@ export default function PostCard({
 
                 .then(() => removeLike())
 
-                .catch((e) => console.log(e));
+                .catch((e) => notify(e));
         } else {
             const promisse = axios
                 .post(
@@ -227,7 +267,7 @@ export default function PostCard({
     function error(e) {
         setAnimationDeleteState({ ...animationDeleteState, isPaused: true });
         setIsDisabled("");
-        alert(e);
+        notify(e);
     }
 
     function removePost() {
@@ -394,6 +434,16 @@ const Post = styled.div`
     padding-top: 10px;
     position: relative;
 
+    h3 {
+        cursor: pointer;
+    }
+
+    span {
+        span {
+            cursor: pointer;
+        }
+    }
+
     .buttons {
         position: absolute;
         top: 0;
@@ -446,26 +496,26 @@ const LinkBox = styled.a`
         object-fit: contain;
     }
 
-    @media screen and (max-width: 1300px){
+    @media screen and (max-width: 1300px) {
         flex-wrap: wrap;
 
-        img{
+        img {
             width: 60%;
             margin: 0 auto;
             border-radius: 0;
         }
     }
 
-    @media screen and (max-width: 1050px){
-        img{
+    @media screen and (max-width: 1050px) {
+        img {
             width: 60%;
             margin: 0 auto;
             border-radius: 0;
         }
     }
 
-    @media screen and (max-width: 500px){
-        img{
+    @media screen and (max-width: 500px) {
+        img {
             width: 70%;
             margin: 0 auto;
             border-radius: 0;
