@@ -253,15 +253,16 @@ export default function PostCard({
         }
     }
 
-    function reloadPage() {
+    function reloadPage() {        
         getPosts();
-        getTrending();
         setIsDisabled("");
         setShow(false);
     }
 
     function removedPostSuccess(s) {
+
         setAnimationDeleteState({ ...animationDeleteState, isPaused: false });
+        getTrending();
     }
 
     function error(e) {
