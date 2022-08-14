@@ -311,7 +311,7 @@ export default function PostCard({
                             color="#fff"
                             onClick={() => setTextEdit(!textEdit)}
                         />
-                        <FaTrash color="#fff" onClick={toggleEditing} />
+                        <FaTrash color="#fff" onClick={() => setShow(true)} />
                     </div>
                 ) : null}
 
