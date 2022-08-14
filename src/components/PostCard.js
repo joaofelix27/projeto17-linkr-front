@@ -29,7 +29,8 @@ export default function PostCard({
     getPosts,
     getTrending,
 }) {
-    const { token, userId, setUserId } = useContext(UserContext);
+
+    const { token, userId, setUserId,setLoad } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
@@ -298,7 +299,7 @@ export default function PostCard({
                 <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
             </ProfilePhoto>
             <Post>
-                <h3 onClick={() => navigate(`/timeline/user/${creatorId}`)}>
+                <h3 onClick={() => navigate(`/timeline/user/${creatorId}`,setLoad(true), { replace: true, state: {} })}>
                     {name}
                 </h3>
                 {textEdit === false ? (

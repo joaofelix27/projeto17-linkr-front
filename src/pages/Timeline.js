@@ -162,6 +162,7 @@ export const ContentBody = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
     h2 {
         display: flex;
         justify-content: left;
@@ -171,13 +172,15 @@ export const ContentBody = styled.div`
         color: white;
         margin-top: 50px;
         margin-bottom: 50px;
-        margin-left: 40px;
         text-align: left;
     }
 
     @media only screen and (max-width: 1060px) {
         width: 100%;
-
+        h2{
+            margin-top: 70px;
+            padding-left: 28px;
+        }
         div{
             border-radius: 0;
         }
