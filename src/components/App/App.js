@@ -29,7 +29,7 @@ export default function App() {
         setName,
         userId,
         setUserId,
-        userlayout
+        userlayout,
         control,
         setControl,
         load,
