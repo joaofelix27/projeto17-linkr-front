@@ -311,7 +311,7 @@ export default function PostCard({
                             color="#fff"
                             onClick={() => setTextEdit(!textEdit)}
                         />
-                        <FaTrash color="#fff" onClick={toggleEditing} />
+                        <FaTrash color="#fff" onClick={() => setShow(true)} />
                     </div>
                 ) : null}
 
@@ -468,6 +468,28 @@ const LinkBox = styled.a`
 
     @media screen and (max-width: 1300px){
         flex-wrap: wrap;
+
+        img{
+            width: 60%;
+            margin: 0 auto;
+            border-radius: 0;
+        }
+    }
+
+    @media screen and (max-width: 1050px){
+        img{
+            width: 60%;
+            margin: 0 auto;
+            border-radius: 0;
+        }
+    }
+
+    @media screen and (max-width: 500px){
+        img{
+            width: 70%;
+            margin: 0 auto;
+            border-radius: 0;
+        }
     }
 `;
 

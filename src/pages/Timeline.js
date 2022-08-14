@@ -163,6 +163,10 @@ export const ContentBody = styled.div`
 
     @media only screen and (max-width: 1060px) {
         width: 100%;
+
+        div{
+            border-radius: 0;
+        }
     }
 `;
 export const RightContent = styled.div`
