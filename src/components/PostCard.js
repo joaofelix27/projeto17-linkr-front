@@ -24,7 +24,7 @@ export default function PostCard({
     likes,
     postId,
     creatorId,
-    setPosts,
+    setPosts,getPosts,getTrending
 }) {
     const { token, userId, setUserId, setImage, setName } =
         useContext(UserContext);
@@ -215,6 +215,7 @@ export default function PostCard({
 
     function reloadPage() {
         getPosts();
+        getTrending();
         setIsDisabled("");
         setShow(false);
     }
@@ -241,27 +242,6 @@ export default function PostCard({
             .catch((e) => error(e));
     }
 
-    async function getPosts() {
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-        try {
-            const result = await axios.get(
-                `${process.env.REACT_APP_BASE_URL}/timeline`,
-                config
-            );
-            setPosts(result.data.postsMetadata);
-            setImage(result.data.userInfo?.picture);
-            setName(result.data.userInfo?.username);
-        } catch (e) {
-            alert(
-                "An error occured while trying to fetch the posts, please refresh the page"
-            );
-            console.log(e);
-        }
-    }
     return (
         <Container key={key}>
             <ProfilePhoto>

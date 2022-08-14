@@ -84,6 +84,8 @@ export default function Timeline() {
                         postId={id}
                         creatorId={userId}
                         setPosts={setPosts}
+                        getPosts={getPosts} 
+                        getTrending={getTrending}
                     />
                 )
             );
