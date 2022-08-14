@@ -3,18 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function TrendingHashtags({ hashtags }) {
     const navigate = useNavigate();
-    const array = [
-        "javascript",
-        "react",
-        "react-native",
-        "material",
-        "web-dev",
-        "mobile",
-        "css",
-        "html",
-        "node",
-        "sql",
-    ];
+
 
     function Hashtags() {
         if (hashtags) {
