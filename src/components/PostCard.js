@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import Lottie from "react-lottie";
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
-import { FaTrash, FaPencilAlt} from "react-icons/fa";
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
 
 import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
@@ -24,16 +24,23 @@ export default function PostCard({
     likes,
     postId,
     creatorId,
-    setPosts
+    setPosts,getPosts,getTrending
 }) {
-    const { token, userId, setUserId, setImage, setName } = useContext(UserContext);
-
-
+    const { token, userId, setUserId, setImage, setName } =
+        useContext(UserContext);
+    const [bodyValue, setBodyValue] = useState(text);
+    const [originalBody, setOriginalBody] = useState(text);
+    const [textEdit, setTextEdit] = useState(false);
     const [like, setLike] = useState(likes);
     const [show, setShow] = useState(false);
+    const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
     const navigate = useNavigate();
+    const inputRef = useRef();
     const handleClose = () => setShow(false);
+    const toggleEditing = () => {
+        setTextEdit(!textEdit);
+    };
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -48,7 +55,7 @@ export default function PostCard({
         letterSpacing: "0em",
         textAlign: "left",
         color: "#FAFAFA",
-      };
+    };
     const [animationLikeState, setAnimationLikeState] = useState({
         isStopped: false,
         isPaused: false,
@@ -65,14 +72,15 @@ export default function PostCard({
 
     const [animationDeleteState, setAnimationDeleteState] = useState({
         isStopped: false,
-        isPaused: true,
+        isPaused: false,
         direction: 1,
+        speed: 0.09,
         eventListeners: [
             {
-              eventName: 'complete',
-              callback: reloadPage,
+                eventName: "complete",
+                callback: reloadPage,
             },
-          ]
+        ],
     });
 
     const deleteDefaultOptions = {
@@ -84,19 +92,23 @@ export default function PostCard({
         },
         eventListeners: [
             {
-              eventName: 'complete',
-              callback: () => console.log('the animation completed:'),
+                eventName: "complete",
+                callback: () => console.log("the animation completed:"),
             },
-          ]
-    }
+        ],
+    };
 
     const normalAnimation = 1;
     const reverseAnimation = -1;
     const legendAlt = `${name} profile pic`;
 
     useEffect(() => {
+        if (textEdit === true) {
+            inputRef.current.focus();
+        }
+
         getLikes();
-    }, []);
+    }, [textEdit]);
 
     async function getLikes() {
         const config = {
@@ -122,6 +134,41 @@ export default function PostCard({
         }
     }
 
+    function handleKeyPress(event) {
+        if (event.key === "Escape") {
+            setTextEdit(!textEdit);
+        }
+    }
+
+    function updateBody(e) {
+        e.preventDefault();
+
+
+        if (originalBody === bodyValue) {
+           return setTextEdit(!textEdit);
+        }
+
+        setIsInputDisabled("disabled");
+
+        const promisse = axios
+            .put(
+                `${process.env.REACT_APP_BASE_URL}/timeline/${postId}`,
+                {
+                    bodyValue,
+                },
+                config
+            )
+            .then(() => {
+                setOriginalBody(bodyValue);
+                setTextEdit(!textEdit)
+                setIsInputDisabled('');
+            })
+            .catch((e) => {
+                setIsInputDisabled('');
+                alert(e);
+            });
+    }
+
     function addLike() {
         setAnimationLikeState({
             ...animationLikeState,
@@ -144,14 +191,21 @@ export default function PostCard({
     function postLike() {
         if (animationLikeState.direction === 1) {
             const promisse = axios
-                .delete(`${process.env.REACT_APP_BASE_URL}/like/${postId}`, config)
+                .delete(
+                    `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
+                    config
+                )
 
                 .then(() => removeLike())
 
                 .catch((e) => console.log(e));
         } else {
             const promisse = axios
-                .post(`${process.env.REACT_APP_BASE_URL}/like/${postId}`, {}, config)
+                .post(
+                    `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
+                    {},
+                    config
+                )
 
                 .then(() => addLike())
 
@@ -159,17 +213,18 @@ export default function PostCard({
         }
     }
 
-    function reloadPage () {
+    function reloadPage() {
+        getPosts();
+        getTrending();
         setIsDisabled("");
-        setShow(false)
-        getPosts()
+        setShow(false);
     }
 
     function removedPostSuccess(s) {
         setAnimationDeleteState({ ...animationDeleteState, isPaused: false });
     }
 
-    function error(e) {        
+    function error(e) {
         setAnimationDeleteState({ ...animationDeleteState, isPaused: true });
         setIsDisabled("");
         alert(e);
@@ -179,31 +234,12 @@ export default function PostCard({
         setIsDisabled("disabled");
 
         const promisse = axios
-            .delete(`${process.env.REACT_APP_BASE_URL}/timeline/${postId}`, config)
+            .delete(
+                `${process.env.REACT_APP_BASE_URL}/timeline/${postId}`,
+                config
+            )
             .then(() => removedPostSuccess())
             .catch((e) => error(e));
-    }
-
-    async function getPosts() {
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-        try {
-            const result = await axios.get(
-                `${process.env.REACT_APP_BASE_URL}/timeline`,
-                config
-            );
-            setPosts(result.data.postsMetadata);
-            setImage(result.data.userInfo?.picture);
-            setName(result.data.userInfo?.username);
-        } catch (e) {
-            alert(
-                "An error occured while trying to fetch the posts, please refresh the page"
-            );
-            console.log(e);
-        }
     }
 
     return (
@@ -222,19 +258,39 @@ export default function PostCard({
                 <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
             </ProfilePhoto>
             <Post>
-                <h3 onClick={()=>navigate(`/timeline/user/${creatorId}`)}>{name}</h3>
-                 <ReactTagify
-          tagStyle={tagStyle}
-          tagClicked={(tag) => {
-            const tagWithoutHash= tag.replace("#","")
-            navigate(`/hashtag/${tagWithoutHash}`)
-          }}
-        >
-          <p>{text}</p>
-        </ReactTagify>
+                <h3 onClick={() => navigate(`/timeline/user/${creatorId}`)}>
+                    {name}
+                </h3>
+                {textEdit === false ? (
+                    <ReactTagify
+                        tagStyle={tagStyle}
+                        tagClicked={(tag) => {
+                            const tagWithoutHash = tag.replace("#", "");
+                            navigate(`/hashtag/${tagWithoutHash}`);
+                        }}
+                    >
+                        <p>{originalBody}</p>
+                    </ReactTagify>
+                ) : (
+                    <form onSubmit={(e) => updateBody(e)}>
+                        <Textarea
+                            type="text"
+                            ref={inputRef}
+                            placeholder="Awesome article about #javascript"
+                            onChange={(e) => setBodyValue(e.target.value)}
+                            value={bodyValue}
+                            disabled={isInputDisabled}
+                            onKeyUpCapture={(e) => handleKeyPress(e)}
+                            required
+                        />
+                    </form>
+                )}
                 {creatorId === userId ? (
                     <div className="buttons">
-                        <FaPencilAlt color="#fff" />
+                        <FaPencilAlt
+                            color="#fff"
+                            onClick={() => setTextEdit(!textEdit)}
+                        />
                         <FaTrash color="#fff" onClick={() => setShow(true)} />
                     </div>
                 ) : null}
@@ -260,7 +316,9 @@ export default function PostCard({
                                 isStopped={animationDeleteState.isStopped}
                                 isPaused={animationDeleteState.isPaused}
                                 speed={0.5}
-                                eventListeners={animationDeleteState.eventListeners}                          
+                                eventListeners={
+                                    animationDeleteState.eventListeners
+                                }
                             />
                             Are you sure you want to delete this post?
                         </Modal.Body>
@@ -357,7 +415,7 @@ const LinkBox = styled.a`
     border: 1px solid #4d4d4d;
     border-radius: 12px;
     display: flex;
-    
+    word-break: break-word;
     div {
         padding: 24px 19px;
         display: flex;
@@ -385,6 +443,7 @@ const LinkBox = styled.a`
         object-fit: fill;
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
+        object-fit: contain;
     }
 
     @media screen and (max-width: 1300px){
@@ -394,6 +453,23 @@ const LinkBox = styled.a`
 
 const ModalBox = styled.div`
     background-color: black;
+`;
+
+const Textarea = styled.input`
+    border: none;
+    border-radius: 5px;
+    background-color: #efefef;
+    width: 100%;
+    margin-bottom: 5px;
+    height: fit-content;
+    padding: 5px;
+    font-size: 20px;
+    ::placeholder {
+        font-family: "Lato";
+        color: #949494;
+        font-weight: 300;
+        font-size: 15px;
+    }
 `;
 
 const customStyles = {

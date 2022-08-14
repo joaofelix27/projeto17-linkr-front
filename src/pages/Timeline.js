@@ -57,7 +57,6 @@ export default function Timeline() {
     }
 
     function renderPosts() {
-        console.log(posts)
         if (posts) {
             const timeline = posts.map(
                 ({
@@ -85,6 +84,8 @@ export default function Timeline() {
                         postId={id}
                         creatorId={userId}
                         setPosts={setPosts}
+                        getPosts={getPosts} 
+                        getTrending={getTrending}
                     />
                 )
             );
@@ -104,7 +105,7 @@ export default function Timeline() {
                             debounceTimeout={300}
                         />
                         <h2>timeline</h2>
-                        <SendPostCard getPosts={getPosts} />
+                        <SendPostCard getPosts={getPosts} getTrending={getTrending} />
 
                         {renderPosts()}
                     </LeftContent>
