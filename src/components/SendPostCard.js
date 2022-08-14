@@ -4,7 +4,7 @@ import axios from "axios";
 
 import UserContext from "../contexts/UserContext";
 
-export default function SendPostCard({ getPosts }) {
+export default function SendPostCard({ getPosts,getTrending }) {
     const { image, token } = useContext(UserContext);
     const [link, setLink] = useState("");
     const [body, setBody] = useState("");
@@ -22,12 +22,21 @@ export default function SendPostCard({ getPosts }) {
             return [];
         }
     }
+    function removeDuplicates(arr) {
+        const uniqueHashtag = arr.reduce(function (newArray, currentValue) {
+            if (!newArray.includes(currentValue))
+                newArray.push(currentValue);
+            return newArray;
+        }, []);
+        return uniqueHashtag;
+    }
 
     async function publish(e) {
         e.preventDefault();
         setLoading(true);
         try {
-            const hashtags = findHashtags(body);
+            const hashtags = removeDuplicates(findHashtags(body));
+
             const post = {
                 link,
                 body,
@@ -44,6 +53,7 @@ export default function SendPostCard({ getPosts }) {
                 config
             );
             await getPosts();
+            await getTrending();
             setLoading(false);
             setLink("");
             setBody("");
