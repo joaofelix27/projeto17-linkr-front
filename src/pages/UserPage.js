@@ -1,6 +1,6 @@
 import TimelineHeader from "../components/TimelineHeader.js";
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import PostCard from "../components/PostCard.js";
@@ -13,25 +13,18 @@ import UserContext from "../contexts/UserContext.js";
 import { Circles } from "react-loader-spinner";
 
 export default function UserPage() {
-    const { token,control,load,setLoad } = useContext(UserContext);
+    const { token,control,load,setLoad,setToken } = useContext(UserContext);
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
-    const notify = (error) => {
-        toast(`❗ ${error}`, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      };
+    const navigate = useNavigate();
+    setToken(localStorage.getItem("authToken"));
 
     const { id } = useParams();
 
     useEffect(() => {
-        console.log("estou aq")
+        if (!token) {
+            navigate("/");
+          }
         getTrending();
 
         const config = {
