@@ -7,6 +7,8 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
@@ -29,8 +31,7 @@ export default function PostCard({
     getPosts,
     getTrending,
 }) {
-
-    const { token, userId, setUserId,setLoad } = useContext(UserContext);
+    const { token, userId, setUserId, setLoad } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
@@ -38,6 +39,7 @@ export default function PostCard({
     const [show, setShow] = useState(false);
     const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
+    const [tooltip, setTooltip] = useState();
     const navigate = useNavigate();
     const inputRef = useRef();
     const handleClose = () => setShow(false);
@@ -51,15 +53,15 @@ export default function PostCard({
     };
     const notify = (error) => {
         toast(`❗ ${error}`, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
         });
-      };
+    };
 
     const tagStyle = {
         fontFamily: "Lato",
@@ -121,10 +123,10 @@ export default function PostCard({
             inputRef.current.focus();
         }
 
-        getLikes();
+        getLikes(false);
     }, [textEdit]);
 
-    async function getLikes() {
+    async function getLikes(isReliked) {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -135,8 +137,11 @@ export default function PostCard({
                 `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
                 config
             );
+            console.log(result.tooltip)
+            console.log(result)
             setUserId(result?.userId);
-            if (result.isLiked === true) {
+            setTooltip(result?.tooltip);
+            if (result.isLiked && !(isReliked)) {
                 setAnimationLikeState({ ...animationLikeState, direction: 1 });
             }
         } catch (e) {
@@ -146,7 +151,7 @@ export default function PostCard({
 
             setTimeout(() => {
                 navigate("/");
-              }, 1000);
+            }, 1000);
 
             console.log(e);
         }
@@ -217,6 +222,8 @@ export default function PostCard({
             direction: normalAnimation,
         });
         setLike(like + 1);
+        setTooltip("Loading...");
+        getLikes(true);
     }
 
     function removeLike() {
@@ -227,6 +234,8 @@ export default function PostCard({
         });
 
         setLike(like - 1);
+        setTooltip("Loading...");
+        getLikes();
     }
 
     function postLike() {
@@ -256,13 +265,13 @@ export default function PostCard({
 
     function reloadPage() {
         getPosts();
-        getTrending();
         setIsDisabled("");
         setShow(false);
     }
 
     function removedPostSuccess(s) {
         setAnimationDeleteState({ ...animationDeleteState, isPaused: false });
+        getTrending();
     }
 
     function error(e) {
@@ -283,6 +292,12 @@ export default function PostCard({
             .catch((e) => error(e));
     }
 
+    const renderTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            {tooltip}
+        </Tooltip>
+    );
+
     return (
         <Container key={key}>
             <ProfilePhoto>
@@ -296,10 +311,19 @@ export default function PostCard({
                         isStopped={animationLikeState.isStopped}
                     />
                 </div>
-                <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
+                <OverlayTrigger placement="bottom" overlay={renderTooltip}>
+                    <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
+                </OverlayTrigger>
             </ProfilePhoto>
             <Post>
-                <h3 onClick={() => navigate(`/timeline/user/${creatorId}`,setLoad(true), { replace: true, state: {} })}>
+                <h3
+                    onClick={() =>
+                        navigate(`/timeline/user/${creatorId}`, setLoad(true), {
+                            replace: true,
+                            state: {},
+                        })
+                    }
+                >
                     {name}
                 </h3>
                 {textEdit === false ? (
@@ -421,7 +445,10 @@ const ProfilePhoto = styled.div`
     h6 {
         color: #b6b6b6;
         text-align: center;
+        padding-top: 10px;
+        box-sizing: border-box;
     }
+
     div * {
         border-radius: 50px;
         cursor: pointer;

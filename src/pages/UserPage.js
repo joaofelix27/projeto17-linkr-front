@@ -18,7 +18,6 @@ export default function UserPage() {
     const [trending, setTrending] = useState("");
     const navigate = useNavigate();
     setToken(localStorage.getItem("authToken"));
-
     const notify = (error) => {
         toast(`❗ ${error}`, {
           position: "top-center",
