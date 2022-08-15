@@ -16,6 +16,7 @@ export default function UserPage() {
     const { token,control,load,setLoad,setToken } = useContext(UserContext);
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
+    const [user, setUser] = useState("");
     const navigate = useNavigate();
     setToken(localStorage.getItem("authToken"));
     const notify = (error) => {
@@ -47,6 +48,9 @@ export default function UserPage() {
         const promise = axios.get(
             `${process.env.REACT_APP_BASE_URL}/timeline/user/${id}`, config
         );
+        const promiseUser = axios.get(
+            `${process.env.REACT_APP_BASE_URL}/user/${id}`
+        );
 
         promise.then((res) => {
             setLoad(false);
@@ -56,6 +60,14 @@ export default function UserPage() {
         promise.catch((Error) => {
             notify(Error.response.status);
         });
+        if(posts.length === 0){
+            promiseUser.then((res) => {
+                setUser(res.data.username);
+            });
+            promise.catch((Error) => {
+                notify(Error.response.status);
+            });
+        }
     }, [control]);
 
     function renderPosts() {
@@ -116,7 +128,7 @@ export default function UserPage() {
                             element={SearchBoxMobile}
                             debounceTimeout={300}
                         />
-                        <h2>{posts ? posts[0].username + "'s posts" : "loading..."}</h2>
+                        <h2>{posts && posts.length? posts[0].username + "'s posts" : user}</h2>
                         {
                             load ? <Circles color="crimson" /> : renderPosts()
                         }
