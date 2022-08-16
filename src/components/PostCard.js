@@ -458,7 +458,7 @@ export default function PostCard({
     );
 }
 
-const Container = styled.div`
+export const Container = styled.div`
     width: 100%;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
@@ -480,7 +480,7 @@ const Container = styled.div`
         line-height: 20px;
     }
 `;
-const ProfilePhoto = styled.div`
+export const ProfilePhoto = styled.div`
     height: 100%;
     margin-right: 20px;
     img {
@@ -510,12 +510,12 @@ const ProfilePhoto = styled.div`
 
         h6{
             font-size: 12px;
-            width: 70px;
+            width: 70px;    
         }
     }
 `;
 
-const Post = styled.div`
+export const Post = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -546,7 +546,7 @@ const Post = styled.div`
     }
 `;
 
-const LinkBox = styled.a`
+export const LinkBox = styled.a`
     width: 100%;
     margin-top: 20px;
     text-decoration: none;
@@ -611,11 +611,11 @@ const LinkBox = styled.a`
     }
 `;
 
-const ModalBox = styled.div`
+export const ModalBox = styled.div`
     background-color: black;
 `;
 
-const Textarea = styled.input`
+export const Textarea = styled.input`
     border: none;
     border-radius: 5px;
     background-color: #efefef;

@@ -83,7 +83,8 @@ export default function UserPage() {
                     image,
                     description,
                     userId,
-                    like
+                    like,
+                    reposts
                 }) => (
                     <PostCard
                     key={id}
@@ -97,6 +98,7 @@ export default function UserPage() {
                     creatorId={userId}
                     likes={like}
                     postId={id}
+                    reposts={reposts}
                     />
                 )
             );
