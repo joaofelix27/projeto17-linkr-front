@@ -100,38 +100,42 @@ export default function UserPage() {
         console.log(e);
       }
   }
-
-  function renderPosts() {
-    if (posts) {
-      const timeline = posts.map(
-        ({
-          id,
-          username,
-          picture,
-          link,
-          body,
-          title,
-          image,
-          description,
-          userId,
-          like,
-        }) => (
-          <PostCard
-            key={id}
-            name={username}
-            profileImage={picture}
-            url={link}
-            text={body}
-            titleUrl={title}
-            imageUrl={image}
-            descriptionUrl={description}
-            creatorId={userId}
-            likes={like}
-            postId={id}
-          />
-        )
-      );
-      return timeline;
+    function renderPosts() {
+        if (posts) {
+            const timeline = posts.map(
+                ({
+                    id,
+                    username,
+                    picture,
+                    link,
+                    body,
+                    title,
+                    image,
+                    description,
+                    userId,
+                    like,
+                    reposts
+                }) => (
+                    <PostCard
+                    key={id}
+                    name={username}
+                    profileImage={picture}
+                    url={link}
+                    text={body}
+                    titleUrl={title}
+                    imageUrl={image}
+                    descriptionUrl={description}
+                    creatorId={userId}
+                    likes={like}
+                    postId={id}
+                    reposts={reposts}
+                    />
+                )
+            );
+            return timeline;
+        }
+        if (posts === []) return <span>There are no posts yet</span>;
+        return <span>Loading...</span>;
     }
     if (posts === []) return <span>There are no posts yet</span>;
     return <span>Loading...</span>;
