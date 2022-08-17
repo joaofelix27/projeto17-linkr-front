@@ -90,6 +90,7 @@ export default function Timeline() {
           description,
           userId,
           like,
+          reposts
         }) => (
           <PostCard
             key={id}
@@ -106,6 +107,7 @@ export default function Timeline() {
             setPosts={setPosts}
             getPosts={getPosts}
             getTrending={getTrending}
+            reposts={reposts}
           />
         )
       );

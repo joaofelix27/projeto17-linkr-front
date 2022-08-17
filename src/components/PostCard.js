@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import repostimg from "../assets/repostIcon.png";
+import Swal from 'sweetalert2'
 
 import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
@@ -30,12 +32,14 @@ export default function PostCard({
     setPosts,
     getPosts,
     getTrending,
+    reposts
 }) {
     const { token, userId, setUserId, setLoad } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
     const [like, setLike] = useState(likes);
+    const [repostsCount,setRepostsCount] = useState(reposts);
     const [show, setShow] = useState(false);
     const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
@@ -298,6 +302,46 @@ export default function PostCard({
         </Tooltip>
     );
 
+    function repost(postId){
+        Swal.fire({
+            title: 'Do you want to re-post this link?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, share!',
+            cancelButtonText: 'No, cancel',
+            confirmButtonColor: '#1877F2',
+            cancelButtonColor: 'crimson',
+            background:"#333333",
+            color: "#ffffff",
+            reverseButtons: true,
+            height: "200px"
+          }
+        ).then((result) => {
+            if (result.isConfirmed) {
+                const promise = axios.post(`${process.env.REACT_APP_BASE_URL}/timeline/repost/${postId}`,{},config);
+
+                promise.then(()=>{
+                    Swal.fire({
+                        title:"Reposted!",
+                        background:"#333333",
+                        color: "#ffffff"
+                    });
+                });
+
+                promise.catch(Error=>{
+                    alert(Error.response.status);
+                });
+            } else{
+                Swal.fire({
+                    title:"Repost canceled!",
+                    background:"#333333",
+                    color: "#ffffff"
+                });
+                }
+             });
+    
+        return;
+    }
+
     return (
         <Container key={key}>
             <ProfilePhoto>
@@ -314,6 +358,10 @@ export default function PostCard({
                 <OverlayTrigger placement="bottom" overlay={renderTooltip}>
                     <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
                 </OverlayTrigger>
+                <div className="repost" onClick={()=>repost(postId)}>
+                    <img src={repostimg} alt="" srcset="" />
+                    <h6>{repostsCount} re-posts</h6>
+                </div>
             </ProfilePhoto>
             <Post>
                 <h3
@@ -410,7 +458,7 @@ export default function PostCard({
     );
 }
 
-const Container = styled.div`
+export const Container = styled.div`
     width: 100%;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
@@ -432,7 +480,7 @@ const Container = styled.div`
         line-height: 20px;
     }
 `;
-const ProfilePhoto = styled.div`
+export const ProfilePhoto = styled.div`
     height: 100%;
     margin-right: 20px;
     img {
@@ -453,9 +501,21 @@ const ProfilePhoto = styled.div`
         border-radius: 50px;
         cursor: pointer;
     }
+
+    .repost{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        h6{
+            font-size: 12px;
+            width: 70px;    
+        }
+    }
 `;
 
-const Post = styled.div`
+export const Post = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -486,7 +546,7 @@ const Post = styled.div`
     }
 `;
 
-const LinkBox = styled.a`
+export const LinkBox = styled.a`
     width: 100%;
     margin-top: 20px;
     text-decoration: none;
@@ -551,11 +611,11 @@ const LinkBox = styled.a`
     }
 `;
 
-const ModalBox = styled.div`
+export const ModalBox = styled.div`
     background-color: black;
 `;
 
-const Textarea = styled.input`
+export const Textarea = styled.input`
     border: none;
     border-radius: 5px;
     background-color: #efefef;

@@ -23,6 +23,8 @@
         "react-toastify": "^9.0.8",
         "react-tooltip": "^4.2.21",
         "styled-components": "^5.3.5",
+        "sweetalert": "^2.1.2",
+        "sweetalert2": "^11.4.27",
         "web-vitals": "^2.1.4"
     },
     "scripts": {
