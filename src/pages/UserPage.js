@@ -17,10 +17,11 @@ export default function UserPage() {
   const { token, control, load, setLoad, setToken } = useContext(UserContext);
   const [posts, setPosts] = useState("");
   const [disabled,setDisabled]=useState(false)
+  const [isMyPage,setIsMyPage]=useState(true)
   const [followed, setFollowed] = useState("");
   const [trending, setTrending] = useState("");
   const [user, setUser] = useState("");
-  const navigate = useNavigate();
+  const navigate = useNavigate();   
   setToken(localStorage.getItem("authToken"));
   const notify = (error) => {
     toast(`❗ ${error}`, {
@@ -85,7 +86,11 @@ export default function UserPage() {
         const result = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/followed/${id}`,
         config);
-        setFollowed(result.data)
+        const {userId,message} = result.data
+        if(userId!==Number(id)){
+            setIsMyPage(false)
+        }
+        setFollowed(message)
         setDisabled(false)
       } catch (e) {
         setDisabled(false)
@@ -183,9 +188,9 @@ export default function UserPage() {
             </h2>
             {load ? <Circles color="crimson" /> : renderPosts()}
           </LeftContent>
-          <RightContent userPage={true}>
+          <RightContent userPage={!isMyPage}>
             <ButtonContainer>
-              <FollowButton disabled={disabled} onClick={followUser}>{followed}</FollowButton>
+                {isMyPage? "":<FollowButton disabled={disabled} followed={followed} onClick={followUser}>{followed}</FollowButton>}
             </ButtonContainer>
             <TrendingHashtags hashtags={trending} />
           </RightContent>
@@ -199,14 +204,14 @@ export const FollowButton = styled.button`
   width: 112px;
   border-radius: 5px;
   border: 0;
-  background-color: #1877f2 ;
+  background-color: ${props => props.followed==="Follow"?"#1877f2":"#FFFFFF" };
   pointer-events:${props => props.disabled ?"none":"normal"};
   font-family: Lato;
   font-size: 14px;
   font-weight: 700;
   line-height: 17px;
   letter-spacing: 0em;
-  color: #ffffff;
+  color: ${props => props.followed==="Follow"?"#FFFFFF":"#1877f2" };
   margin-bottom: 60px;
 `;
 const ButtonContainer = styled.div`
