@@ -7,13 +7,15 @@ import UserContext from "../contexts/UserContext";
 import TimelineHeader from "../components/TimelineHeader";
 import SendPostCard from "../components/SendPostCard";
 import PostCard from "../components/PostCard";
+import RepostCard from "../components/RepostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
 import { DebounceInput } from "react-debounce-input";
 import SearchBoxMobile from "../components/SearchBoxMobile";
 
 export default function Timeline() {
-  const { token, setImage, setName, setToken} = useContext(UserContext);
+  const { token, setImage, setName, setToken, control} = useContext(UserContext);
   const [posts, setPosts] = useState("");
+  const [reposts, setReposts] = useState("");
   const [trending, setTrending] = useState("");
   const navigate = useNavigate();
   setToken(localStorage.getItem("authToken"));
@@ -36,10 +38,13 @@ export default function Timeline() {
     if (posts === "") {
       getPosts();
     }
+    if (reposts === "") {
+      getReposts();
+    }
     if (trending === "") {
       getTrending();
     }
-  }, []);
+  }, [control]);
 
   async function getPosts() {
     const config = {
@@ -62,6 +67,28 @@ export default function Timeline() {
       console.log(e);
     }
   }
+
+  async function getReposts() {
+    console.log("tentando repost")
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/timeline/reposts`,
+        config
+      );
+      setReposts(result.data);
+    } catch (e) {
+      notify(
+        "An error occured while trying to fetch the posts, please refresh the page"
+      );
+      console.log(e);
+    }
+  }
+
   async function getTrending() {
     try {
       const result = await axios.get(
@@ -110,7 +137,49 @@ export default function Timeline() {
             reposts={reposts}
           />
         )
-      );
+      ); 
+      if(reposts){
+        console.log("funciona?")
+        const timelineReposts = reposts.map(
+          ({
+            id,
+            username,
+            picture,
+            link,
+            body,
+            title,
+            image,
+            description,
+            userId,
+            like,
+            reposts,
+            reposter,
+            reposterId
+          }) => (
+            <RepostCard
+              key={id}
+              name={username}
+              profileImage={picture}
+              url={link}
+              text={body}
+              titleUrl={title}
+              imageUrl={image}
+              descriptionUrl={description}
+              likes={like}
+              postId={id}
+              creatorId={userId}
+              setPosts={setPosts}
+              getReposts={getReposts}
+              getTrending={getTrending}
+              reposts={reposts}
+              reposter={reposter}
+              reposterId={reposterId}
+            />
+          )
+        );
+        return [...timeline,...timelineReposts];
+      }
+  
       return timeline;
     }
     if (posts === []) return <span>There are no posts yet</span>;
