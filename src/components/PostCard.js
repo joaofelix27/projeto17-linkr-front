@@ -464,7 +464,7 @@ export default function PostCard({
                 </Modal>
             </ModalBox>
         </Container>
-        <Comments show={showComments} postId={postId}/>
+        <Comments show={showComments} postId={postId} notify={notify}/>
         </>
     );
 }
