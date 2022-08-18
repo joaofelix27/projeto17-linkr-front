@@ -36,7 +36,9 @@ const Container = styled.div`
     position: sticky;
     top: 100px;
     height: 406px;
-    width: 301px;
+    width:100%;
+    min-width:250px;
+    max-width:301px;
     border-radius: 16px;
     background-color: #171717;
     h2 {

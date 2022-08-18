@@ -141,8 +141,6 @@ export default function PostCard({
                 `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
                 config
             );
-            console.log(result.tooltip)
-            console.log(result)
             setUserId(result?.userId);
             setTooltip(result?.tooltip);
             if (result.isLiked && !(isReliked)) {

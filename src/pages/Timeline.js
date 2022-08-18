@@ -167,6 +167,7 @@ export const LeftContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-right:25px;
 
   h2 {
     display: flex;
@@ -192,10 +193,11 @@ export const LeftContent = styled.div`
   }
 `;
 export const RightContent = styled.div`
-  margin-top: 136px;
-  width: 20%;
+  margin-top: ${props => props.userPage===true ? "50px":"141px"};
+  width: 301px;
   display: flex;
-  margin-left: 25px;
+  flex-direction:column;  
+  align-items:flex-end;
 
   @media only screen and (max-width: 1060px) {
     h2 {
