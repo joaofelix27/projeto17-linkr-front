@@ -36,7 +36,7 @@ export default function PostCard({
     getTrending,
     reposts
 }) {
-    const { token, userId, setUserId, setLoad } = useContext(UserContext);
+    const { token, userId, setUserId, setLoad, control, setControl } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
@@ -326,6 +326,8 @@ export default function PostCard({
                         background:"#333333",
                         color: "#ffffff"
                     });
+                    setRepostsCount(parseInt(repostsCount)+1);
+                    setControl(!control);
                 });
 
                 promise.catch(Error=>{
