@@ -9,6 +9,7 @@ import UserContext from "../contexts/UserContext";
 
 
 export default function SearchBox() {
+    const { token } = useContext(UserContext);
     const [searchName, setSearchName] = useState("");
     const [users, setUsers] = useState([]);
     const { control,setControl,setLoad } = useContext(UserContext);
@@ -27,13 +28,13 @@ export default function SearchBox() {
     const navigate = useNavigate();
 
     function renderUsers() {
-        const search = users.map(({ picture, id, username, index }) => (
+        const search = users.map(({ picture, id, username, index,userid }) => (
             <UserBox
                 onClick={() => navigate(`/timeline/user/${id}`,setLoad(true),setControl(!control), { replace: true, state: {} })}
                 key={index}
             >
                 <img src={picture} alt="" srcset="" />
-                <h4>{username}</h4>
+                <h4>{username} {userid !==null?"Following":""}</h4>
             </UserBox>
         ));
         return search;
@@ -42,13 +43,17 @@ export default function SearchBox() {
     function searchUser(event) {
         event.preventDefault();
 
+        const config = {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };        
         const body = {
             name: searchName,
         };
-
         const promise = axios.post(
             `${process.env.REACT_APP_BASE_URL}/timeline/user`,
-            body
+            body,config
         );
 
         promise.then((res) => {
