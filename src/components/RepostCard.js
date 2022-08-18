@@ -227,7 +227,7 @@ export default function RepostCard({
 
     return (
         <>
-        <Container key={key}>
+        <Container key={key} comments={showComments}>
             <div className="reposter">
                 <img src={repostimg} alt="" srcset="" />
                 Re-posted by { reposterId === creatorId ? 'you' : reposterName}
@@ -347,7 +347,7 @@ export default function RepostCard({
                 </Modal>
             </ModalBox>
         </Container>
-         <Comments show={showComments} postId={postId}/>
+         <Comments show={showComments} postId={postId} notify={notify}/>
         </>
     );
 }

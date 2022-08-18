@@ -319,6 +319,7 @@ export const LeftContent = styled.div`
   flex-direction: column;
   align-items: center;
   margin-right:25px;
+  gap: 30px;
 
   h2 {
     display: flex;
