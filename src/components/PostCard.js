@@ -6,7 +6,8 @@ import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
-import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import { FaTrash, FaPencilAlt,  } from "react-icons/fa";
+import {AiOutlineComment} from "react-icons/ai"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import repostimg from "../assets/repostIcon.png";
@@ -141,8 +142,6 @@ export default function PostCard({
                 `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
                 config
             );
-            console.log(result.tooltip)
-            console.log(result)
             setUserId(result?.userId);
             setTooltip(result?.tooltip);
             if (result.isLiked && !(isReliked)) {
@@ -362,6 +361,10 @@ export default function PostCard({
                     <img src={repostimg} alt="" srcset="" />
                     <h6>{repostsCount} re-posts</h6>
                 </div>
+                <div className="comment">
+                    <AiOutlineComment color="#fff" size={32}/>
+                    <h6>0 comments</h6>
+                </div>
             </ProfilePhoto>
             <Post>
                 <h3
@@ -483,10 +486,10 @@ export const Container = styled.div`
        padding: 14px;
        padding-right: 19px;
         h3{
-        font-size: 22px;
+        font-size: 20px;
        }
        p{
-        font-size: 15px;
+        font-size: 14px;
        }
 
     }
@@ -505,10 +508,11 @@ export const ProfilePhoto = styled.div`
     }
 
     h6 {
+        font-size: 13px;
         color: #b6b6b6;
         text-align: center;
         box-sizing: border-box;
-        margin-bottom: 7px;
+        margin-bottom: 9px;
     }
 
     div * {
@@ -516,22 +520,23 @@ export const ProfilePhoto = styled.div`
         cursor: pointer;
     }
 
-    .repost{
+    .repost, .comment{
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
+        margin-bottom: 7px;
 
         h6{
-            font-size: 12px;
             width: 70px;    
         }
     }
     @media screen and (max-width: 650px) {
         margin-right: 14px;
+        width: 14%;
         img{
-            width: 49px;
-            height: 49px;
+            width: 45px;
+            height: 45px;
         }
 
     }
@@ -566,6 +571,9 @@ export const Post = styled.div`
             height: 18px;
         }
     }
+    @media screen and (max-width: 600px){
+        padding-top: 6px;
+    }
 `;
 
 export const LinkBox = styled.a`
@@ -586,13 +594,13 @@ export const LinkBox = styled.a`
         color: #cecece;
         font-size: 18px;
         line-height: 19px;
-        margin-bottom: 6px;
+        margin-bottom: 10px;
     }
     h5 {
         color: #9b9595;
         font-size: 14px;
         line-height: 16px;
-        margin-bottom: 5px;
+        margin-bottom: 6px;
     }
     h6 {
         color: #cecece;
@@ -608,30 +616,41 @@ export const LinkBox = styled.a`
     }
     @media screen and (max-width: 900px) {
         h4{
-            font-size: 15px;
+            font-size: 16px;
             margin-bottom: 4px;
         }
         h5{
-            font-size: 12px;
-            margin-bottom: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
         }
         h6{
-            font-size: 10px;
+            font-size: 12px;
         }
         img {
-
             object-fit: cover;
         }
     }
     @media screen and (max-width: 650px) {
+        margin-top: 13px;
         h4{
-            font-size: 15px;
+            max-height: 5.5ch;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 12px;
+            margin-bottom: 4px;
         }
         h5{
-            font-size: 12px;
+            max-height: 8.5ch;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 10px;
+            margin-bottom: 4px
         }
         h6{
-            font-size: 10px;
+            font-size: 8px;
+        }
+        div{
+            padding: 15px 12px;
         }
 
     }

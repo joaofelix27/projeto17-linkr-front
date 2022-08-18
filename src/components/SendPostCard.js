@@ -169,6 +169,9 @@ const Container = styled.div`
 
     @media only screen and (max-width: 720px) {
         width: 100%;
+        h3{
+            font-size: 22px;
+        }
     }
 `;
 

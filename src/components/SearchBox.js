@@ -77,7 +77,7 @@ export default function SearchBox() {
                         }
                     }}
                 />
-                <IoSearch type="submit" color="#333333" size={30} />
+                <IoSearch type="submit" color="#C6C6C6" size={30} />
             </form>
             <UsersBox displayUsers={users}>{renderUsers()}</UsersBox>
         </Container>
@@ -126,7 +126,7 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 720px;
+    width: 650px;
     height: 46px;
     background-color: #ffffff;
     border-radius:  ${(props) =>

@@ -77,7 +77,7 @@ export default function SearchBoxMobile() {
                         }
                     }}
                 />
-                <IoSearch type="submit" color="#333333" size={30} />
+                <IoSearch type="submit" color="#C6C6C6" size={30} />
             </form>
             <UsersBox displayUsers={users}>{renderUsers()}</UsersBox>
         </Container>
@@ -132,7 +132,7 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     width: 90%;
-    height: 46px;
+    height: 50px;
     background-color: #ffffff;
     border-radius: 6px 6px 0px 0px;
     position: relative;
@@ -141,6 +141,7 @@ const Container = styled.div`
         display: flex;
         justify-content: center;
         align-items: center;
+        border-radius: 6px;
         width: 100%;
         height: 100%;
         padding: 0 12px;
