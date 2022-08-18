@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import TimelineHeader from "../components/TimelineHeader.js";
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -15,11 +16,13 @@ import { Circles } from "react-loader-spinner";
 export default function UserPage() {
     const { token, control, load, setLoad, setToken } = useContext(UserContext);
     const [posts, setPosts] = useState("");
+    const [disabled, setDisabled] = useState(false);
+    const [isMyPage, setIsMyPage] = useState(true);
+    const [followed, setFollowed] = useState("");
     const [trending, setTrending] = useState("");
     const [user, setUser] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [isOnSentinel, setIsOnSentinel] = useState("sentinela");
-    const [teste, setTeste] = useState(0);
     const navigate = useNavigate();
     setToken(localStorage.getItem("authToken"));
     const notify = (error) => {
@@ -34,14 +37,14 @@ export default function UserPage() {
         });
     };
 
-    const { id } = useParams();
+  const { id } = useParams();
 
     const reload = useEffect(() => {
         getPosts();
+        getFollow();
     }, [control, currentPage]);
 
     function getPosts() {
-        console.log("opa");
         if (!token) {
             navigate("/");
         }
@@ -115,6 +118,31 @@ export default function UserPage() {
             console.log(e);
         }
     }
+    async function getFollow() {
+      setIsMyPage(true)
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      setDisabled(true);
+      try {
+        const result = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/followed/${id}`,
+          config
+        );
+        const { userId, message } = result.data;
+        if (userId !== Number(id)) {
+          setIsMyPage(false);
+        }
+        setFollowed(message);
+        setDisabled(false);
+      } catch (e) {
+        setDisabled(false);
+        notify("An error occured while trying to get if the user is followed");
+        console.log(e);
+      }
+    }
 
     function renderPosts() {
         if (posts) {
@@ -156,22 +184,42 @@ export default function UserPage() {
         return <span>Loading...</span>;
     }
 
-    return (
-        <Container>
-            <TimelineHeader />
-            <Content>
-                <ContentBody>
-                    <LeftContent>
-                        <DebounceInput
-                            element={SearchBoxMobile}
-                            debounceTimeout={300}
-                        />
-                        <h2>
-                            {posts && posts.length
-                                ? posts[0].username + "'s posts"
-                                : user}
-                        </h2>
-                        {load ? <Circles color="crimson" /> : renderPosts()}
+async function followUser() {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  setDisabled(true);
+  try {
+    const body = {
+      followedUserId: id,
+    };
+    const result = await axios.post(
+      `${process.env.REACT_APP_BASE_URL}/follow`,
+      body,
+      config
+    );
+    getFollow();
+    setDisabled(false);
+  } catch (e) {
+    setDisabled(false);
+    notify("An error occured while trying to follow the user");
+    console.log(e);
+  }
+}
+
+return (
+  <Container>
+    <TimelineHeader />
+    <Content>
+      <ContentBody>
+        <LeftContent>
+          <DebounceInput element={SearchBoxMobile} debounceTimeout={300} />
+          <h2>
+            {posts && posts.length ? posts[0].username + "'s posts" : user}
+          </h2>
+          {load ? <Circles color="crimson" /> : renderPosts()}
                         {posts.length !== 0 ? (
                             <li id={isOnSentinel}>
                                 {isOnSentinel === "sentinela" &&
@@ -181,12 +229,47 @@ export default function UserPage() {
                             </li>
                         ) : null}{" "}
                         {/* verifica se o scroll chegou ao fim */}
-                    </LeftContent>
-                    <RightContent>
-                        <TrendingHashtags hashtags={trending} />
-                    </RightContent>
-                </ContentBody>
-            </Content>
-        </Container>
-    );
-}
+        </LeftContent>
+        <RightContent userPage={!isMyPage}>
+          <ButtonContainer>
+            {isMyPage ? (
+              ""
+            ) : (
+              <FollowButton
+                disabled={disabled}
+                followed={followed}
+                onClick={followUser}
+              >
+                {followed}
+              </FollowButton>
+            )}
+          </ButtonContainer>
+          <TrendingHashtags hashtags={trending} />
+        </RightContent>
+      </ContentBody>
+    </Content>
+  </Container>
+);
+            }
+export const FollowButton = styled.button`
+  height: 31px;
+  width: 112px;
+  border-radius: 5px;
+  border: 0;
+  background-color: ${(props) =>
+    props.followed === "Follow" ? "#1877f2" : "#FFFFFF"};
+  pointer-events: ${(props) => (props.disabled ? "none" : "normal")};
+  font-family: Lato;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 17px;
+  letter-spacing: 0em;
+  color: ${(props) => (props.followed === "Follow" ? "#FFFFFF" : "#1877f2")};
+  margin-bottom: 60px;
+`;
+const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;

@@ -7,41 +7,48 @@ import UserContext from "../contexts/UserContext";
 import TimelineHeader from "../components/TimelineHeader";
 import SendPostCard from "../components/SendPostCard";
 import PostCard from "../components/PostCard";
+import RepostCard from "../components/RepostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
 import { DebounceInput } from "react-debounce-input";
 import SearchBoxMobile from "../components/SearchBoxMobile";
 
 export default function Timeline() {
-    const { token, setImage, setName, setToken } = useContext(UserContext);
-    const [posts, setPosts] = useState("");
-    const [trending, setTrending] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isOnSentinel, setIsOnSentinel] = useState("sentinela");
-    const navigate = useNavigate();
-    setToken(localStorage.getItem("authToken"));
-    const notify = (error) => {
-        toast(`❗ ${error}`, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    };
+  const { token, setImage, setName, setToken, control} = useContext(UserContext);
+  const [posts, setPosts] = useState("");
+  const [reposts, setReposts] = useState("");
+  const [trending, setTrending] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isOnSentinel, setIsOnSentinel] = useState("sentinela");
+  const navigate = useNavigate();
+  setToken(localStorage.getItem("authToken"));
+  const notify = (error) => {
+    toast(`❗ ${error}`, {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
 
-    useEffect(() => {
-        if (!token) {
-            navigate("/");
-        }
-        if (posts === "") {
-            getPosts();
-        }
-        if (trending === "") {
-            getTrending();
-        }
-    }, []);
+  useEffect(() => {
+    let check = control;
+    if (!token) {
+      navigate("/");
+    }
+    if (posts === "") {
+      getPosts();
+    }
+    if (reposts === "" || check !== control) {
+      check = control;
+      getReposts();
+    }
+    if (trending === "") {
+      getTrending();
+    }
+  }, [control]);
 
     useEffect(() => {
         const config = {
@@ -81,6 +88,7 @@ export default function Timeline() {
                     );
                 }
             });
+        
 
             if (isOnSentinel === "sentinela") {
                 intersectionObserver.observe(
@@ -118,60 +126,133 @@ export default function Timeline() {
                 console.log(e);
             });
     }
-    async function getTrending() {
-        try {
-            const result = await axios.get(
-                `${process.env.REACT_APP_BASE_URL}/trending`
-            );
-            setTrending(result.data);
-        } catch (e) {
-            notify(
-                "An error occured while trying to fetch the trending hashtags, please refresh the page"
-            );
-            console.log(e);
-        }
-    }
 
-    function renderPosts() {
-        if (posts) {
-            const timeline = posts.map(
-                ({
-                    id,
-                    username,
-                    picture,
-                    link,
-                    body,
-                    title,
-                    image,
-                    description,
-                    userId,
-                    like,
-                    reposts,
-                }) => (
-                    <PostCard
-                        key={id}
-                        name={username}
-                        profileImage={picture}
-                        url={link}
-                        text={body}
-                        titleUrl={title}
-                        imageUrl={image}
-                        descriptionUrl={description}
-                        likes={like}
-                        postId={id}
-                        creatorId={userId}
-                        setPosts={setPosts}
-                        getPosts={getPosts}
-                        getTrending={getTrending}
-                        reposts={reposts}
-                    />
-                )
-            );
-            return timeline;
-        }
-        if (posts === []) return <span>There are no posts yet</span>;
-        return <span>Loading...</span>;
+  async function getReposts() {
+    console.log("tentando repost")
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/timeline/reposts`,
+        config
+      );
+      setReposts(result.data);
+    } catch (e) {
+      notify(
+        "An error occured while trying to fetch the posts, please refresh the page"
+      );
+      console.log(e);
     }
+  }
+
+  async function getTrending() {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/trending`
+      );
+      setTrending(result.data);
+    } catch (e) {
+      notify(
+        "An error occured while trying to fetch the trending hashtags, please refresh the page"
+      );
+      console.log(e);
+    }
+  }
+
+  console.log(posts)
+
+  function renderPosts() {
+    if (posts) {
+      const timeline = posts.map(
+        ({
+          id,
+          username,
+          picture,
+          link,
+          body,
+          title,
+          image,
+          description,
+          userId,
+          like,
+          reposts,
+          createdAt,
+        }) => (
+          <PostCard
+            key={id}
+            name={username}
+            profileImage={picture}
+            url={link}
+            text={body}
+            titleUrl={title}
+            imageUrl={image}
+            descriptionUrl={description}
+            likes={like}
+            postId={id}
+            creatorId={userId}
+            setPosts={setPosts}
+            getPosts={getPosts}
+            getTrending={getTrending}
+            reposts={reposts}
+            createdAt={createdAt}
+          />
+        )
+      ); 
+      if(reposts){
+        const timelineReposts = reposts.map(
+          ({
+            id,
+            username,
+            picture,
+            link,
+            body,
+            title,
+            image,
+            description,
+            userId,
+            like,
+            reposts,
+            reposter,
+            reposterId,
+            createdAt
+          }) => (
+            <RepostCard
+              key={id}
+              name={username}
+              profileImage={picture}
+              url={link}
+              text={body}
+              titleUrl={title}
+              imageUrl={image}
+              descriptionUrl={description}
+              likes={like}
+              postId={id}
+              creatorId={userId}
+              setPosts={setPosts}
+              getReposts={getReposts}
+              getTrending={getTrending}
+              reposts={reposts}
+              reposter={reposter}
+              reposterId={reposterId}
+              createdAt={createdAt}
+            />
+          )
+        );
+        const allposts = [...timeline,...timelineReposts];
+    
+        const sortedPosts = allposts.sort(function(x, y){
+          return new Date(x.props.createdAt).getTime() - new Date(y.props.createdAt).getTime();
+      });
+
+      return sortedPosts.reverse();
+      }
+  
+      return timeline;
+    }
+}
     return (
         <Container>
             <TimelineHeader />
@@ -233,16 +314,25 @@ export const ContentBody = styled.div`
     justify-content: center;
 `;
 export const LeftContent = styled.div`
-    width: 40%;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right:25px;
+
+  h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
     list-style: none;
 
+  }
+
     li {
         margin-bottom: 5px;
         color: #b6b6b6;
         font-size: 18px;
+        list-style: none;
     }
 
     h2 {
@@ -259,6 +349,8 @@ export const LeftContent = styled.div`
 
     @media only screen and (max-width: 1060px) {
         width: 100%;
+        margin-right: 0;
+
         h2 {
             margin-top: 70px;
             padding-left: 28px;
@@ -268,11 +360,13 @@ export const LeftContent = styled.div`
         }
     }
 `;
+
 export const RightContent = styled.div`
-    margin-top: 136px;
-    width: 20%;
-    display: flex;
-    margin-left: 25px;
+  margin-top: ${props => props.userPage===true ? "50px":"141px"};
+  width: 301px;
+  display: flex;
+  flex-direction:column;  
+  align-items:flex-end;
 
     @media only screen and (max-width: 1060px) {
         h2 {

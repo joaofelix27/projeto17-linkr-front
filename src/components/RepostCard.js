@@ -17,7 +17,9 @@ import animationDataLike from "../assets/like-icon.json";
 import animationDataDelete from "../assets/delete-icon.json";
 import { ReactTagify } from "react-tagify";
 
-export default function PostCard({
+import { Container,ProfilePhoto,Post,Textarea,LinkBox,ModalBox } from "./PostCard";
+
+export default function RepostCard({
     key,
     name,
     profileImage,
@@ -30,12 +32,16 @@ export default function PostCard({
     postId,
     creatorId,
     setPosts,
-    getPosts,
+    getReposts,
     getTrending,
-    reposts
+    reposts,
+    reposter,
+    reposterId
 }) {
     const { token, userId, setUserId, setLoad, control, setControl } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
+    const [reposterName,setReposterName] = useState(reposter);
+    const [checkReposter,setCheckReposter] = useState(reposterId);
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
     const [like, setLike] = useState(likes);
@@ -122,42 +128,6 @@ export default function PostCard({
     const reverseAnimation = -1;
     const legendAlt = `${name} profile pic`;
 
-    useEffect(() => {
-        if (textEdit === true) {
-            inputRef.current.focus();
-        }
-
-        getLikes(false);
-    }, [textEdit]);
-
-    async function getLikes(isReliked) {
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-        try {
-            const { data: result } = await axios.get(
-                `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
-                config
-            );
-            setUserId(result?.userId);
-            setTooltip(result?.tooltip);
-            if (result.isLiked && !(isReliked)) {
-                setAnimationLikeState({ ...animationLikeState, direction: 1 });
-            }
-        } catch (e) {
-            notify(
-                "An error occured while trying to fetch the posts, please refresh the page"
-            );
-
-            setTimeout(() => {
-                navigate("/");
-            }, 1000);
-
-            console.log(e);
-        }
-    }
 
     function handleKeyPress(event) {
         if (event.key === "Escape") {
@@ -217,56 +187,8 @@ export default function PostCard({
             });
     }
 
-    function addLike() {
-        setAnimationLikeState({
-            ...animationLikeState,
-            isStopped: false,
-            direction: normalAnimation,
-        });
-        setLike(like + 1);
-        setTooltip("Loading...");
-        getLikes(true);
-    }
-
-    function removeLike() {
-        setAnimationLikeState({
-            ...animationLikeState,
-            isStopped: true,
-            direction: reverseAnimation,
-        });
-
-        setLike(like - 1);
-        setTooltip("Loading...");
-        getLikes();
-    }
-
-    function postLike() {
-        if (animationLikeState.direction === 1) {
-            const promisse = axios
-                .delete(
-                    `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
-                    config
-                )
-
-                .then(() => removeLike())
-
-                .catch((e) => notify(e));
-        } else {
-            const promisse = axios
-                .post(
-                    `${process.env.REACT_APP_BASE_URL}/like/${postId}`,
-                    {},
-                    config
-                )
-
-                .then(() => addLike())
-
-                .catch((e) => console.log(e));
-        }
-    }
-
     function reloadPage() {
-        getPosts()
+        getReposts();
         setIsDisabled("");
         setShow(false);
     }
@@ -300,53 +222,15 @@ export default function PostCard({
         </Tooltip>
     );
 
-    function repost(postId){
-        Swal.fire({
-            title: 'Do you want to re-post this link?',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, share!',
-            cancelButtonText: 'No, cancel',
-            confirmButtonColor: '#1877F2',
-            cancelButtonColor: 'crimson',
-            background:"#333333",
-            color: "#ffffff",
-            reverseButtons: true,
-            height: "200px"
-          }
-        ).then((result) => {
-            if (result.isConfirmed) {
-                const promise = axios.post(`${process.env.REACT_APP_BASE_URL}/timeline/repost/${postId}`,{},config);
-
-                promise.then(()=>{
-                    Swal.fire({
-                        title:"Reposted!",
-                        background:"#333333",
-                        color: "#ffffff"
-                    });
-                    setRepostsCount(parseInt(repostsCount)+1);
-                    setControl(!control);
-                });
-
-                promise.catch(Error=>{
-                    alert(Error.response.status);
-                });
-            } else{
-                Swal.fire({
-                    title:"Repost canceled!",
-                    background:"#333333",
-                    color: "#ffffff"
-                });
-                }
-             });
-    
-        return;
-    }
-
     return (
         <Container key={key}>
+            <div className="reposter">
+                <img src={repostimg} alt="" srcset="" />
+                Re-posted by { reposterId === creatorId ? 'you' : reposterName}
+                </div>
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
-                <div className="animation" onClick={postLike}>
+                <div className="animation">
                     <Lottie
                         options={likeDefaultOptions}
                         height={65}
@@ -358,7 +242,7 @@ export default function PostCard({
                 <OverlayTrigger placement="bottom" overlay={renderTooltip}>
                     <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
                 </OverlayTrigger>
-                <div className="repost" onClick={()=>repost(postId)}>
+                <div className="repost">
                     <img src={repostimg} alt="" srcset="" />
                     <h6>{repostsCount} re-posts</h6>
                 </div>
@@ -457,221 +341,3 @@ export default function PostCard({
         </Container>
     );
 }
-
-export const Container = styled.div`
-    width: 100%;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 16px;
-    padding: 17px;
-    padding-right: 22px;
-    margin-bottom: 30px;
-    display: flex;
-    font-family: "Lato";
-    background-color: #171717;
-    border-radius: 16px;
-    position: relative;
-    margin-bottom: 60px;
-
-    h3 {
-        color: white;
-        font-size: 24px;
-        margin-bottom: 8px;
-    }
-    p {
-        color: #b7b7b7;
-        font-size: 18px;
-        line-height: 20px;
-        word-break: break-all;
-    }
-
-    .reposter{
-        display: flex;
-        align-items: center;
-        padding-left: 10px;
-        height: 40px;
-        width: 100%;
-        color: #ffffff;
-        background-color: #1E1E1E;
-
-        position: absolute;
-        top: -26px;
-        left: 0;
-
-        img{
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
-    }
-`;
-export const ProfilePhoto = styled.div`
-    height: 100%;
-    margin-right: 20px;
-    img {
-        width: 58px;
-        height: 58px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    h6 {
-        color: #b6b6b6;
-        text-align: center;
-        padding-top: 10px;
-        box-sizing: border-box;
-    }
-
-    div * {
-        border-radius: 50px;
-        cursor: pointer;
-    }
-
-    .repost{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        margin-top: 30px;
-
-        img{
-            width: 24px;
-            height: 12px;
-        }
-
-        h6{
-            font-size: 12px;
-            width: 70px;    
-        }
-    }
-`;
-
-export const Post = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding-top: 10px;
-    position: relative;
-
-    h3 {
-        cursor: pointer;
-    }
-
-    span {
-        span {
-            cursor: pointer;
-        }
-    }
-
-    .buttons {
-        position: absolute;
-        top: 0;
-        right: 0;
-
-        svg {
-            cursor: pointer;
-            width: 30px;
-            margin-left: 5px;
-            height: 18px;
-        }
-    }
-`;
-
-export const LinkBox = styled.a`
-    width: 100%;
-    margin-top: 20px;
-    text-decoration: none;
-    border: 1px solid #4d4d4d;
-    border-radius: 12px;
-    display: flex;
-    word-break: break-word;
-    div {
-        padding: 24px 19px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-    }
-    h4 {
-        color: #cecece;
-        font-size: 18px;
-        line-height: 19px;
-    }
-    h5 {
-        color: #9b9595;
-        font-size: 14px;
-        line-height: 16px;
-    }
-    h6 {
-        color: #cecece;
-        font-size: 11px;
-        line-height: 13px;
-    }
-    img {
-        width: 33%;
-        height: calc(width);
-        object-fit: fill;
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
-        object-fit: contain;
-    }
-
-    @media screen and (max-width: 1300px) {
-        flex-wrap: wrap;
-
-        img {
-            width: 60%;
-            margin: 0 auto;
-            border-radius: 0;
-        }
-    }
-
-    @media screen and (max-width: 1050px) {
-        img {
-            width: 60%;
-            margin: 0 auto;
-            border-radius: 0;
-        }
-    }
-
-    @media screen and (max-width: 500px) {
-        img {
-            width: 70%;
-            margin: 0 auto;
-            border-radius: 0;
-        }
-    }
-`;
-
-export const ModalBox = styled.div`
-    background-color: black;
-`;
-
-export const Textarea = styled.input`
-    border: none;
-    border-radius: 5px;
-    background-color: #efefef;
-    width: 100%;
-    margin-bottom: 5px;
-    height: fit-content;
-    padding: 5px;
-    font-size: 20px;
-    ::placeholder {
-        font-family: "Lato";
-        color: #949494;
-        font-weight: 300;
-        font-size: 15px;
-    }
-`;
-
-const customStyles = {
-    content: {
-        top: "50%",
-        left: "50%",
-        right: "auto",
-        bottom: "auto",
-        marginRight: "-50%",
-        transform: "translate(-50%, -50%)",
-        backgroundColor: "#333333",
-        boxSizing: "border-box",
-        padding: "130px",
-    },
-};
