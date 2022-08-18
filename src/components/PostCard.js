@@ -469,6 +469,9 @@ export const Container = styled.div`
     font-family: "Lato";
     background-color: #171717;
     border-radius: 16px;
+    position: relative;
+    margin-bottom: 60px;
+
     h3 {
         color: white;
         font-size: 24px;
@@ -481,10 +484,23 @@ export const Container = styled.div`
     }
 
     .reposter{
-        height: 100px;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        height: 40px;
         width: 100%;
-        background-color: red;
         color: #ffffff;
+        background-color: #1E1E1E;
+
+        position: absolute;
+        top: -26px;
+        left: 0;
+
+        img{
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
     }
 `;
 export const ProfilePhoto = styled.div`
@@ -514,6 +530,12 @@ export const ProfilePhoto = styled.div`
         justify-content: center;
         align-items: center;
         flex-direction: column;
+        margin-top: 30px;
+
+        img{
+            width: 24px;
+            height: 12px;
+        }
 
         h6{
             font-size: 12px;
