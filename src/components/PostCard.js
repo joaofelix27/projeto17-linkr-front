@@ -36,7 +36,7 @@ export default function PostCard({
     getTrending,
     reposts
 }) {
-    const { token, userId, setUserId, setLoad, control, setControl } = useContext(UserContext);
+    const { token, userId, setUserId, setLoad } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
@@ -326,8 +326,6 @@ export default function PostCard({
                         background:"#333333",
                         color: "#ffffff"
                     });
-                    setRepostsCount(parseInt(repostsCount)+1);
-                    setControl(!control);
                 });
 
                 promise.catch(Error=>{
@@ -464,7 +462,7 @@ export default function PostCard({
                 </Modal>
             </ModalBox>
         </Container>
-        <Comments show={showComments} postId={postId} notify={notify}/>
+        <Comments show={showComments} postId={postId}/>
         </>
     );
 }
@@ -482,9 +480,6 @@ export const Container = styled.div`
     border-radius: 16px;
     word-wrap: break-word;
     position: relative;
-    margin-bottom: 60px;
-
-
     h3 {
         color: white;
         font-size: 24px;
@@ -495,7 +490,7 @@ export const Container = styled.div`
         font-size: 18px;
         line-height: 20px;
     }
-     .reposter{
+    .reposter{
         display: flex;
         align-items: center;
         padding-left: 10px;
@@ -514,7 +509,6 @@ export const Container = styled.div`
             margin-right: 10px;
         }
     }
-
     @media screen and (max-width: 650px) {
        padding: 14px;
        padding-right: 19px;
@@ -524,6 +518,7 @@ export const Container = styled.div`
        p{
         font-size: 14px;
        }
+
     }
 `;
 export const ProfilePhoto = styled.div`
@@ -557,15 +552,10 @@ export const ProfilePhoto = styled.div`
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        margin-top: 30px;
-
         img{
-            width: 24px;
-            height: 12px;
+            height: 30px;
             margin-bottom: 7px;
         }
-
-
         h6{
             width: 70px;    
         }

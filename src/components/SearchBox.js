@@ -168,24 +168,19 @@ const Container = styled.div`
     width: 650px;
     height: 46px;
     background-color: #ffffff;
-    border-radius:  ${(props) =>
-        props.displayUsers.length > 0 ? "6px 6px 0px 0px" : "6px"};;
+    border-radius: 6px;
     position: relative;
-
-    form {
-        width: 100%;
-        height: 100%;
-        padding: 0 12px;
-        input {
-          width: 100%;
-          height: 100%;
-          border: none;
-          border-radius: 6px;
-          font-size: 20px;
-          &:focus {
-            outline: none;
-          }
+    padding: 0 12px;
+    input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 6px;
+      font-size: 20px;
+      &:focus {
+        outline: none;
       }
+    }
   }
   @media screen and (max-width: 1060px) {
     display: none;
