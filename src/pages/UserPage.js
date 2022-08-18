@@ -76,6 +76,7 @@ export default function UserPage() {
     }
   }, [control]);
   async function getFollow() {
+    setIsMyPage(true)
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
