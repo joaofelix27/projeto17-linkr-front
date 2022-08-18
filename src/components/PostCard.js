@@ -269,7 +269,7 @@ export default function PostCard({
     }
 
     function reloadPage() {
-        getPosts();
+        getPosts()
         setIsDisabled("");
         setShow(false);
     }
@@ -482,6 +482,8 @@ export const Container = styled.div`
     border-radius: 16px;
     word-wrap: break-word;
     position: relative;
+
+
     h3 {
         color: white;
         font-size: 24px;
@@ -492,7 +494,7 @@ export const Container = styled.div`
         font-size: 18px;
         line-height: 20px;
     }
-    .reposter{
+     .reposter{
         display: flex;
         align-items: center;
         padding-left: 10px;
@@ -500,7 +502,6 @@ export const Container = styled.div`
         width: 100%;
         color: #ffffff;
         background-color: #1E1E1E;
-
         position: absolute;
         top: -26px;
         left: 0;
@@ -511,6 +512,7 @@ export const Container = styled.div`
             margin-right: 10px;
         }
     }
+
     @media screen and (max-width: 650px) {
        padding: 14px;
        padding-right: 19px;
@@ -520,7 +522,6 @@ export const Container = styled.div`
        p{
         font-size: 14px;
        }
-
     }
 `;
 export const ProfilePhoto = styled.div`
@@ -555,7 +556,8 @@ export const ProfilePhoto = styled.div`
         align-items: center;
         flex-direction: column;
         img{
-            height: 30px;
+            height: 35px;
+            width: 35px;
             margin-bottom: 7px;
         }
         h6{

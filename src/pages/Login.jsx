@@ -35,7 +35,7 @@ export default function Login() {
             email,
             password,
         };
-
+        console.log(process.env.REACT_APP_BASE_URL);
         const promise = axios.post(`${process.env.REACT_APP_BASE_URL}/`, body);
 
         promise.then((res) => {
