@@ -243,7 +243,7 @@ export const ContentBody = styled.div`
   justify-content: center;
 `;
 export const LeftContent = styled.div`
-  width: 40%;
+  width: 711px;
   display: flex;
   flex-direction: column;
   align-items: center;

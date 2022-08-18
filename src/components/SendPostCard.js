@@ -169,6 +169,9 @@ const Container = styled.div`
 
     @media only screen and (max-width: 720px) {
         width: 100%;
+        h3{
+            font-size: 22px;
+        }
     }
 `;
 
@@ -192,6 +195,9 @@ const ProfilePhoto = styled.div`
         border-radius: 50%;
         margin-right: 3px;
         object-fit: cover;
+    }
+    @media screen and (max-width: 650px) {
+      display: none;
     }
 `;
 
