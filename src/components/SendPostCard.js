@@ -193,6 +193,9 @@ const ProfilePhoto = styled.div`
         margin-right: 3px;
         object-fit: cover;
     }
+    @media screen and (max-width: 650px) {
+      display: none;
+    }
 `;
 
 const ButtonBox = styled.div`

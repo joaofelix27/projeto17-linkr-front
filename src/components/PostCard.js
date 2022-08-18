@@ -479,10 +479,24 @@ export const Container = styled.div`
         font-size: 18px;
         line-height: 20px;
     }
+    @media screen and (max-width: 650px) {
+       padding: 14px;
+       padding-right: 19px;
+        h3{
+        font-size: 22px;
+       }
+       p{
+        font-size: 15px;
+       }
+
+    }
 `;
 export const ProfilePhoto = styled.div`
     height: 100%;
     margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     img {
         width: 58px;
         height: 58px;
@@ -493,8 +507,8 @@ export const ProfilePhoto = styled.div`
     h6 {
         color: #b6b6b6;
         text-align: center;
-        padding-top: 10px;
         box-sizing: border-box;
+        margin-bottom: 7px;
     }
 
     div * {
@@ -512,6 +526,14 @@ export const ProfilePhoto = styled.div`
             font-size: 12px;
             width: 70px;    
         }
+    }
+    @media screen and (max-width: 650px) {
+        margin-right: 14px;
+        img{
+            width: 49px;
+            height: 49px;
+        }
+
     }
 `;
 
@@ -558,17 +580,19 @@ export const LinkBox = styled.a`
         padding: 24px 19px;
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
+        justify-content: space-between;
     }
     h4 {
         color: #cecece;
         font-size: 18px;
         line-height: 19px;
+        margin-bottom: 6px;
     }
     h5 {
         color: #9b9595;
         font-size: 14px;
         line-height: 16px;
+        margin-bottom: 5px;
     }
     h6 {
         color: #cecece;
@@ -576,38 +600,40 @@ export const LinkBox = styled.a`
         line-height: 13px;
     }
     img {
-        width: 33%;
-        height: calc(width);
+        max-width: 33%;
+        height: auto;
         object-fit: fill;
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
-        object-fit: contain;
     }
-
-    @media screen and (max-width: 1300px) {
-        flex-wrap: wrap;
-
+    @media screen and (max-width: 900px) {
+        h4{
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        h5{
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        h6{
+            font-size: 10px;
+        }
         img {
-            width: 60%;
-            margin: 0 auto;
-            border-radius: 0;
+
+            object-fit: cover;
         }
     }
-
-    @media screen and (max-width: 1050px) {
-        img {
-            width: 60%;
-            margin: 0 auto;
-            border-radius: 0;
+    @media screen and (max-width: 650px) {
+        h4{
+            font-size: 15px;
         }
-    }
-
-    @media screen and (max-width: 500px) {
-        img {
-            width: 70%;
-            margin: 0 auto;
-            border-radius: 0;
+        h5{
+            font-size: 12px;
         }
+        h6{
+            font-size: 10px;
+        }
+
     }
 `;
 
