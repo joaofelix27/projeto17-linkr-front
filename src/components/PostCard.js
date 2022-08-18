@@ -6,7 +6,8 @@ import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
-import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import { FaTrash, FaPencilAlt,  } from "react-icons/fa";
+import {AiOutlineComment} from "react-icons/ai"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import repostimg from "../assets/repostIcon.png";
@@ -16,6 +17,7 @@ import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
 import animationDataDelete from "../assets/delete-icon.json";
 import { ReactTagify } from "react-tagify";
+import Comments from "./Comments";
 
 export default function PostCard({
     key,
@@ -44,6 +46,7 @@ export default function PostCard({
     const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
     const [tooltip, setTooltip] = useState();
+    const [showComments, setShowComments] = useState(false); 
     const navigate = useNavigate();
     const inputRef = useRef();
     const handleClose = () => setShow(false);
@@ -343,14 +346,15 @@ export default function PostCard({
     }
 
     return (
-        <Container key={key}>
+        <>
+        <Container key={key} comments={showComments}>
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
                 <div className="animation" onClick={postLike}>
                     <Lottie
                         options={likeDefaultOptions}
-                        height={65}
-                        width={60}
+                        height={60}
+                        width={55}
                         direction={animationLikeState.direction}
                         isStopped={animationLikeState.isStopped}
                     />
@@ -362,8 +366,13 @@ export default function PostCard({
                     <img src={repostimg} alt="" srcset="" />
                     <h6>{repostsCount} re-posts</h6>
                 </div>
+                <div className="comment" onClick={()=> setShowComments(!showComments)}>
+                    <AiOutlineComment color="#fff" size={30} />
+                    <h6>0 comments</h6>
+                </div>
             </ProfilePhoto>
             <Post>
+            <div>
                 <h3
                     onClick={() =>
                         navigate(`/timeline/user/${creatorId}`, setLoad(true), {
@@ -407,7 +416,7 @@ export default function PostCard({
                         <FaTrash color="#fff" onClick={() => setShow(true)} />
                     </div>
                 ) : null}
-
+                </div>
                 <LinkBox href={url} target="_blank">
                     <div>
                         <h4>{titleUrl}</h4>
@@ -455,6 +464,8 @@ export default function PostCard({
                 </Modal>
             </ModalBox>
         </Container>
+        <Comments show={showComments} postId={postId} notify={notify}/>
+        </>
     );
 }
 
@@ -464,14 +475,13 @@ export const Container = styled.div`
     border-radius: 16px;
     padding: 17px;
     padding-right: 22px;
-    margin-bottom: 30px;
+    margin-bottom: ${props => props.comments? "0px": "30px"};
     display: flex;
     font-family: "Lato";
     background-color: #171717;
     border-radius: 16px;
+    word-wrap: break-word;
     position: relative;
-    margin-bottom: 60px;
-
     h3 {
         color: white;
         font-size: 24px;
@@ -483,7 +493,6 @@ export const Container = styled.div`
         line-height: 20px;
         word-break: break-all;
     }
-
     .reposter{
         display: flex;
         align-items: center;
@@ -503,10 +512,24 @@ export const Container = styled.div`
             margin-right: 10px;
         }
     }
+    @media screen and (max-width: 650px) {
+       padding: 14px;
+       padding-right: 19px;
+        h3{
+        font-size: 20px;
+       }
+       p{
+        font-size: 14px;
+       }
+
+    }
 `;
 export const ProfilePhoto = styled.div`
     height: 100%;
     margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     img {
         width: 58px;
         height: 58px;
@@ -515,10 +538,11 @@ export const ProfilePhoto = styled.div`
     }
 
     h6 {
+        font-size: 13px;
         color: #b6b6b6;
         text-align: center;
-        padding-top: 10px;
         box-sizing: border-box;
+        margin-bottom: 9px;
     }
 
     div * {
@@ -526,27 +550,32 @@ export const ProfilePhoto = styled.div`
         cursor: pointer;
     }
 
-    .repost{
+    .repost, .comment{
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        margin-top: 30px;
-
         img{
-            width: 24px;
-            height: 12px;
+            height: 30px;
+            margin-bottom: 7px;
         }
-
         h6{
-            font-size: 12px;
             width: 70px;    
         }
+    }
+    @media screen and (max-width: 650px) {
+        margin-right: 14px;
+        width: 14%;
+        img{
+            width: 45px;
+            height: 45px;
+        }
+
     }
 `;
 
 export const Post = styled.div`
-    width: 100%;
+    width: 85%;
     display: flex;
     flex-direction: column;
     padding-top: 10px;
@@ -574,6 +603,9 @@ export const Post = styled.div`
             height: 18px;
         }
     }
+    @media screen and (max-width: 600px){
+        padding-top: 6px;
+    }
 `;
 
 export const LinkBox = styled.a`
@@ -588,17 +620,19 @@ export const LinkBox = styled.a`
         padding: 24px 19px;
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
+        justify-content: space-between;
     }
     h4 {
         color: #cecece;
         font-size: 18px;
         line-height: 19px;
+        margin-bottom: 10px;
     }
     h5 {
         color: #9b9595;
         font-size: 14px;
         line-height: 16px;
+        margin-bottom: 6px;
     }
     h6 {
         color: #cecece;
@@ -606,38 +640,51 @@ export const LinkBox = styled.a`
         line-height: 13px;
     }
     img {
-        width: 33%;
-        height: calc(width);
+        max-width: 33%;
+        height: auto;
         object-fit: fill;
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
-        object-fit: contain;
     }
-
-    @media screen and (max-width: 1300px) {
-        flex-wrap: wrap;
-
+    @media screen and (max-width: 900px) {
+        h4{
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        h5{
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        h6{
+            font-size: 12px;
+        }
         img {
-            width: 60%;
-            margin: 0 auto;
-            border-radius: 0;
+            object-fit: cover;
         }
     }
-
-    @media screen and (max-width: 1050px) {
-        img {
-            width: 60%;
-            margin: 0 auto;
-            border-radius: 0;
+    @media screen and (max-width: 650px) {
+        margin-top: 13px;
+        h4{
+            max-height: 5.5ch;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 12px;
+            margin-bottom: 4px;
         }
-    }
-
-    @media screen and (max-width: 500px) {
-        img {
-            width: 70%;
-            margin: 0 auto;
-            border-radius: 0;
+        h5{
+            max-height: 8.5ch;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 10px;
+            margin-bottom: 4px
         }
+        h6{
+            font-size: 8px;
+        }
+        div{
+            padding: 15px 12px;
+        }
+
     }
 `;
 

@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import UserContext from "../contexts/UserContext";
 
 export default function SearchBox() {
+
   const { token } = useContext(UserContext);
   const [searchName, setSearchName] = useState("");
   const [users, setUsers] = useState([]);
@@ -164,8 +165,11 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
+    width: 650px;
+    height: 46px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    position: relative;
     padding: 0 12px;
     input {
       width: 100%;
@@ -178,7 +182,6 @@ const Container = styled.div`
       }
     }
   }
-
   @media screen and (max-width: 1060px) {
     display: none;
   }

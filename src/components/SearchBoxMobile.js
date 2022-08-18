@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import UserContext from "../contexts/UserContext";
 
 export default function SearchBoxMobile() {
+
   const { token } = useContext(UserContext);
   const [searchName, setSearchName] = useState("");
   const [users, setUsers] = useState([]);
