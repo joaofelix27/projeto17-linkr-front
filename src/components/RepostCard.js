@@ -222,51 +222,12 @@ export default function RepostCard({
         </Tooltip>
     );
 
-    function repost(postId){
-        Swal.fire({
-            title: 'Do you want to re-post this link?',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, share!',
-            cancelButtonText: 'No, cancel',
-            confirmButtonColor: '#1877F2',
-            cancelButtonColor: 'crimson',
-            background:"#333333",
-            color: "#ffffff",
-            reverseButtons: true,
-            height: "200px"
-          }
-        ).then((result) => {
-            if (result.isConfirmed) {
-                const promise = axios.post(`${process.env.REACT_APP_BASE_URL}/timeline/repost/${postId}`,{},config);
-
-                promise.then(()=>{
-                    Swal.fire({
-                        title:"Reposted!",
-                        background:"#333333",
-                        color: "#ffffff"
-                    });
-                    setRepostsCount(parseInt(repostsCount)+1);
-                    setControl(!control);
-                });
-
-                promise.catch(Error=>{
-                    alert(Error.response.status);
-                });
-            } else{
-                Swal.fire({
-                    title:"Repost canceled!",
-                    background:"#333333",
-                    color: "#ffffff"
-                });
-                }
-             });
-    
-        return;
-    }
-
     return (
         <Container key={key}>
-            <div className="reposter">{reposterName}</div>
+            <div className="reposter">
+                <img src={repostimg} alt="" srcset="" />
+                Re-posted by { reposterId === creatorId ? 'you' : reposterName}
+                </div>
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
                 <div className="animation">

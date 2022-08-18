@@ -32,13 +32,15 @@ export default function Timeline() {
   };
 
   useEffect(() => {
+    let check = control;
     if (!token) {
       navigate("/");
     }
     if (posts === "") {
       getPosts();
     }
-    if (reposts === "") {
+    if (reposts === "" || check !== control) {
+      check = control;
       getReposts();
     }
     if (trending === "") {
@@ -117,7 +119,8 @@ export default function Timeline() {
           description,
           userId,
           like,
-          reposts
+          reposts,
+          createdAt,
         }) => (
           <PostCard
             key={id}
@@ -135,11 +138,11 @@ export default function Timeline() {
             getPosts={getPosts}
             getTrending={getTrending}
             reposts={reposts}
+            createdAt={createdAt}
           />
         )
       ); 
       if(reposts){
-        console.log("funciona?")
         const timelineReposts = reposts.map(
           ({
             id,
@@ -154,7 +157,8 @@ export default function Timeline() {
             like,
             reposts,
             reposter,
-            reposterId
+            reposterId,
+            createdAt
           }) => (
             <RepostCard
               key={id}
@@ -174,10 +178,17 @@ export default function Timeline() {
               reposts={reposts}
               reposter={reposter}
               reposterId={reposterId}
+              createdAt={createdAt}
             />
           )
         );
-        return [...timeline,...timelineReposts];
+        const allposts = [...timeline,...timelineReposts];
+    
+        const sortedPosts = allposts.sort(function(x, y){
+          return new Date(x.props.createdAt).getTime() - new Date(y.props.createdAt).getTime();
+      });
+
+      return sortedPosts.reverse();
       }
   
       return timeline;
