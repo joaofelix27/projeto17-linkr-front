@@ -17,6 +17,7 @@ import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
 import animationDataDelete from "../assets/delete-icon.json";
 import { ReactTagify } from "react-tagify";
+import Comments from "./Comments";
 
 export default function PostCard({
     key,
@@ -45,6 +46,7 @@ export default function PostCard({
     const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
     const [tooltip, setTooltip] = useState();
+    const [showComments, setShowComments] = useState(false); 
     const navigate = useNavigate();
     const inputRef = useRef();
     const handleClose = () => setShow(false);
@@ -342,14 +344,15 @@ export default function PostCard({
     }
 
     return (
-        <Container key={key}>
+        <>
+        <Container key={key} comments={showComments}>
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
                 <div className="animation" onClick={postLike}>
                     <Lottie
                         options={likeDefaultOptions}
-                        height={65}
-                        width={60}
+                        height={60}
+                        width={55}
                         direction={animationLikeState.direction}
                         isStopped={animationLikeState.isStopped}
                     />
@@ -361,12 +364,13 @@ export default function PostCard({
                     <img src={repostimg} alt="" srcset="" />
                     <h6>{repostsCount} re-posts</h6>
                 </div>
-                <div className="comment">
-                    <AiOutlineComment color="#fff" size={32}/>
+                <div className="comment" onClick={()=> setShowComments(!showComments)}>
+                    <AiOutlineComment color="#fff" size={30} />
                     <h6>0 comments</h6>
                 </div>
             </ProfilePhoto>
             <Post>
+            <div>
                 <h3
                     onClick={() =>
                         navigate(`/timeline/user/${creatorId}`, setLoad(true), {
@@ -410,7 +414,7 @@ export default function PostCard({
                         <FaTrash color="#fff" onClick={() => setShow(true)} />
                     </div>
                 ) : null}
-
+                </div>
                 <LinkBox href={url} target="_blank">
                     <div>
                         <h4>{titleUrl}</h4>
@@ -458,6 +462,8 @@ export default function PostCard({
                 </Modal>
             </ModalBox>
         </Container>
+        <Comments show={showComments} postId={postId} notify={notify}/>
+        </>
     );
 }
 
@@ -467,11 +473,12 @@ export const Container = styled.div`
     border-radius: 16px;
     padding: 17px;
     padding-right: 22px;
-    margin-bottom: 30px;
+    margin-bottom: ${props => props.comments? "0px": "30px"};
     display: flex;
     font-family: "Lato";
     background-color: #171717;
     border-radius: 16px;
+    word-wrap: break-word;
     h3 {
         color: white;
         font-size: 24px;
@@ -525,8 +532,10 @@ export const ProfilePhoto = styled.div`
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        margin-bottom: 7px;
-
+        img{
+            height: 30px;
+            margin-bottom: 7px;
+        }
         h6{
             width: 70px;    
         }
@@ -543,7 +552,7 @@ export const ProfilePhoto = styled.div`
 `;
 
 export const Post = styled.div`
-    width: 100%;
+    width: 85%;
     display: flex;
     flex-direction: column;
     padding-top: 10px;
