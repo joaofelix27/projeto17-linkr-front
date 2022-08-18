@@ -21,7 +21,6 @@ export default function Comments({show, postId, notify}) {
     useEffect(()=>{
         if(!comments && show)  getComments();
     },[show])
-
     async function getComments(){
         try {
             const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/comments/${postId}`, config);

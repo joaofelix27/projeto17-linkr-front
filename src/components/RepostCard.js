@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import {AiOutlineComment} from "react-icons/ai"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import repostimg from "../assets/repostIcon.png";
@@ -16,6 +17,7 @@ import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
 import animationDataDelete from "../assets/delete-icon.json";
 import { ReactTagify } from "react-tagify";
+import Comments from "./Comments";
 
 import { Container,ProfilePhoto,Post,Textarea,LinkBox,ModalBox } from "./PostCard";
 
@@ -50,6 +52,7 @@ export default function RepostCard({
     const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
     const [tooltip, setTooltip] = useState();
+    const [showComments, setShowComments] = useState(false); 
     const navigate = useNavigate();
     const inputRef = useRef();
     const handleClose = () => setShow(false);
@@ -223,6 +226,7 @@ export default function RepostCard({
     );
 
     return (
+        <>
         <Container key={key}>
             <div className="reposter">
                 <img src={repostimg} alt="" srcset="" />
@@ -245,6 +249,10 @@ export default function RepostCard({
                 <div className="repost">
                     <img src={repostimg} alt="" srcset="" />
                     <h6>{repostsCount} re-posts</h6>
+                </div>
+                <div className="comment" onClick={()=> setShowComments(!showComments)}>
+                    <AiOutlineComment color="#fff" size={30} />
+                    <h6>0 comments</h6>
                 </div>
             </ProfilePhoto>
             <Post>
@@ -339,5 +347,7 @@ export default function RepostCard({
                 </Modal>
             </ModalBox>
         </Container>
+         <Comments show={showComments} postId={postId}/>
+        </>
     );
 }
