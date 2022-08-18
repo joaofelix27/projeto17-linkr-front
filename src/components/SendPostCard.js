@@ -129,7 +129,7 @@ const Container = styled.div`
     border-radius: 16px;
     padding: 17px;
     padding-right: 22px;
-    margin-bottom: 30px;
+    margin-bottom: 60px;
     display: flex;
     font-family: Lato;
     h3 {
