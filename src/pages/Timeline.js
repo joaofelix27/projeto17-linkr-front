@@ -12,200 +12,277 @@ import { DebounceInput } from "react-debounce-input";
 import SearchBoxMobile from "../components/SearchBoxMobile";
 
 export default function Timeline() {
-  const { token, setImage, setName, setToken} = useContext(UserContext);
-  const [posts, setPosts] = useState("");
-  const [trending, setTrending] = useState("");
-  const navigate = useNavigate();
-  setToken(localStorage.getItem("authToken"));
-  const notify = (error) => {
-    toast(`❗ ${error}`, {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
-
-  useEffect(() => {
-    if (!token) {
-      navigate("/");
-    }
-    if (posts === "") {
-      getPosts();
-    }
-    if (trending === "") {
-      getTrending();
-    }
-  }, []);
-
-  async function getPosts() {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const { token, setImage, setName, setToken } = useContext(UserContext);
+    const [posts, setPosts] = useState("");
+    const [trending, setTrending] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isOnSentinel, setIsOnSentinel] = useState("sentinela");
+    const navigate = useNavigate();
+    setToken(localStorage.getItem("authToken"));
+    const notify = (error) => {
+        toast(`❗ ${error}`, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     };
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/timeline`,
-        config
-      );
-      setPosts(result.data.postsMetadata);
-      setImage(result.data.userInfo?.picture);
-      setName(result.data.userInfo?.username);
-    } catch (e) {
-      notify(
-        "An error occured while trying to fetch the posts, please refresh the page"
-      );
-      console.log(e);
-    }
-  }
-  async function getTrending() {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/trending`
-      );
-      setTrending(result.data);
-    } catch (e) {
-      notify(
-        "An error occured while trying to fetch the trending hashtags, please refresh the page"
-      );
-      console.log(e);
-    }
-  }
 
-  function renderPosts() {
-    if (posts) {
-      const timeline = posts.map(
-        ({
-          id,
-          username,
-          picture,
-          link,
-          body,
-          title,
-          image,
-          description,
-          userId,
-          like,
-          reposts
-        }) => (
-          <PostCard
-            key={id}
-            name={username}
-            profileImage={picture}
-            url={link}
-            text={body}
-            titleUrl={title}
-            imageUrl={image}
-            descriptionUrl={description}
-            likes={like}
-            postId={id}
-            creatorId={userId}
-            setPosts={setPosts}
-            getPosts={getPosts}
-            getTrending={getTrending}
-            reposts={reposts}
-          />
-        )
-      );
-      return timeline;
-    }
-    if (posts === []) return <span>There are no posts yet</span>;
-    return <span>Loading...</span>;
-  }
-  return (
-    <Container>
-      <TimelineHeader />
-      <Content>
-        <ContentBody>
-          <LeftContent>
-            <DebounceInput element={SearchBoxMobile} debounceTimeout={300} />
-            <h2>timeline</h2>
-            <SendPostCard getPosts={getPosts} getTrending={getTrending} />
+    useEffect(() => {
+        if (!token) {
+            navigate("/");
+        }
+        if (posts === "") {
+            getPosts();
+        }
+        if (trending === "") {
+            getTrending();
+        }
+    }, []);
 
-            {renderPosts()}
-          </LeftContent>
-          <RightContent>
-            <TrendingHashtags hashtags={trending} />
-          </RightContent>
-        </ContentBody>
-      </Content>
-    </Container>
-  );
+    useEffect(() => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const promisse = axios
+            .get(
+                `${process.env.REACT_APP_BASE_URL}/timeline?page=${currentPage}`,
+                config
+            )
+            .then((res) => {
+                setPosts([...posts, ...res.data.postsMetadata]);
+                setImage(res.data.userInfo?.picture);
+                setName(res.data.userInfo?.username);
+
+                if (res.data.postsMetadata.length === 0) {
+                    setIsOnSentinel("isOff");
+                }
+            })
+            .catch((e) => {
+                notify(
+                    "An error occured while trying to fetch the posts, please refresh the page"
+                );
+                console.log(e);
+            });
+    }, [currentPage ]);
+
+    useEffect(() => {
+        if (posts.length !== 0) {
+            const intersectionObserver = new IntersectionObserver((entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    setCurrentPage(
+                        (currentPageInsideState) => currentPageInsideState + 1
+                    );
+                }
+            });
+
+            if (isOnSentinel === "sentinela") {
+                intersectionObserver.observe(
+                    document.querySelector("#sentinela")
+                );
+            }
+
+            return () => intersectionObserver.disconnect();
+        }
+    }, [posts]);
+
+    async function getPosts() {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const promisse = axios
+            .get(
+                `${process.env.REACT_APP_BASE_URL}/timeline?page=1`,
+                config
+            )
+            .then((res) => {
+                setCurrentPage(1)
+                setIsOnSentinel("sentinela")
+                setPosts(res.data.postsMetadata);
+                setImage(res.data.userInfo?.picture);
+                setName(res.data.userInfo?.username);
+            })
+            .catch((e) => {
+                notify(
+                    "An error occured while trying to fetch the posts, please refresh the page"
+                );
+                console.log(e);
+            });
+    }
+    async function getTrending() {
+        try {
+            const result = await axios.get(
+                `${process.env.REACT_APP_BASE_URL}/trending`
+            );
+            setTrending(result.data);
+        } catch (e) {
+            notify(
+                "An error occured while trying to fetch the trending hashtags, please refresh the page"
+            );
+            console.log(e);
+        }
+    }
+
+    function renderPosts() {
+        if (posts) {
+            const timeline = posts.map(
+                ({
+                    id,
+                    username,
+                    picture,
+                    link,
+                    body,
+                    title,
+                    image,
+                    description,
+                    userId,
+                    like,
+                    reposts,
+                }) => (
+                    <PostCard
+                        key={id}
+                        name={username}
+                        profileImage={picture}
+                        url={link}
+                        text={body}
+                        titleUrl={title}
+                        imageUrl={image}
+                        descriptionUrl={description}
+                        likes={like}
+                        postId={id}
+                        creatorId={userId}
+                        setPosts={setPosts}
+                        getPosts={getPosts}
+                        getTrending={getTrending}
+                        reposts={reposts}
+                    />
+                )
+            );
+            return timeline;
+        }
+        if (posts === []) return <span>There are no posts yet</span>;
+        return <span>Loading...</span>;
+    }
+    return (
+        <Container>
+            <TimelineHeader />
+            <Content>
+                <ContentBody>
+                    <LeftContent>
+                        <DebounceInput
+                            element={SearchBoxMobile}
+                            debounceTimeout={300}
+                        />
+                        <h2>timeline</h2>
+                        <SendPostCard
+                            getPosts={getPosts}
+                            getTrending={getTrending}
+                        />
+                        {renderPosts()}
+                        {posts.length !== 0 ? (
+                            <li id={isOnSentinel}>
+                                {isOnSentinel === "sentinela" &&
+                                posts.length !== 0
+                                    ? "Loading ..."
+                                    : "There are no more posts to show right now."}
+                            </li>
+                        ) : null}{" "}
+                        {/* verifica se o scroll chegou ao fim */}
+                    </LeftContent>
+                    <RightContent>
+                        <TrendingHashtags hashtags={trending} />
+                    </RightContent>
+                </ContentBody>
+            </Content>
+        </Container>
+    );
 }
 
 export const Container = styled.div`
-  width: 100%;
-  min-height: 100vh;
-  background-color: #333333;
-  span {
-    font-weight: 700;
-    font-size: 43px;
-    color: white;
-  }
+    width: 100%;
+    min-height: 100vh;
+    background-color: #333333;
+    span {
+        font-weight: 700;
+        font-size: 43px;
+        color: white;
+    }
 `;
 export const Content = styled.div`
-  margin-top: 50px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+    margin-top: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 
-  @media screen and (max-width: 1060px) {
-    margin-top: 42px;
-  }
+    @media screen and (max-width: 1060px) {
+        margin-top: 42px;
+    }
 `;
 export const ContentBody = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 `;
 export const LeftContent = styled.div`
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  h2 {
+    width: 40%;
     display: flex;
-    justify-content: left;
-    width: 100%;
-    font-weight: 700;
-    font-size: 43px;
-    color: white;
-    margin-top: 50px;
-    margin-bottom: 50px;
-    text-align: left;
-  }
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
 
-  @media only screen and (max-width: 1060px) {
-    width: 100%;
+    li {
+        margin-bottom: 5px;
+        color: #b6b6b6;
+        font-size: 18px;
+    }
+
     h2 {
-      margin-top: 70px;
-      padding-left: 28px;
+        display: flex;
+        justify-content: left;
+        width: 100%;
+        font-weight: 700;
+        font-size: 43px;
+        color: white;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        text-align: left;
     }
-    div {
-      border-radius: 0;
+
+    @media only screen and (max-width: 1060px) {
+        width: 100%;
+        h2 {
+            margin-top: 70px;
+            padding-left: 28px;
+        }
+        div {
+            border-radius: 0;
+        }
     }
-  }
 `;
 export const RightContent = styled.div`
-  margin-top: 136px;
-  width: 20%;
-  display: flex;
-  margin-left: 25px;
+    margin-top: 136px;
+    width: 20%;
+    display: flex;
+    margin-left: 25px;
 
-  @media only screen and (max-width: 1060px) {
-    h2 {
-      width: 100%;
-      padding-left: 22px;
-      margin-right: 0;
+    @media only screen and (max-width: 1060px) {
+        h2 {
+            width: 100%;
+            padding-left: 22px;
+            margin-right: 0;
+        }
     }
-  }
 
-  @media only screen and (max-width: 1060px) {
-    display: none;
-  }
+    @media only screen and (max-width: 1060px) {
+        display: none;
+    }
 `;

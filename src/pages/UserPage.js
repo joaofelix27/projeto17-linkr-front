@@ -13,30 +13,38 @@ import UserContext from "../contexts/UserContext.js";
 import { Circles } from "react-loader-spinner";
 
 export default function UserPage() {
-    const { token,control,load,setLoad,setToken } = useContext(UserContext);
+    const { token, control, load, setLoad, setToken } = useContext(UserContext);
     const [posts, setPosts] = useState("");
     const [trending, setTrending] = useState("");
     const [user, setUser] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isOnSentinel, setIsOnSentinel] = useState("sentinela");
+    const [teste, setTeste] = useState(0);
     const navigate = useNavigate();
     setToken(localStorage.getItem("authToken"));
     const notify = (error) => {
         toast(`❗ ${error}`, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
         });
-      };
+    };
 
     const { id } = useParams();
 
-    useEffect(() => {
+    const reload = useEffect(() => {
+        getPosts();
+    }, [control, currentPage]);
+
+    function getPosts() {
+        console.log("opa");
         if (!token) {
             navigate("/");
-          }
+        }
         getTrending();
 
         const config = {
@@ -46,7 +54,8 @@ export default function UserPage() {
         };
 
         const promise = axios.get(
-            `${process.env.REACT_APP_BASE_URL}/timeline/user/${id}`, config
+            `${process.env.REACT_APP_BASE_URL}/timeline/user/${id}?page=${currentPage}`,
+            config
         );
         const promiseUser = axios.get(
             `${process.env.REACT_APP_BASE_URL}/user/${id}`
@@ -54,13 +63,17 @@ export default function UserPage() {
 
         promise.then((res) => {
             setLoad(false);
-            setPosts(res.data);
+            setPosts([...posts, ...res.data]);
+
+            if (res.data.length === 0) {
+                setIsOnSentinel("isOff");
+            }
         });
 
         promise.catch((Error) => {
             notify(Error.response.status);
         });
-        if(posts.length === 0){
+        if (posts.length === 0) {
             promiseUser.then((res) => {
                 setUser(res.data.username);
             });
@@ -68,7 +81,40 @@ export default function UserPage() {
                 notify(Error.response.status);
             });
         }
-    }, [control]);
+    }
+    useEffect(() => {
+        if (posts.length !== 0) {
+            const intersectionObserver = new IntersectionObserver((entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    setCurrentPage(
+                        (currentPageInsideState) => currentPageInsideState + 1
+                    );
+                }
+            });
+
+            if (isOnSentinel === "sentinela") {
+                intersectionObserver.observe(
+                    document.querySelector("#sentinela")
+                );
+            }
+
+            return () => intersectionObserver.disconnect();
+        }
+    }, [posts]);
+
+    async function getTrending() {
+        try {
+            const result = await axios.get(
+                `${process.env.REACT_APP_BASE_URL}/trending`
+            );
+            setTrending(result.data);
+        } catch (e) {
+            notify(
+                "An error occured while trying to fetch the trending hashtags, please refresh the page"
+            );
+            console.log(e);
+        }
+    }
 
     function renderPosts() {
         if (posts) {
@@ -84,21 +130,23 @@ export default function UserPage() {
                     description,
                     userId,
                     like,
-                    reposts
+                    reposts,
                 }) => (
                     <PostCard
-                    key={id}
-                    name={username}
-                    profileImage={picture}
-                    url={link}
-                    text={body}
-                    titleUrl={title}
-                    imageUrl={image}
-                    descriptionUrl={description}
-                    creatorId={userId}
-                    likes={like}
-                    postId={id}
-                    reposts={reposts}
+                        key={id}
+                        name={username}
+                        profileImage={picture}
+                        url={link}
+                        text={body}
+                        titleUrl={title}
+                        imageUrl={image}
+                        descriptionUrl={description}
+                        creatorId={userId}
+                        likes={like}
+                        postId={id}
+                        reposts={reposts}
+                        getTrending={getTrending}
+                        getPosts={getPosts}
                     />
                 )
             );
@@ -108,18 +156,6 @@ export default function UserPage() {
         return <span>Loading...</span>;
     }
 
-    async function getTrending() {
-        try {
-            const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/trending`);
-            setTrending(result.data);
-        } catch (e) {
-            notify(
-                "An error occured while trying to fetch the trending hashtags, please refresh the page"
-            );
-            console.log(e);
-        }
-    }
-    
     return (
         <Container>
             <TimelineHeader />
@@ -130,10 +166,21 @@ export default function UserPage() {
                             element={SearchBoxMobile}
                             debounceTimeout={300}
                         />
-                        <h2>{posts && posts.length? posts[0].username + "'s posts" : user}</h2>
-                        {
-                            load ? <Circles color="crimson" /> : renderPosts()
-                        }
+                        <h2>
+                            {posts && posts.length
+                                ? posts[0].username + "'s posts"
+                                : user}
+                        </h2>
+                        {load ? <Circles color="crimson" /> : renderPosts()}
+                        {posts.length !== 0 ? (
+                            <li id={isOnSentinel}>
+                                {isOnSentinel === "sentinela" &&
+                                posts.length !== 0
+                                    ? "Loading ..."
+                                    : "There are no more posts to show right now."}
+                            </li>
+                        ) : null}{" "}
+                        {/* verifica se o scroll chegou ao fim */}
                     </LeftContent>
                     <RightContent>
                         <TrendingHashtags hashtags={trending} />
