@@ -6,12 +6,11 @@ import {IoPaperPlaneOutline} from "react-icons/io5"
 import Comment from "./Comment";
 import axios from "axios";
 
-export default function Comments({show, postId, notify}) {
+export default function Comments({show, postId, notify, setComment}) {
     const {image, token} = useContext(UserContext);
     const [myComment, setMyComment] = useState("");
     const[load, setLoad] = useState(false);
     const [comments, setComments] = useState("");
-    
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -25,6 +24,7 @@ export default function Comments({show, postId, notify}) {
         try {
             const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/comments/${postId}`, config);
             setComments(result.data);
+            setComment(result.data.length);
         } catch (e) {
             console.log(e);
             notify("An error occured while trying to get comments, please refresh the page");
@@ -47,12 +47,21 @@ export default function Comments({show, postId, notify}) {
             notify("An error occured while trying to send comment, please refresh the page");
         }
     };
-
     function renderComments(){
         if(comments){
-            return comments.map(({username, picture, text})=><Comment name={username} profileImg={picture} text={text}/>)
+            return comments.map(({isPostAuthor, follow, username, picture, text})=>
+                <Comment 
+                    follow={follow}
+                    isPostAuthor={isPostAuthor}
+                    name={username} 
+                    profileImg={picture} 
+                    text={text}
+                />
+            )
         }
     }
+
+    
     
     return(
         <Container show={show}>
@@ -88,7 +97,7 @@ const Container = styled.div`
     border-radius: 0px 0px 16px 16px;
     box-sizing: border-box;
     padding-top: 10px;
-    margin-top: -40px;
+    margin-top: -10px;
     img{
         width: 45px;
         border-radius: 50%;

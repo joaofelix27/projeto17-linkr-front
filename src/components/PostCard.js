@@ -29,6 +29,7 @@ export default function PostCard({
     imageUrl,
     descriptionUrl,
     likes,
+    comments,
     postId,
     creatorId,
     setPosts,
@@ -41,6 +42,7 @@ export default function PostCard({
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
     const [like, setLike] = useState(likes);
+    const [comment, setComment] = useState(comments);
     const [repostsCount,setRepostsCount] = useState(reposts);
     const [show, setShow] = useState(false);
     const [isInputDisabled, setIsInputDisabled] = useState("");
@@ -368,7 +370,7 @@ export default function PostCard({
                 </div>
                 <div className="comment" onClick={()=> setShowComments(!showComments)}>
                     <AiOutlineComment color="#fff" size={30} />
-                    <h6>0 comments</h6>
+                    <h6>{comment} comments</h6>
                 </div>
             </ProfilePhoto>
             <Post>
@@ -464,7 +466,7 @@ export default function PostCard({
                 </Modal>
             </ModalBox>
         </Container>
-        <Comments show={showComments} postId={postId} notify={notify}/>
+        <Comments show={showComments} postId={postId} notify={notify} setComment={setComment}/>
         </>
     );
 }
@@ -493,24 +495,6 @@ export const Container = styled.div`
         color: #b7b7b7;
         font-size: 18px;
         line-height: 20px;
-    }
-     .reposter{
-        display: flex;
-        align-items: center;
-        padding-left: 10px;
-        height: 40px;
-        width: 100%;
-        color: #ffffff;
-        background-color: #1E1E1E;
-        position: absolute;
-        top: -26px;
-        left: 0;
-
-        img{
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
     }
 
     @media screen and (max-width: 650px) {
