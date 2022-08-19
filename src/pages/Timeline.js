@@ -313,6 +313,7 @@ export const Container = styled.div`
     width: 100%;
     min-height: 100vh;
     background-color: #333333;
+    padding-top: 50px;
     span {
         font-weight: 700;
         font-size: 43px;

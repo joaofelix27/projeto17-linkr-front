@@ -144,7 +144,8 @@ export default function Hashtags() {
                     description,
                     userId,
                     like,
-                    comment
+                    comment,
+                    repost
                 }) => (
                     <PostCard
                         key={id}
@@ -158,6 +159,7 @@ export default function Hashtags() {
                         creatorId={userId}
                         likes={like}
                         comments={comment}
+                        reposts={repost}
                         postId={id}
                         getTrending={getTrending}
                         getPosts={getPosts}
