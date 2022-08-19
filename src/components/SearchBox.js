@@ -76,7 +76,7 @@ export default function SearchBox() {
   }
 
   return (
-    <Container>
+    <Container displayUsers={users}>
       <form>
         <input
           type="text"
@@ -120,7 +120,7 @@ const UserBox = styled.div`
   align-items:center;
   width: 100%;
   margin-bottom: 10px;
-  margin-left: 20px;
+  margin-left: 5px;
   cursor: pointer;
 
   h3 {
@@ -155,10 +155,10 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30%;
+  width: 611px;
   height: 46px;
   background-color: #ffffff;
-  border-radius: 6px 6px 0px 0px;
+  border-radius: ${props => props.displayUsers.length > 0? "6px 6px 0px 0px": "6px"};
   position: relative;
 
   form {
