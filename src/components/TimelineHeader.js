@@ -102,6 +102,11 @@ export default function TimelineHeader() {
 
 const Container = styled.div`
   position: relative;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 4;
 
   header {
     display: flex;
@@ -136,6 +141,7 @@ const Container = styled.div`
       img {
         width: 54px;
         height: 54px;
+        margin-top: 9px;
         border-radius: 50%;
         margin-left: 10px;
         object-fit: cover;

@@ -33,9 +33,14 @@ export default function App() {
                     Authorization: `Bearer ${token}`,
                 },
             };
-            const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/data`,config);
-            setImage(result.data.picture);
-            setName(result.data.username);
+            try{
+                const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/data`,config);
+                setImage(result.data.picture);
+                setName(result.data.username);
+            }catch(e){
+                localStorage.setItem("authToken", "");
+                window.location.reload();
+            }
         }
     }
     const userContext = {

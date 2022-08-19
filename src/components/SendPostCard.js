@@ -133,11 +133,11 @@ const Container = styled.div`
     display: flex;
     font-family: Lato;
     h3 {
-        font-weight: 300;
+        font-weight: 300 !important;
         font-size: 24px;
         line-height: 24px;
         margin-bottom: 10px;
-        color: #707070;
+        color: #707070 !important;
     }
     form {
         padding-top: 10px;
