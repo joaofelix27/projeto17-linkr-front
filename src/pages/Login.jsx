@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -25,7 +25,11 @@ export default function Login() {
     const [load, setLoad] = useState(false);
 
     const navigate = useNavigate();
-    const { setToken, setImage, setName } = useContext(UserContext);
+    const { setToken,token, setImage, setName } = useContext(UserContext);
+
+    useEffect(()=>{
+        if(token) navigate("/timeline");
+    },[]);
 
     function signIn(event) {
         event.preventDefault();
