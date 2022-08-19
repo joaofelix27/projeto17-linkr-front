@@ -158,6 +158,7 @@ export default function UserPage() {
                     description,
                     userId,
                     like,
+                    comment,
                     reposts,
                 }) => (
                     <PostCard
@@ -171,6 +172,7 @@ export default function UserPage() {
                         descriptionUrl={description}
                         creatorId={userId}
                         likes={like}
+                        comments={comment}
                         postId={id}
                         reposts={reposts}
                         getTrending={getTrending}
