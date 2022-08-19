@@ -7,10 +7,12 @@ import UserContext from "../contexts/UserContext";
 import TimelineHeader from "../components/TimelineHeader";
 import SendPostCard from "../components/SendPostCard";
 import PostCard from "../components/PostCard";
-import RepostCard from "../components/RepostCard";
 import TrendingHashtags from "../components/TrendingHashtags";
 import { DebounceInput } from "react-debounce-input";
 import SearchBoxMobile from "../components/SearchBoxMobile";
+import {FiRefreshCw} from "react-icons/fi"
+import { useInterval } from '@slynch13/useinterval'
+import dayjs from 'dayjs'
 
 export default function Timeline() {
     const { token, setImage, setName, setToken, control } =
@@ -19,7 +21,9 @@ export default function Timeline() {
     const [reposts, setReposts] = useState("");
     const [isFollowing, setIsFollowing] = useState([]);
     const [trending, setTrending] = useState("");
+    const [ reqTime, setReqTime ] = useState(dayjs().format())
     const [currentPage, setCurrentPage] = useState(1);
+    const [ newPosts, setNewPosts ] = useState(0)
     const [isOnSentinel, setIsOnSentinel] = useState("sentinela");
     const navigate = useNavigate();
     setToken(localStorage.getItem("authToken"));
@@ -34,6 +38,34 @@ export default function Timeline() {
             progress: undefined,
         });
     };
+
+    useInterval(() => {
+        console.log(reqTime)
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        const promisse = axios
+            .post(
+                `${process.env.REACT_APP_BASE_URL}/timeline/checkPosts`, {
+                    reqTime
+                },
+                config
+            )
+            .then((res) => {
+                setNewPosts(res.data.newPost)
+                setReqTime(dayjs().format())
+            })
+            .catch((e) => {
+                notify(
+                    "An error occured while trying to fetch the new posts, please refresh the page"
+                );
+                console.log(e);
+            });
+
+    }, 15000)
 
     useEffect(() => {
         console.log("teste");
@@ -111,11 +143,11 @@ export default function Timeline() {
         const promisse = axios
             .get(`${process.env.REACT_APP_BASE_URL}/timeline?page=1`, config)
             .then((res) => {
-
+                setCurrentPage(1)
                 setIsOnSentinel("sentinela");
-                console.log("entrei no get dnv");
                 setPosts(res.data.postsMetadata);
                 getFollowed();
+                setNewPosts(0)
             })
             .catch((e) => {
                 notify(
@@ -230,7 +262,7 @@ export default function Timeline() {
                             getPosts={getPosts}
                             getTrending={getTrending}
                         />
-                        <ReRender />
+                        <ReRender newPosts={newPosts} onClick={getPosts}>{newPosts} new posts, load more! <FiRefreshCw /></ReRender>
                        {/*  {isFollowing.length === 0 ? (
                             <h3>
                                 You don't follow anyone yet. Search for new
@@ -265,6 +297,7 @@ export const Container = styled.div`
     width: 100%;
     min-height: 100vh;
     background-color: #333333;
+    padding-top: 50px;
     span {
         font-weight: 700;
         font-size: 43px;
@@ -366,8 +399,21 @@ export const RightContent = styled.div`
 
 const ReRender = styled.div`
 
+    background-color: #1877F2;
+    width: 100%;
+    height: 60px;
+    margin-bottom: 17px;
+    text-align: center;
+    line-height: 60px;
+    color:  #FFF;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0px 4px 4px 0px #00000040;
+    font-size: 16px;
+    display: ${(({newPosts}) => (newPosts === 0 ? "none" : "initial"))};
 
-
-
-
+    svg{
+        margin-left: 5px;
+    }
 `

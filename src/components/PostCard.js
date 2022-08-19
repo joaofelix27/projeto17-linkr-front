@@ -6,12 +6,12 @@ import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
-import { FaTrash, FaPencilAlt } from "react-icons/fa";
-import { AiOutlineComment } from "react-icons/ai";
+import { FaTrash, FaPencilAlt,  } from "react-icons/fa";
+import {AiOutlineComment} from "react-icons/ai"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import repostimg from "../assets/repostIcon.png";
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2'
 
 import UserContext from "../contexts/UserContext";
 import animationDataLike from "../assets/like-icon.json";
@@ -38,23 +38,22 @@ export default function PostCard({
     reposts,
     isRepost,
     reposter,
-    reposterId,
+    reposterId
 }) {
-    const { token, userId, setUserId, setLoad, control, setControl } =
-        useContext(UserContext);
+    const { token, userId, setUserId, setLoad, control, setControl } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
     const [originalBody, setOriginalBody] = useState(text);
     const [textEdit, setTextEdit] = useState(false);
     const [like, setLike] = useState(likes);
     const [comment, setComment] = useState(comments);
-    const [repostsCount, setRepostsCount] = useState(reposts);
-    const [checkRepost, setCheckRepost] = useState(isRepost);
-    const [reposterName, setReposterName] = useState(reposter);
+    const [repostsCount,setRepostsCount] = useState(reposts);
+    const [checkRepost,setCheckRepost] = useState(isRepost);
+    const [reposterName,setReposterName] = useState(reposter);
     const [show, setShow] = useState(false);
     const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
     const [tooltip, setTooltip] = useState();
-    const [showComments, setShowComments] = useState(false);
+    const [showComments, setShowComments] = useState(false); 
     const navigate = useNavigate();
     const inputRef = useRef();
     const handleClose = () => setShow(false);
@@ -154,7 +153,7 @@ export default function PostCard({
             );
             setUserId(result?.userId);
             setTooltip(result?.tooltip);
-            if (result.isLiked && !isReliked) {
+            if (result.isLiked && !(isReliked)) {
                 setAnimationLikeState({ ...animationLikeState, direction: 1 });
             }
         } catch (e) {
@@ -277,7 +276,7 @@ export default function PostCard({
     }
 
     function reloadPage() {
-        getPosts();
+        getPosts()
         setIsDisabled("");
         setShow(false);
     }
@@ -311,209 +310,184 @@ export default function PostCard({
         </Tooltip>
     );
 
-    function repost(postId) {
+    function repost(postId){
         Swal.fire({
-            title: "Do you want to re-post this link?",
+            title: 'Do you want to re-post this link?',
             showCancelButton: true,
-            confirmButtonText: "Yes, share!",
-            cancelButtonText: "No, cancel",
-            confirmButtonColor: "#1877F2",
-            cancelButtonColor: "crimson",
-            background: "#333333",
+            confirmButtonText: 'Yes, share!',
+            cancelButtonText: 'No, cancel',
+            confirmButtonColor: '#1877F2',
+            cancelButtonColor: 'crimson',
+            background:"#333333",
             color: "#ffffff",
             reverseButtons: true,
-            height: "200px",
-        }).then((result) => {
+            height: "200px"
+          }
+        ).then((result) => {
             if (result.isConfirmed) {
-                const promise = axios.post(
-                    `${process.env.REACT_APP_BASE_URL}/timeline/repost/${postId}`,
-                    {},
-                    config
-                );
+                const promise = axios.post(`${process.env.REACT_APP_BASE_URL}/timeline/repost/${postId}`,{},config);
 
-                promise.then(() => {
+                promise.then(()=>{
                     Swal.fire({
-                        title: "Reposted!",
-                        background: "#333333",
-                        color: "#ffffff",
+                        title:"Reposted!",
+                        background:"#333333",
+                        color: "#ffffff"
                     });
-                    setRepostsCount(parseInt(repostsCount) + 1);
+                    setRepostsCount(parseInt(repostsCount)+1);
                     setControl(!control);
                 });
 
-                promise.catch((Error) => {
+                promise.catch(Error=>{
                     alert(Error.response.status);
                 });
-            } else {
+            } else{
                 Swal.fire({
-                    title: "Repost canceled!",
-                    background: "#333333",
-                    color: "#ffffff",
+                    title:"Repost canceled!",
+                    background:"#333333",
+                    color: "#ffffff"
                 });
-            }
-        });
-
+                }
+             });
+    
         return;
     }
 
     return (
         <>
-            <Container key={key} comments={showComments}>
-                {!checkRepost ? (
-                    ""
+        {
+                !checkRepost ? 
+                ""
+                    :
+                <Reposter>
+                    <img src={repostimg} alt="" srcset="" />
+                    Re-posted by {reposterId === userId ? 'you' : reposterName}
+                </Reposter>
+            }
+        <Container key={key} comments={showComments}>
+            
+            <ProfilePhoto>
+                <img src={profileImage} alt={legendAlt} />
+                <div className="animation" onClick={()=>{
+                    if(checkRepost) return
+                    postLike()
+                    }}>
+                    <Lottie
+                        options={likeDefaultOptions}
+                        height={60}
+                        width={55}
+                        direction={animationLikeState.direction}
+                        isStopped={animationLikeState.isStopped}
+                    />
+                </div>
+                <OverlayTrigger placement="bottom" overlay={renderTooltip}>
+                    <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
+                </OverlayTrigger>
+                <div className="repost" onClick={()=>{
+                    if(checkRepost) return
+                    repost(postId)
+                    }}>
+                    <img src={repostimg} alt="" srcset="" />
+                    <h6>{repostsCount} re-posts</h6>
+                </div>
+                <div className="comment" onClick={()=> setShowComments(!showComments)}>
+                    <AiOutlineComment color="#fff" size={30} />
+                    <h6>{comment} comments</h6>
+                </div>
+            </ProfilePhoto>
+            <Post>
+            <div>
+                <h3
+                    onClick={() =>
+                        navigate(`/timeline/user/${creatorId}`, setLoad(true), {
+                            replace: true,
+                            state: {},
+                        })
+                    }
+                >
+                    {name}
+                </h3>
+                {textEdit === false ? (
+                    <ReactTagify
+                        tagStyle={tagStyle}
+                        tagClicked={(tag) => {
+                            const tagWithoutHash = tag.replace("#", "");
+                            navigate(`/hashtag/${tagWithoutHash}`);
+                        }}
+                    >
+                        <p>{originalBody}</p>
+                    </ReactTagify>
                 ) : (
-                    <Reposter>
-                        <img src={repostimg} alt="" srcset="" />
-                        Re-posted by{" "}
-                        {reposterId === creatorId ? "you" : reposterName}
-                    </Reposter>
-                )}
-                <ProfilePhoto>
-                    <img src={profileImage} alt={legendAlt} />
-                    <div
-                        className="animation"
-                        onClick={() => {
-                            if (checkRepost) return;
-                            postLike();
-                        }}
-                    >
-                        <Lottie
-                            options={likeDefaultOptions}
-                            height={60}
-                            width={55}
-                            direction={animationLikeState.direction}
-                            isStopped={animationLikeState.isStopped}
+                    <form onSubmit={(e) => updateBody(e)}>
+                        <Textarea
+                            type="text"
+                            ref={inputRef}
+                            placeholder="Awesome article about #javascript"
+                            onChange={(e) => setBodyValue(e.target.value)}
+                            value={bodyValue}
+                            disabled={isInputDisabled}
+                            onKeyUpCapture={(e) => handleKeyPress(e)}
+                            required
                         />
+                    </form>
+                )}
+                {creatorId === userId ? (
+                    <div className="buttons">
+                        <FaPencilAlt
+                            color="#fff"
+                            onClick={() => setTextEdit(!textEdit)}
+                        />
+                        <FaTrash color="#fff" onClick={() => setShow(true)} />
                     </div>
-                    <OverlayTrigger placement="bottom" overlay={renderTooltip}>
-                        <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
-                    </OverlayTrigger>
-                    <div
-                        className="repost"
-                        onClick={() => {
-                            if (checkRepost) return;
-                            repost(postId);
-                        }}
-                    >
-                        <img src={repostimg} alt="" srcset="" />
-                        <h6>{repostsCount} re-posts</h6>
-                    </div>
-                    <div
-                        className="comment"
-                        onClick={() => setShowComments(!showComments)}
-                    >
-                        <AiOutlineComment color="#fff" size={30} />
-                        <h6>{comment} comments</h6>
-                    </div>
-                </ProfilePhoto>
-                <Post>
+                ) : null}
+                </div>
+                <LinkBox href={url} target="_blank">
                     <div>
-                        <h3
-                            onClick={() =>
-                                navigate(
-                                    `/timeline/user/${creatorId}`,
-                                    setLoad(true),
-                                    {
-                                        replace: true,
-                                        state: {},
-                                    }
-                                )
-                            }
-                        >
-                            {name}
-                        </h3>
-                        {textEdit === false ? (
-                            <ReactTagify
-                                tagStyle={tagStyle}
-                                tagClicked={(tag) => {
-                                    const tagWithoutHash = tag.replace("#", "");
-                                    navigate(`/hashtag/${tagWithoutHash}`);
-                                }}
-                            >
-                                <p>{originalBody}</p>
-                            </ReactTagify>
-                        ) : (
-                            <form onSubmit={(e) => updateBody(e)}>
-                                <Textarea
-                                    type="text"
-                                    ref={inputRef}
-                                    placeholder="Awesome article about #javascript"
-                                    onChange={(e) =>
-                                        setBodyValue(e.target.value)
-                                    }
-                                    value={bodyValue}
-                                    disabled={isInputDisabled}
-                                    onKeyUpCapture={(e) => handleKeyPress(e)}
-                                    required
-                                />
-                            </form>
-                        )}
-                        {creatorId === userId ? (
-                            <div className="buttons">
-                                <FaPencilAlt
-                                    color="#fff"
-                                    onClick={() => setTextEdit(!textEdit)}
-                                />
-                                <FaTrash
-                                    color="#fff"
-                                    onClick={() => setShow(true)}
-                                />
-                            </div>
-                        ) : null}
+                        <h4>{titleUrl}</h4>
+                        <h5>{descriptionUrl}</h5>
+                        <h6>{url}</h6>
                     </div>
-                    <LinkBox href={url} target="_blank">
-                        <div>
-                            <h4>{titleUrl}</h4>
-                            <h5>{descriptionUrl}</h5>
-                            <h6>{url}</h6>
-                        </div>
-                        <img src={imageUrl} alt={titleUrl} />
-                    </LinkBox>
-                </Post>
-                <ModalBox>
-                    <Modal show={show} onHide={handleClose} centered>
-                        <Modal.Header>
-                            <Modal.Body>
-                                <Lottie
-                                    options={deleteDefaultOptions}
-                                    height={50}
-                                    width={55}
-                                    direction={animationDeleteState.direction}
-                                    isStopped={animationDeleteState.isStopped}
-                                    isPaused={animationDeleteState.isPaused}
-                                    speed={0.5}
-                                    eventListeners={
-                                        animationDeleteState.eventListeners
-                                    }
-                                />
-                                Are you sure you want to delete this post?
-                            </Modal.Body>
-                        </Modal.Header>
-                        <Modal.Footer>
-                            <Button
-                                disabled={isDisabled}
-                                variant="secondary"
-                                onClick={() => setShow(false)}
-                            >
-                                No, go back
-                            </Button>
-                            <Button
-                                disabled={isDisabled}
-                                variant="primary"
-                                onClick={removePost}
-                            >
-                                Yes, delete it
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                </ModalBox>
-            </Container>
-            <Comments
-                show={showComments}
-                postId={postId}
-                notify={notify}
-                setComment={setComment}
-            />
+                    <img src={imageUrl} alt={titleUrl} />
+                </LinkBox>
+            </Post>
+            <ModalBox>
+                <Modal show={show} onHide={handleClose} centered>
+                    <Modal.Header>
+                        <Modal.Body>
+                            <Lottie
+                                options={deleteDefaultOptions}
+                                height={50}
+                                width={55}
+                                direction={animationDeleteState.direction}
+                                isStopped={animationDeleteState.isStopped}
+                                isPaused={animationDeleteState.isPaused}
+                                speed={0.5}
+                                eventListeners={
+                                    animationDeleteState.eventListeners
+                                }
+                            />
+                            Are you sure you want to delete this post?
+                        </Modal.Body>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button
+                            disabled={isDisabled}
+                            variant="secondary"
+                            onClick={() => setShow(false)}
+                        >
+                            No, go back
+                        </Button>
+                        <Button
+                            disabled={isDisabled}
+                            variant="primary"
+                            onClick={removePost}
+                        >
+                            Yes, delete it
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </ModalBox>
+        </Container>
+        <Comments show={showComments} postId={postId} notify={notify} setComment={setComment}/>
         </>
     );
 }
@@ -524,15 +498,13 @@ export const Container = styled.div`
     border-radius: 16px;
     padding: 17px;
     padding-right: 22px;
-    margin-bottom: ${(props) => (props.comments ? "0px" : "30px")};
+    margin-bottom: ${props => props.comments? "0px": "30px"};
     display: flex;
     font-family: "Lato";
     background-color: #171717;
     border-radius: 16px;
     word-wrap: break-word;
     position: relative;
-    margin-top: 30px;
-
     h3 {
         color: white;
         font-size: 24px;
@@ -543,16 +515,15 @@ export const Container = styled.div`
         font-size: 18px;
         line-height: 20px;
     }
-
     @media screen and (max-width: 650px) {
-        padding: 14px;
-        padding-right: 19px;
-        h3 {
-            font-size: 20px;
-        }
-        p {
-            font-size: 14px;
-        }
+       padding: 14px;
+       padding-right: 19px;
+        h3{
+        font-size: 20px;
+       }
+       p{
+        font-size: 14px;
+       }
     }
 `;
 export const ProfilePhoto = styled.div`
@@ -567,7 +538,6 @@ export const ProfilePhoto = styled.div`
         border-radius: 50%;
         object-fit: cover;
     }
-
     h6 {
         font-size: 13px;
         color: #b6b6b6;
@@ -575,31 +545,28 @@ export const ProfilePhoto = styled.div`
         box-sizing: border-box;
         margin-bottom: 9px;
     }
-
     div * {
         border-radius: 50px;
         cursor: pointer;
     }
-
-    .repost,
-    .comment {
+    .repost, .comment{
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        img {
+        img{
             height: 35px;
             width: 35px;
             margin-bottom: 7px;
         }
-        h6 {
-            width: 70px;
+        h6{
+            width: 70px;    
         }
     }
     @media screen and (max-width: 650px) {
         margin-right: 14px;
         width: 14%;
-        img {
+        img{
             width: 45px;
             height: 45px;
         }
@@ -612,22 +579,18 @@ export const Post = styled.div`
     flex-direction: column;
     padding-top: 10px;
     position: relative;
-
     h3 {
         cursor: pointer;
     }
-
     span {
         span {
             cursor: pointer;
         }
     }
-
     .buttons {
         position: absolute;
         top: 0;
         right: 0;
-
         svg {
             cursor: pointer;
             width: 30px;
@@ -635,7 +598,7 @@ export const Post = styled.div`
             height: 18px;
         }
     }
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 600px){
         padding-top: 6px;
     }
 `;
@@ -679,15 +642,15 @@ export const LinkBox = styled.a`
         border-bottom-right-radius: 12px;
     }
     @media screen and (max-width: 900px) {
-        h4 {
+        h4{
             font-size: 16px;
             margin-bottom: 4px;
         }
-        h5 {
+        h5{
             font-size: 14px;
             margin-bottom: 10px;
         }
-        h6 {
+        h6{
             font-size: 12px;
         }
         img {
@@ -696,24 +659,24 @@ export const LinkBox = styled.a`
     }
     @media screen and (max-width: 650px) {
         margin-top: 13px;
-        h4 {
+        h4{
             max-height: 5.5ch;
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 12px;
             margin-bottom: 4px;
         }
-        h5 {
+        h5{
             max-height: 8.5ch;
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 10px;
-            margin-bottom: 4px;
+            margin-bottom: 4px
         }
-        h6 {
+        h6{
             font-size: 8px;
         }
-        div {
+        div{
             padding: 15px 12px;
         }
     }
@@ -755,21 +718,18 @@ const customStyles = {
 };
 
 const Reposter = styled.div`
-    display: flex;
-    align-items: center;
-    padding-left: 10px;
-    height: 40px;
-    width: 100%;
-    color: #ffffff;
-    background-color: #1e1e1e;
-    margin-bottom: -11px;
-    position: absolute;
-    top: -24px;
-    left: 0;
-
-    img {
-        width: 30px;
-        height: 30px;
-        margin-right: 10px;
-    }
-`;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        height: 40px;
+        width: 100%;
+        color: #ffffff;
+        background-color: #1E1E1E;
+        margin-bottom: -11px;
+        z-index: 2;
+        img{
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+`
