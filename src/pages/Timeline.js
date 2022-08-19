@@ -34,6 +34,9 @@ export default function Timeline() {
   };
 
   useEffect(() => {
+    console.log("teste")
+    console.log(control)
+
     let check = control;
     if (!token) {
       navigate("/");
@@ -41,7 +44,8 @@ export default function Timeline() {
     if (posts === "") {
       getPosts();
     }
-    if (reposts === "" || check !== control) {
+    if (reposts === "" || check === control) {
+        console.log("entrei na condição")
       check = control;
       getReposts();
     }
@@ -50,6 +54,7 @@ export default function Timeline() {
     }
   }, [control]);
 
+  console.log(posts)
     useEffect(() => {
         const config = {
             headers: {
@@ -162,8 +167,6 @@ export default function Timeline() {
     }
   }
 
-  console.log(posts)
-
   function renderPosts() {
     if (posts) {
       const timeline = posts.map(
@@ -273,7 +276,7 @@ export default function Timeline() {
                             <li id={isOnSentinel}>
                                 {isOnSentinel === "sentinela" &&
                                 posts.length !== 0
-                                    ? "Loading ..."
+                                    ? "Loading more posts..."
                                     : "There are no more posts to show right now."}
                             </li>
                         ) : null}{" "}
@@ -330,7 +333,7 @@ export const LeftContent = styled.div`
   }
 
     li {
-        margin-bottom: 5px;
+        margin-bottom: 30px;
         color: #b6b6b6;
         font-size: 18px;
         list-style: none;
