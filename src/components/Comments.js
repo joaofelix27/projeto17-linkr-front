@@ -6,12 +6,11 @@ import {IoPaperPlaneOutline} from "react-icons/io5"
 import Comment from "./Comment";
 import axios from "axios";
 
-export default function Comments({show, postId, creatorId, notify, setComment}) {
+export default function Comments({show, postId, notify, setComment}) {
     const {image, token} = useContext(UserContext);
     const [myComment, setMyComment] = useState("");
     const[load, setLoad] = useState(false);
     const [comments, setComments] = useState("");
-    const [userPostId, setUserPostId] = useState(creatorId);
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -50,9 +49,10 @@ export default function Comments({show, postId, creatorId, notify, setComment}) 
     };
     function renderComments(){
         if(comments){
-            return comments.map(({userId, username, picture, text})=>
+            return comments.map(({isPostAuthor, follow, username, picture, text})=>
                 <Comment 
-                    isCreatorPost={isCreatorPost(userId)}
+                    follow={follow}
+                    isPostAuthor={isPostAuthor}
                     name={username} 
                     profileImg={picture} 
                     text={text}
@@ -61,10 +61,7 @@ export default function Comments({show, postId, creatorId, notify, setComment}) 
         }
     }
 
-    function isCreatorPost(userId) {
-        if(userId === userPostId) return true
-        return false;
-    }
+    
     
     return(
         <Container show={show}>

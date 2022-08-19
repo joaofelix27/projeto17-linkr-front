@@ -65,8 +65,6 @@ export default function Timeline() {
       )
       .then((res) => {
         setPosts([...posts, ...res.data.postsMetadata]);
-        setImage(res.data.userInfo?.picture);
-        setName(res.data.userInfo?.username);
 
         if (res.data.postsMetadata.length === 0) {
           setIsOnSentinel("isOff");
@@ -117,8 +115,6 @@ export default function Timeline() {
         setCurrentPage(1)
         setIsOnSentinel("sentinela")
         setPosts(res.data.postsMetadata);
-        setImage(res.data.userInfo?.picture);
-        setName(res.data.userInfo?.username);
         getFollowed()
       })
       .catch((e) => {
@@ -160,7 +156,6 @@ export default function Timeline() {
         `${process.env.REACT_APP_BASE_URL}/followed`,
         config
       );
-      console.log(result.data)
       if (result.data.length !== 0) {
         setIsFollowing(result.data)
       }
