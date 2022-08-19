@@ -49,8 +49,9 @@ export default function Comments({show, postId, notify, setComment}) {
     };
     function renderComments(){
         if(comments){
-            return comments.map(({isPostAuthor, username, picture, text})=>
+            return comments.map(({isPostAuthor, follow, username, picture, text})=>
                 <Comment 
+                    follow={follow}
                     isPostAuthor={isPostAuthor}
                     name={username} 
                     profileImg={picture} 
