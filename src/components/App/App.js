@@ -25,7 +25,7 @@ export default function App() {
             getUserData();
         }
     },[])
-    
+
     async function getUserData(){
         if(token){
             const config = {

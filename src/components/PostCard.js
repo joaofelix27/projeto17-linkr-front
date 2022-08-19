@@ -354,16 +354,17 @@ export default function PostCard({
 
     return (
         <>
-        <Container key={key} comments={showComments}>
-            {
+        {
                 !checkRepost ? 
                 ""
                     :
                 <Reposter>
                     <img src={repostimg} alt="" srcset="" />
-                    Re-posted by {reposterId === creatorId ? 'you' : reposterName}
+                    Re-posted by {reposterId === userId ? 'you' : reposterName}
                 </Reposter>
             }
+        <Container key={key} comments={showComments}>
+            
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
                 <div className="animation" onClick={()=>{
