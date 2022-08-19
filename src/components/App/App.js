@@ -56,7 +56,6 @@ export default function App() {
         setControl,
         load,
         setLoad
-
     };
 
     return (

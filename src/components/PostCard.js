@@ -35,7 +35,10 @@ export default function PostCard({
     setPosts,
     getPosts,
     getTrending,
-    reposts
+    reposts,
+    isRepost,
+    reposter,
+    reposterId
 }) {
     const { token, userId, setUserId, setLoad, control, setControl } = useContext(UserContext);
     const [bodyValue, setBodyValue] = useState(text);
@@ -44,6 +47,8 @@ export default function PostCard({
     const [like, setLike] = useState(likes);
     const [comment, setComment] = useState(comments);
     const [repostsCount,setRepostsCount] = useState(reposts);
+    const [checkRepost,setCheckRepost] = useState(isRepost);
+    const [reposterName,setReposterName] = useState(reposter);
     const [show, setShow] = useState(false);
     const [isInputDisabled, setIsInputDisabled] = useState("");
     const [isDisabled, setIsDisabled] = useState("");
@@ -350,9 +355,21 @@ export default function PostCard({
     return (
         <>
         <Container key={key} comments={showComments}>
+            {
+                !checkRepost ? 
+                ""
+                    :
+                <Reposter>
+                    <img src={repostimg} alt="" srcset="" />
+                    Re-posted by {reposterId === creatorId ? 'you' : reposterName}
+                </Reposter>
+            }
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
-                <div className="animation" onClick={postLike}>
+                <div className="animation" onClick={()=>{
+                    if(checkRepost) return
+                    postLike()
+                    }}>
                     <Lottie
                         options={likeDefaultOptions}
                         height={60}
@@ -364,7 +381,10 @@ export default function PostCard({
                 <OverlayTrigger placement="bottom" overlay={renderTooltip}>
                     <h6>{like > 1 ? `${like} likes` : `${like} like`}</h6>
                 </OverlayTrigger>
-                <div className="repost" onClick={()=>repost(postId)}>
+                <div className="repost" onClick={()=>{
+                    if(checkRepost) return
+                    repost(postId)
+                    }}>
                     <img src={repostimg} alt="" srcset="" />
                     <h6>{repostsCount} re-posts</h6>
                 </div>
@@ -707,3 +727,20 @@ const customStyles = {
         padding: "130px",
     },
 };
+
+const Reposter = styled.div`
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        height: 40px;
+        width: 100%;
+        color: #ffffff;
+        background-color: #1E1E1E;
+        margin-bottom: -11px;
+        z-index: 2;
+        img{
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+`
