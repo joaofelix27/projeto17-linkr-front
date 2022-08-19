@@ -225,10 +225,12 @@ export default function Timeline() {
                             debounceTimeout={300}
                         />
                         <h2>timeline</h2>
+
                         <SendPostCard
                             getPosts={getPosts}
                             getTrending={getTrending}
                         />
+                        <ReRender />
                        {/*  {isFollowing.length === 0 ? (
                             <h3>
                                 You don't follow anyone yet. Search for new
@@ -360,3 +362,12 @@ export const RightContent = styled.div`
         display: none;
     }
 `;
+
+
+const ReRender = styled.div`
+
+
+
+
+
+`
