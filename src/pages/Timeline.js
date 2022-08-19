@@ -42,10 +42,6 @@ export default function Timeline() {
     if (posts === "") {
       getPosts();
     }
-    if (reposts === "" || check !== control) {
-      check = control;
-      getReposts();
-    }
     if (trending === "") {
       getTrending();
     }
@@ -113,7 +109,8 @@ export default function Timeline() {
       )
       .then((res) => {
         setCurrentPage(1)
-        setIsOnSentinel("sentinela")
+        setIsOnSentinel("sentinela");
+        console.log(res.data.postsMetadata)
         setPosts(res.data.postsMetadata);
         getFollowed()
       })
@@ -125,25 +122,6 @@ export default function Timeline() {
       });
   }
 
-  async function getReposts() {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/timeline/reposts`,
-        config
-      );
-      setReposts(result.data);
-    } catch (e) {
-      notify(
-        "An error occured while trying to fetch the posts, please refresh the page"
-      );
-      console.log(e);
-    }
-  }
   async function getFollowed() {
     setIsFollowing([])
     const config = {
@@ -197,6 +175,9 @@ export default function Timeline() {
           comment,
           reposts,
           createdAt,
+          isRepost,
+          reposter,
+          reposterId
         }) => (
           <PostCard
             key={id}
@@ -216,60 +197,12 @@ export default function Timeline() {
             getTrending={getTrending}
             reposts={reposts}
             createdAt={createdAt}
+            isRepost={isRepost}
+            reposter={reposter}
+            reposterId={reposterId}
           />
         )
       );
-      if (reposts) {
-        const timelineReposts = reposts.map(
-          ({
-            id,
-            username,
-            picture,
-            link,
-            body,
-            title,
-            image,
-            description,
-            userId,
-            postId,
-            like,
-            comment,
-            reposts,
-            reposter,
-            reposterId,
-            createdAt
-          }) => (
-            <RepostCard
-              key={id}
-              name={username}
-              profileImage={picture}
-              url={link}
-              text={body}
-              titleUrl={title}
-              imageUrl={image}
-              descriptionUrl={description}
-              likes={like}
-              comments={comment}
-              postId={postId}
-              creatorId={userId}
-              setPosts={setPosts}
-              getReposts={getReposts}
-              getTrending={getTrending}
-              reposts={reposts}
-              reposter={reposter}
-              reposterId={reposterId}
-              createdAt={createdAt}
-            />
-          )
-        );
-        const allposts = [...timeline, ...timelineReposts];
-
-        const sortedPosts = allposts.sort(function (x, y) {
-          return new Date(x.props.createdAt).getTime() - new Date(y.props.createdAt).getTime();
-        });
-
-        return sortedPosts.reverse();
-      }
 
       return timeline;
     }

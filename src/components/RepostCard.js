@@ -229,10 +229,6 @@ export default function RepostCard({
 
     return (
         <>
-            <Reposter>
-                <img src={repostimg} alt="" srcset="" />
-                Re-posted by {reposterId === creatorId ? 'you' : reposterName}
-            </Reposter>
             <Container key={key} comments={showComments}>
 
                 <ProfilePhoto>
@@ -355,19 +351,3 @@ export default function RepostCard({
     );
 }
 
-const Reposter = styled.div`
-        display: flex;
-        align-items: center;
-        padding-left: 10px;
-        height: 40px;
-        width: 100%;
-        color: #ffffff;
-        background-color: #1E1E1E;
-        margin-bottom: -11px;
-        z-index: 2;
-        img{
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
-`
