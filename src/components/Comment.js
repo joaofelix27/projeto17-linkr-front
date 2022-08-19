@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function Comment({ isCreatorPost, name, profileImg, text }) {
+export default function Comment({ isPostAuthor, name, profileImg, text }) {
     
     
     return (
@@ -8,7 +8,7 @@ export default function Comment({ isCreatorPost, name, profileImg, text }) {
             <Container>
                 <img src={profileImg} alt="" />
                 <div>
-                    <h1>{name}{isCreatorPost ? <span> • post’s author</span>: null}</h1>
+                    <h4>{name}{isPostAuthor ? <span> • post’s author</span>: null}</h4>
                     
                     <h6>{text}</h6>
                 </div>
@@ -21,25 +21,26 @@ export default function Comment({ isCreatorPost, name, profileImg, text }) {
 const Container = styled.div`
     display: flex;
     margin: 23px 0px;
-    h1{
+    h4{
         color: #F3F3F3;
         font-weight: 700;
         font-size: 17px;
         margin-bottom: 8px;
         display: flex;
         align-items: center;
+        span{
+            font-weight: 400;
+            color: #565656;
+            font-size: 15px;
+            margin-left: 7px;
+        }
     }
     h6{
         color: #ACACAC;
         font-weight: 400;
         font-size: 15px;
     }
-    span{
-        font-weight: 400;
-        color: #565656;
-        font-size: 15px;
-        margin-left: 7px;
-    }
+    
     img{
         margin-right: 20px;
     }

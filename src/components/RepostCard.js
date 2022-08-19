@@ -350,7 +350,7 @@ export default function RepostCard({
                     </Modal>
                 </ModalBox>
             </Container>
-            <Comments show={showComments} postId={postId} creatorId={creatorId} notify={notify} setComment={setComment}/>
+            <Comments show={showComments} postId={postId} notify={notify} setComment={setComment}/>
         </>
     );
 }
