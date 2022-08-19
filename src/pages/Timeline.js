@@ -16,6 +16,7 @@ export default function Timeline() {
   const { token, setImage, setName, setToken, control} = useContext(UserContext);
   const [posts, setPosts] = useState("");
   const [reposts, setReposts] = useState("");
+  const [isFollowing, setIsFollowing] = useState([]);
   const [trending, setTrending] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isOnSentinel, setIsOnSentinel] = useState("sentinela");
@@ -118,6 +119,7 @@ export default function Timeline() {
                 setPosts(res.data.postsMetadata);
                 setImage(res.data.userInfo?.picture);
                 setName(res.data.userInfo?.username);
+                getFollowed()
             })
             .catch((e) => {
                 notify(
@@ -128,7 +130,6 @@ export default function Timeline() {
     }
 
   async function getReposts() {
-    console.log("tentando repost")
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -147,6 +148,28 @@ export default function Timeline() {
       console.log(e);
     }
   }
+  async function getFollowed() {
+    setIsFollowing([])
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/followed`,
+        config
+      );
+      console.log(result.data)
+      if(result.data.length!==0){
+        setIsFollowing(result.data)
+      }
+    } catch (e) {
+      notify("An error occured while trying to get if you are following someone");
+      console.log(e);
+    }
+  }
+
 
   async function getTrending() {
     try {
@@ -268,7 +291,7 @@ export default function Timeline() {
                             getPosts={getPosts}
                             getTrending={getTrending}
                         />
-                        {renderPosts()}
+                        {isFollowing.length ===0 ?  <h3>You don't follow anyone yet. Search for new friends!</h3>:(posts.length===0 && reposts.length==0 ? <h3>No posts found from your friends</h3> :renderPosts()) }
                         {posts.length !== 0 ? (
                             <li id={isOnSentinel}>
                                 {isOnSentinel === "sentinela" &&
@@ -327,6 +350,11 @@ export const LeftContent = styled.div`
     align-items: center;
     list-style: none;
 
+  }
+  h3{
+    font-weight: 700;
+        font-size: 24px;
+        color: white;
   }
 
     li {
