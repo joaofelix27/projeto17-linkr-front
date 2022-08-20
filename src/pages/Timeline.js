@@ -194,8 +194,6 @@ export default function Timeline() {
         }
     }
 
-    console.log(posts);
-
     function renderPosts() {
         if (posts) {
             const timeline = posts.map(
