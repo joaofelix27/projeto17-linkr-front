@@ -178,6 +178,7 @@ export default function Timeline() {
             );
             console.log(e);
         }
+
     }
 
     async function getTrending() {
