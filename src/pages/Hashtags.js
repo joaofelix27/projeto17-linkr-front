@@ -45,7 +45,6 @@ export default function Hashtags() {
         if (trending === "") {
             getTrending();
         }
-        getPosts()
     }, [hashtag]);
 
     useEffect(() => {
@@ -54,7 +53,7 @@ export default function Hashtags() {
                 Authorization: `Bearer ${token}`,
             },
         };
-        alert(currentPage)
+
         const promisse = axios
             .get(
                 `${process.env.REACT_APP_BASE_URL}/hashtags/${hashtag}?page=${currentPage}`,
@@ -109,7 +108,6 @@ export default function Hashtags() {
                 config
             );
             setPosts(result.data.postsMetadata);
-            console.log(result.data.postsMetadata)
         } catch (e) {
             notify(
                 "An error occured while trying to fetch the posts, please refresh the page"
@@ -198,7 +196,7 @@ export default function Hashtags() {
                         {/* verifica se o scroll chegou ao fim */}
                     </LeftContent>
                     <RightContent>
-                        <TrendingHashtags hashtags={trending} setCurrentPage={setCurrentPage} setPosts={setPosts} />
+                        <TrendingHashtags hashtags={trending} />
                     </RightContent>
                 </ContentBody>
             </Content>

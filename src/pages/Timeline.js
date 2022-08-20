@@ -284,7 +284,7 @@ export default function Timeline() {
                         {/* verifica se o scroll chegou ao fim */}
                     </LeftContent>
                     <RightContent>
-                        <TrendingHashtags hashtags={trending} setCurrentPage={setCurrentPage} setPosts={setPosts} />
+                        <TrendingHashtags hashtags={trending} />
                     </RightContent>
                 </ContentBody>
             </Content>
