@@ -96,8 +96,8 @@ const Container = styled.div`
     padding-bottom: 25px;
     border-radius: 0px 0px 16px 16px;
     box-sizing: border-box;
-    padding-top: 12px;
-    margin-top: -11px;
+    padding-top: 10px;
+    margin-top: -10px;
     img{
         width: 45px;
         border-radius: 50%;
