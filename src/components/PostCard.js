@@ -354,17 +354,16 @@ export default function PostCard({
 
     return (
         <>
-        {
+        <Container key={key} comments={showComments}>
+            {
                 !checkRepost ? 
                 ""
                     :
                 <Reposter>
                     <img src={repostimg} alt="" srcset="" />
-                    Re-posted by {reposterId === userId ? 'you' : reposterName}
+                    Re-posted by {reposterId === creatorId ? 'you' : reposterName}
                 </Reposter>
             }
-        <Container key={key} comments={showComments}>
-            
             <ProfilePhoto>
                 <img src={profileImage} alt={legendAlt} />
                 <div className="animation" onClick={()=>{
@@ -505,6 +504,8 @@ export const Container = styled.div`
     border-radius: 16px;
     word-wrap: break-word;
     position: relative;
+
+
     h3 {
         color: white;
         font-size: 24px;
@@ -515,6 +516,7 @@ export const Container = styled.div`
         font-size: 18px;
         line-height: 20px;
     }
+
     @media screen and (max-width: 650px) {
        padding: 14px;
        padding-right: 19px;
@@ -538,6 +540,7 @@ export const ProfilePhoto = styled.div`
         border-radius: 50%;
         object-fit: cover;
     }
+
     h6 {
         font-size: 13px;
         color: #b6b6b6;
@@ -545,10 +548,12 @@ export const ProfilePhoto = styled.div`
         box-sizing: border-box;
         margin-bottom: 9px;
     }
+
     div * {
         border-radius: 50px;
         cursor: pointer;
     }
+
     .repost, .comment{
         display: flex;
         justify-content: center;
@@ -570,6 +575,7 @@ export const ProfilePhoto = styled.div`
             width: 45px;
             height: 45px;
         }
+
     }
 `;
 
@@ -579,18 +585,22 @@ export const Post = styled.div`
     flex-direction: column;
     padding-top: 10px;
     position: relative;
+
     h3 {
         cursor: pointer;
     }
+
     span {
         span {
             cursor: pointer;
         }
     }
+
     .buttons {
         position: absolute;
         top: 0;
         right: 0;
+
         svg {
             cursor: pointer;
             width: 30px;
@@ -679,6 +689,7 @@ export const LinkBox = styled.a`
         div{
             padding: 15px 12px;
         }
+
     }
 `;
 
