@@ -40,7 +40,6 @@ export default function Timeline() {
     };
 
     useInterval(() => {
-        console.log(reqTime)
 
         const config = {
             headers: {
@@ -68,8 +67,6 @@ export default function Timeline() {
     }, 15000)
 
     useEffect(() => {
-        console.log("teste");
-        console.log(control);
 
         let check = control;
         if (!token) {
@@ -96,7 +93,6 @@ export default function Timeline() {
                 config
             )
             .then((res) => {
-                console.log("Vou inserir");
                 setPosts([...posts, ...res.data.postsMetadata]);
                 getFollowed();
 
@@ -116,7 +112,6 @@ export default function Timeline() {
         if (posts.length !== 0) {
             const intersectionObserver = new IntersectionObserver((entries) => {
                 if (entries.some((entry) => entry.isIntersecting)) {
-                    console.log(currentPage);
                     setCurrentPage(
                         (currentPageInsideState) => currentPageInsideState + 1
                     );
@@ -284,7 +279,7 @@ export default function Timeline() {
                         {/* verifica se o scroll chegou ao fim */}
                     </LeftContent>
                     <RightContent>
-                        <TrendingHashtags hashtags={trending} />
+                    <TrendingHashtags hashtags={trending} setCurrentPage={setCurrentPage}  setPosts={setPosts} />
                     </RightContent>
                 </ContentBody>
             </Content>

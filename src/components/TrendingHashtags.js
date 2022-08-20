@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-export default function TrendingHashtags({ hashtags }) {
+export default function TrendingHashtags({ hashtags,setPosts,setCurrentPage,posts }) {
     const navigate = useNavigate();
 
 
@@ -13,6 +13,8 @@ export default function TrendingHashtags({ hashtags }) {
                         key={index}
                         onClick={() => {
                             navigate(`/hashtag/${value?.name}`);
+                            setCurrentPage(1)
+                            setPosts("")
                         }}
                     >
                         # {value?.name}{" "}

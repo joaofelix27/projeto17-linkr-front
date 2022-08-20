@@ -45,6 +45,7 @@ export default function Hashtags() {
         if (trending === "") {
             getTrending();
         }
+        getPosts()
     }, [hashtag]);
 
     useEffect(() => {
@@ -196,7 +197,7 @@ export default function Hashtags() {
                         {/* verifica se o scroll chegou ao fim */}
                     </LeftContent>
                     <RightContent>
-                        <TrendingHashtags hashtags={trending} />
+                    <TrendingHashtags hashtags={trending} setCurrentPage={setCurrentPage} setPosts={setPosts}  />
                     </RightContent>
                 </ContentBody>
             </Content>

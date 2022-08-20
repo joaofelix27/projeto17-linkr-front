@@ -246,7 +246,7 @@ return (
               </FollowButton>
             )}
           </ButtonContainer>
-          <TrendingHashtags hashtags={trending} />
+          <TrendingHashtags hashtags={trending} setCurrentPage={setCurrentPage}  setPosts={setPosts} />
         </RightContent>
       </ContentBody>
     </Content>
