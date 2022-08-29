@@ -1,70 +1,38 @@
-# Getting Started with Create React App
+# Driven project 17 - Linkr
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+On this project we had to develop a full-stack app with a similar aproach to twitter, we had to use React and styled-components to build the front-end,
+Nodejs in the back-end and integrate it into a PostgreSQL database.
 
-## Available Scripts
+## Register page
 
-In the project directory, you can run:
+![img1](https://user-images.githubusercontent.com/74775032/187289301-ccf9e236-a00e-4007-99b1-54b7d27c4828.jpg)
 
-### `npm start`
+## Login page
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+![img2](https://user-images.githubusercontent.com/74775032/187289857-1caaec57-0973-475e-a3c1-9f32dfcda9df.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Timeline page
 
-### `npm test`
+After login this one is the initial page, at first things will be quite empty, the user need to follow a user to see their posts and re-posts.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![img3](https://user-images.githubusercontent.com/74775032/187290301-d0540a32-f5b5-4ff4-a4a7-c4d270390c36.png)
 
-### `npm run build`
+He can find his friends through the search bar!
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![img4](https://user-images.githubusercontent.com/74775032/187291418-2683e6ad-545d-4a0f-a266-4286b2e06cff.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## User page
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+After searching for your friend, that is his personal page, here you find all the posts and re-posts that he made,
+if you follow that user the button will display now that you're following him and now his actions will display in your timeline!
 
-### `npm run eject`
+![img5](https://user-images.githubusercontent.com/74775032/187291945-27037b8a-05e5-469c-869e-dab003139619.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Timeline with posts
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+And now a small look on the timeline with the posts of the user that is being followed, you can also see the post's information, the likes, the comments
+and the amount of times it was shared are displayed, a user cant like or re-post a re-post, but comment on it is allowed.
+To more details on how the database store and integrate these data and relations check our dump in the config folder!
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+![img6](https://user-images.githubusercontent.com/74775032/187293076-ec84e681-ef71-49c1-8867-20e89e14d44b.png)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
